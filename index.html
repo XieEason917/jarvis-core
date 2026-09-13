@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>J.A.R.V.I.S. // TACTICAL HOLOGRAPHIC CORE</title>
+  <title>J.A.R.V.I.S. // ACOUSTIC RESONANCE CORE</title>
   <style>
     * {
       margin: 0;
@@ -101,7 +101,7 @@
       margin-top: 16px;
     }
     .card {
-      background: rgba(3, 18, 38, 0.7);
+      background: rgba(3, 18, 38, 0.75);
       border: 1px solid rgba(0, 240, 255, 0.25);
       border-left: 3px solid #00f0ff;
       padding: 10px 16px;
@@ -136,19 +136,16 @@
     .wave-box {
       display: flex;
       align-items: flex-end;
-      gap: 3px;
-      height: 24px;
+      gap: 4px;
+      height: 28px;
     }
     .wave-bar {
       width: 3px;
       background: #00f0ff;
       box-shadow: 0 0 6px #00f0ff;
       border-radius: 1px;
-      animation: wave-anim 1.2s infinite ease-in-out;
-    }
-    @keyframes wave-anim {
-      0%, 100% { height: 4px; }
-      50% { height: 22px; }
+      height: 4px;
+      transition: height 0.06s ease;
     }
     .interactive-trigger {
       pointer-events: auto;
@@ -156,14 +153,15 @@
       font-size: 11px;
       letter-spacing: 2px;
       color: #00f0ff;
-      border: 1px solid rgba(0, 240, 255, 0.3);
-      padding: 6px 14px;
+      border: 1px solid rgba(0, 240, 255, 0.35);
+      padding: 8px 18px;
       background: rgba(0, 240, 255, 0.08);
-      transition: all 0.2s;
+      backdrop-filter: blur(6px);
+      transition: all 0.25s;
     }
     .interactive-trigger:hover {
       background: rgba(0, 240, 255, 0.25);
-      box-shadow: 0 0 15px #00f0ff;
+      box-shadow: 0 0 20px #00f0ff;
       color: #fff;
     }
   </style>
@@ -179,10 +177,10 @@
       <div class="hud-header">
         <div>
           <div class="brand-title">J.A.R.V.I.S. // TACTICAL CORE</div>
-          <div class="brand-sub">QUANTUM RECONNAISSANCE SUITE // MK-VII</div>
+          <div class="brand-sub">ACOUSTIC NEURAL INTERACTION ENGINE</div>
         </div>
         <div class="sys-telemetry">
-          <div class="status-badge"><span class="status-dot"></span>SENTINEL ARMED</div>
+          <div class="status-badge"><span class="status-dot"></span>VOICE SYNTH ARMED</div>
           <div id="clock-display" style="color: rgba(0,240,255,0.7); margin-top: 4px;">00:00:00 CST</div>
         </div>
       </div>
@@ -207,26 +205,29 @@
     </div>
 
     <div class="hud-footer">
-      <div style="display: flex; align-items: center; gap: 12px;">
+      <div style="display: flex; align-items: center; gap: 14px;">
         <div class="wave-box" id="wave-container"></div>
-        <span style="font-size: 10px; letter-spacing: 2px; color: rgba(0,240,255,0.5);">TACTICAL FLUX: 98.4%</span>
+        <span id="comm-status" style="font-size: 10px; letter-spacing: 2px; color: rgba(0,240,255,0.5);">STATUS: STANDBY</span>
       </div>
-      <div class="interactive-trigger" onclick="overchargeCore()">[ 觸發反應爐全功率超頻 ]</div>
+      <div class="interactive-trigger" onclick="triggerVoiceResponse()">[ 點擊發話：賈維斯回報狀態 ]</div>
     </div>
   </div>
 
   <script>
+    // 1. 初始化波形 DOM 元素 (18 支頻譜柱)
     const waveBox = document.getElementById('wave-container');
-    for (let i = 0; i < 16; i++) {
+    const waveBars = [];
+    for (let i = 0; i < 18; i++) {
       const bar = document.createElement('div');
       bar.className = 'wave-bar';
-      bar.style.animationDelay = `${(i * 0.07)}s`;
       waveBox.appendChild(bar);
+      waveBars.push(bar);
     }
 
+    // 2. Three.js 場景建構
     const container = document.getElementById('canvas-container');
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x020612); // 底層鎖死深邃黑藍
+    scene.background = new THREE.Color(0x020612);
 
     const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 2000);
     camera.position.z = 210;
@@ -239,8 +240,10 @@
     const coreGroup = new THREE.Group();
     scene.add(coreGroup);
 
-    // 向量線框核心 (二十面體多邊形)
-    const icoGeo = new THREE.IcosahedronGeometry(28, 1);
+    // 高密度二十面體線框 (Subdivision Detail = 2，產生 162 個控制頂點進行流體波形擾動)
+    const icoGeo = new THREE.IcosahedronGeometry(28, 2);
+    const origPositions = icoGeo.attributes.position.array.slice();
+
     const wireMat = new THREE.MeshBasicMaterial({
       color: 0x00f0ff,
       wireframe: true,
@@ -250,15 +253,13 @@
     const icoMesh = new THREE.Mesh(icoGeo, wireMat);
     coreGroup.add(icoMesh);
 
-    // 反應內核
+    // 內核超導微粒
     const innerGeo = new THREE.BufferGeometry();
     const innerCount = 1800;
     const innerPos = new Float32Array(innerCount * 3);
     for (let i = 0; i < innerCount; i++) {
-      const u = Math.random();
-      const v = Math.random();
-      const theta = u * 2.0 * Math.PI;
-      const phi = Math.acos(2.0 * v - 1.0);
+      const u = Math.random(), v = Math.random();
+      const theta = u * 2.0 * Math.PI, phi = Math.acos(2.0 * v - 1.0);
       const r = Math.cbrt(Math.random()) * 13;
       innerPos[i * 3] = r * Math.sin(phi) * Math.cos(theta);
       innerPos[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
@@ -275,7 +276,7 @@
     const innerCore = new THREE.Points(innerGeo, innerMat);
     coreGroup.add(innerCore);
 
-    // 軍規同心刻度環
+    // 軍規向量 HUD 刻度環
     function createTacticalRing(radius, segments, dashCount, color, opacity) {
       const group = new THREE.Group();
       const angleStep = (Math.PI * 2) / segments;
@@ -285,25 +286,19 @@
         const theta1 = i * angleStep;
         const theta2 = (i + 0.6) * angleStep;
         if (i % dashCount === 0) continue;
-
         points.push(
           new THREE.Vector3(radius * Math.cos(theta1), radius * Math.sin(theta1), 0),
           new THREE.Vector3(radius * Math.cos(theta2), radius * Math.sin(theta2), 0)
         );
       }
       const geo = new THREE.BufferGeometry().setFromPoints(points);
-      const mat = new THREE.LineBasicMaterial({
-        color: color,
-        transparent: true,
-        opacity: opacity
-      });
-      const lines = new THREE.LineSegments(geo, mat);
-      group.add(lines);
+      const mat = new THREE.LineBasicMaterial({ color: color, transparent: true, opacity: opacity });
+      group.add(new THREE.LineSegments(geo, mat));
       return group;
     }
 
-    const ring1 = createTacticalRing(45, 64, 4, 0x00f0ff, 0.7);
-    const ring2 = createTacticalRing(62, 80, 5, 0x00a8ff, 0.5);
+    const ring1 = createTacticalRing(46, 64, 4, 0x00f0ff, 0.75);
+    const ring2 = createTacticalRing(63, 80, 5, 0x00a8ff, 0.55);
     const ring3 = createTacticalRing(80, 96, 6, 0x0055ff, 0.35);
 
     ring1.rotation.x = Math.PI / 4;
@@ -319,59 +314,135 @@
     const sweepPoints = [];
     for (let a = 0; a <= 45; a += 1.5) {
       const rad = (a * Math.PI) / 180;
-      sweepPoints.push(
-        new THREE.Vector3(0, 0, 0),
-        new THREE.Vector3(82 * Math.cos(rad), 82 * Math.sin(rad), 0)
-      );
+      sweepPoints.push(new THREE.Vector3(0, 0, 0), new THREE.Vector3(82 * Math.cos(rad), 82 * Math.sin(rad), 0));
     }
     sweepGeo.setFromPoints(sweepPoints);
-    const sweepMat = new THREE.LineBasicMaterial({
-      color: 0x00f0ff,
-      transparent: true,
-      opacity: 0.15
-    });
+    const sweepMat = new THREE.LineBasicMaterial({ color: 0x00f0ff, transparent: true, opacity: 0.15 });
     const radarSweep = new THREE.LineSegments(sweepGeo, sweepMat);
     scene.add(radarSweep);
 
+    // 3. 語音合成音效 (純 Web Audio API 振盪器，免外掛音檔)
+    let audioCtx = null;
+    function playSciFiChirp(freq, type, duration) {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch(e) {}
+    }
+
+    // 4. 語音共振模擬控制器 (Acoustic Resonance Engine)
+    let voiceActive = false;
+    let voiceStartTime = 0;
+    let voiceEnergy = 0;
+    let gyroSpeedMultiplier = 1.0;
+
+    window.triggerVoiceResponse = function() {
+      voiceActive = true;
+      voiceStartTime = performance.now() / 1000;
+      gyroSpeedMultiplier = 2.8; // 刻度環動量爆發
+      document.getElementById('comm-status').innerText = 'STATUS: TRANSMITTING // "AT YOUR SERVICE, SIR"';
+      document.getElementById('comm-status').style.color = '#ffffff';
+
+      // 觸發科技語音音頻漣漪
+      playSciFiChirp(880, 'sine', 0.15);
+      setTimeout(() => playSciFiChirp(1320, 'triangle', 0.25), 180);
+      setTimeout(() => playSciFiChirp(1760, 'sine', 0.35), 520);
+    };
+
+    // 5. 動畫引擎與動態波形運算
     let clock = new THREE.Clock();
-    let overcharge = 0;
 
     function renderLoop() {
       requestAnimationFrame(renderLoop);
       const t = clock.getElapsedTime();
 
-      icoMesh.rotation.x = t * 0.45;
-      icoMesh.rotation.y = t * 0.3;
-      innerCore.rotation.y = -t * 0.6;
-      
-      const pulse = 1 + Math.sin(t * 2.5) * 0.05 + overcharge;
-      coreGroup.scale.set(pulse, pulse, pulse);
+      // 計算虛擬語音振幅包絡線 (3 個音節重音起伏，持續 2.2 秒)
+      if (voiceActive) {
+        const elapsed = (performance.now() / 1000) - voiceStartTime;
+        if (elapsed < 2.2) {
+          const syllable1 = Math.exp(-Math.pow((elapsed - 0.25) / 0.15, 2)) * 1.0;
+          const syllable2 = Math.exp(-Math.pow((elapsed - 0.75) / 0.20, 2)) * 0.85;
+          const syllable3 = Math.exp(-Math.pow((elapsed - 1.40) / 0.30, 2)) * 1.15;
+          voiceEnergy = (syllable1 + syllable2 + syllable3) + (Math.sin(elapsed * 45) * 0.08);
+          if (voiceEnergy < 0) voiceEnergy = 0;
+        } else {
+          voiceActive = false;
+          voiceEnergy = 0;
+          document.getElementById('comm-status').innerText = 'STATUS: STANDBY';
+          document.getElementById('comm-status').style.color = 'rgba(0,240,255,0.5)';
+        }
+      }
 
-      ring1.rotation.z = t * 0.35;
-      ring2.rotation.z = -t * 0.25;
-      ring3.rotation.z = t * 0.15;
+      // 陀螺儀速度漸進回彈 (阻尼衰減)
+      gyroSpeedMultiplier += (1.0 - gyroSpeedMultiplier) * 0.035;
+
+      // 線框頂點流體波形擾動 (Fluid Vertex Perturbation)
+      const positions = icoGeo.attributes.position.array;
+      for (let i = 0; i < positions.length; i += 3) {
+        const ox = origPositions[i], oy = origPositions[i + 1], oz = origPositions[i + 2];
+        const dist = Math.sqrt(ox * ox + oy * oy + oz * oz);
+        const nx = ox / dist, ny = oy / dist, nz = oz / dist;
+
+        // 沿法向量擴散的空間正弦波
+        const wave = Math.sin(ox * 0.25 + t * 6) * Math.cos(oy * 0.25 + t * 5);
+        const displacement = voiceEnergy * 4.8 * wave;
+
+        positions[i] = ox + nx * displacement;
+        positions[i + 1] = oy + ny * displacement;
+        positions[i + 2] = oz + nz * displacement;
+      }
+      icoGeo.attributes.position.needsUpdate = true;
+
+      // 核心發光顏色隨著音能轉為純白高光
+      if (voiceEnergy > 0.05) {
+        wireMat.color.lerpColors(new THREE.Color(0x00f0ff), new THREE.Color(0xffffff), Math.min(voiceEnergy * 0.8, 1));
+        wireMat.opacity = 0.85 + voiceEnergy * 0.15;
+      } else {
+        wireMat.color.setHex(0x00f0ff);
+        wireMat.opacity = 0.85;
+      }
+
+      // 核心旋轉與呼吸
+      const pulse = 1 + Math.sin(t * 2.5) * 0.04 + (voiceEnergy * 0.15);
+      coreGroup.scale.set(pulse, pulse, pulse);
+      icoMesh.rotation.x = t * (0.35 * gyroSpeedMultiplier);
+      icoMesh.rotation.y = t * (0.25 * gyroSpeedMultiplier);
+      innerCore.rotation.y = -t * (0.6 * gyroSpeedMultiplier);
+
+      // 軍規環差速旋轉
+      ring1.rotation.z = t * (0.35 * gyroSpeedMultiplier);
+      ring2.rotation.z = -t * (0.25 * gyroSpeedMultiplier);
+      ring3.rotation.z = t * (0.15 * gyroSpeedMultiplier);
       ring2.rotation.x = Math.sin(t * 0.5) * 0.3 + (Math.PI / 3);
 
-      radarSweep.rotation.z = -t * 1.2;
+      radarSweep.rotation.z = -t * (1.2 * gyroSpeedMultiplier);
 
-      if (overcharge > 0) {
-        overcharge *= 0.94;
-        if (overcharge < 0.005) overcharge = 0;
+      // 頻譜柱即時跳動 (映射虛擬聲學能量)
+      for (let i = 0; i < waveBars.length; i++) {
+        let h = 4;
+        if (voiceEnergy > 0.01) {
+          const freqOffset = Math.sin(t * 18 + i * 0.6) * 0.5 + 0.5;
+          h = 4 + (voiceEnergy * 20 * freqOffset);
+        }
+        waveBars[i].style.height = `${Math.min(h, 26)}px`;
       }
 
       renderer.render(scene, camera);
     }
     renderLoop();
 
-    window.overchargeCore = function() {
-      overcharge = 0.4;
-      wireMat.color.setHex(0xffffff);
-      setTimeout(() => { wireMat.color.setHex(0x00f0ff); }, 280);
-    };
-
     window.addEventListener('click', (e) => {
       if (e.target.tagName !== 'DIV') return;
-      overchargeCore();
+      triggerVoiceResponse();
     });
 
     window.addEventListener('resize', () => {
