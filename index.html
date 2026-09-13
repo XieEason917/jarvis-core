@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>J.A.R.V.I.S. // TACTICAL HOLOGRAPHIC SUITE</title>
+  <title>J.A.R.V.I.S. // TACTICAL HOLOGRAPHIC CORE</title>
   <style>
     * {
       margin: 0;
@@ -11,35 +11,33 @@
       box-sizing: border-box;
       user-select: none;
     }
-    body {
-      background: radial-gradient(circle at center, #071526 0%, #02060d 70%, #000205 100%);
+    html, body {
+      width: 100vw;
+      height: 100vh;
+      background-color: #020612 !important;
       overflow: hidden;
       font-family: 'Courier New', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace;
       color: #00f0ff;
-      height: 100vh;
-      width: 100vw;
     }
     #canvas-container {
       position: absolute;
       top: 0;
       left: 0;
-      width: 100%;
-      height: 100%;
+      width: 100vw;
+      height: 100vh;
       z-index: 1;
     }
-    /* 向量網格背景 */
     .bg-grid {
       position: absolute;
       width: 100%;
       height: 100%;
       background-image: 
-        linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+        linear-gradient(rgba(0, 240, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 240, 255, 0.04) 1px, transparent 1px);
       background-size: 40px 40px;
       z-index: 2;
       pointer-events: none;
     }
-    /* HUD 頂部與邊角介面 */
     .hud-layer {
       position: absolute;
       top: 0;
@@ -64,7 +62,7 @@
       font-size: 22px;
       letter-spacing: 6px;
       font-weight: 900;
-      color: #fff;
+      color: #ffffff;
       text-shadow: 0 0 16px #00f0ff;
     }
     .brand-sub {
@@ -97,19 +95,18 @@
       0%, 100% { opacity: 1; transform: scale(1); }
       50% { opacity: 0.3; transform: scale(0.8); }
     }
-    /* 戰術監控卡片 */
     .asset-deck {
       display: flex;
       gap: 14px;
       margin-top: 16px;
     }
     .card {
-      background: rgba(3, 18, 38, 0.6);
-      border: 1px solid rgba(0, 240, 255, 0.2);
+      background: rgba(3, 18, 38, 0.7);
+      border: 1px solid rgba(0, 240, 255, 0.25);
       border-left: 3px solid #00f0ff;
       padding: 10px 16px;
       backdrop-filter: blur(10px);
-      box-shadow: 0 0 20px rgba(0, 240, 255, 0.05);
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.08);
       min-width: 155px;
     }
     .card-ticker {
@@ -129,7 +126,6 @@
       font-size: 10px;
       color: #00ffaa;
     }
-    /* 底部作戰遙測 */
     .hud-footer {
       display: flex;
       justify-content: space-between;
@@ -162,11 +158,11 @@
       color: #00f0ff;
       border: 1px solid rgba(0, 240, 255, 0.3);
       padding: 6px 14px;
-      background: rgba(0, 240, 255, 0.05);
+      background: rgba(0, 240, 255, 0.08);
       transition: all 0.2s;
     }
     .interactive-trigger:hover {
-      background: rgba(0, 240, 255, 0.2);
+      background: rgba(0, 240, 255, 0.25);
       box-shadow: 0 0 15px #00f0ff;
       color: #fff;
     }
@@ -220,7 +216,6 @@
   </div>
 
   <script>
-    // 1. 初始化波形儀表
     const waveBox = document.getElementById('wave-container');
     for (let i = 0; i < 16; i++) {
       const bar = document.createElement('div');
@@ -229,22 +224,22 @@
       waveBox.appendChild(bar);
     }
 
-    // 2. Three.js 場景設定
     const container = document.getElementById('canvas-container');
     const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x020612); // 底層鎖死深邃黑藍
+
     const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 2000);
     camera.position.z = 210;
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     container.appendChild(renderer.domElement);
 
-    // 3. 建立中央高精密度幾何「量子線框核心」
     const coreGroup = new THREE.Group();
     scene.add(coreGroup);
 
-    // 二十面體外框
+    // 向量線框核心 (二十面體多邊形)
     const icoGeo = new THREE.IcosahedronGeometry(28, 1);
     const wireMat = new THREE.MeshBasicMaterial({
       color: 0x00f0ff,
@@ -255,16 +250,16 @@
     const icoMesh = new THREE.Mesh(icoGeo, wireMat);
     coreGroup.add(icoMesh);
 
-    // 內層發光微粒核 (超密集反重力微粒)
+    // 反應內核
     const innerGeo = new THREE.BufferGeometry();
-    const innerCount = 2000;
+    const innerCount = 1800;
     const innerPos = new Float32Array(innerCount * 3);
     for (let i = 0; i < innerCount; i++) {
       const u = Math.random();
       const v = Math.random();
       const theta = u * 2.0 * Math.PI;
       const phi = Math.acos(2.0 * v - 1.0);
-      const r = Math.cbrt(Math.random()) * 14;
+      const r = Math.cbrt(Math.random()) * 13;
       innerPos[i * 3] = r * Math.sin(phi) * Math.cos(theta);
       innerPos[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
       innerPos[i * 3 + 2] = r * Math.cos(phi);
@@ -280,7 +275,7 @@
     const innerCore = new THREE.Points(innerGeo, innerMat);
     coreGroup.add(innerCore);
 
-    // 4. 軍規向量 HUD 刻度環 (以線條與刻度構成，絕非粗顆粒)
+    // 軍規同心刻度環
     function createTacticalRing(radius, segments, dashCount, color, opacity) {
       const group = new THREE.Group();
       const angleStep = (Math.PI * 2) / segments;
@@ -289,7 +284,7 @@
       for (let i = 0; i < segments; i++) {
         const theta1 = i * angleStep;
         const theta2 = (i + 0.6) * angleStep;
-        if (i % dashCount === 0) continue; // 製造缺口刻度感
+        if (i % dashCount === 0) continue;
 
         points.push(
           new THREE.Vector3(radius * Math.cos(theta1), radius * Math.sin(theta1), 0),
@@ -300,15 +295,13 @@
       const mat = new THREE.LineBasicMaterial({
         color: color,
         transparent: true,
-        opacity: opacity,
-        linewidth: 1
+        opacity: opacity
       });
       const lines = new THREE.LineSegments(geo, mat);
       group.add(lines);
       return group;
     }
 
-    // 建造三道多層差速刻度軌道
     const ring1 = createTacticalRing(45, 64, 4, 0x00f0ff, 0.7);
     const ring2 = createTacticalRing(62, 80, 5, 0x00a8ff, 0.5);
     const ring3 = createTacticalRing(80, 96, 6, 0x0055ff, 0.35);
@@ -321,7 +314,7 @@
     scene.add(ring2);
     scene.add(ring3);
 
-    // 5. 360 度雷達掃描束 (Radar Scan Sweep)
+    // 雷達掃描射束
     const sweepGeo = new THREE.BufferGeometry();
     const sweepPoints = [];
     for (let a = 0; a <= 45; a += 1.5) {
@@ -340,7 +333,6 @@
     const radarSweep = new THREE.LineSegments(sweepGeo, sweepMat);
     scene.add(radarSweep);
 
-    // 6. 動畫引擎與多軸進動渲染
     let clock = new THREE.Clock();
     let overcharge = 0;
 
@@ -348,7 +340,6 @@
       requestAnimationFrame(renderLoop);
       const t = clock.getElapsedTime();
 
-      // 量子核心三維自轉與呼吸
       icoMesh.rotation.x = t * 0.45;
       icoMesh.rotation.y = t * 0.3;
       innerCore.rotation.y = -t * 0.6;
@@ -356,17 +347,13 @@
       const pulse = 1 + Math.sin(t * 2.5) * 0.05 + overcharge;
       coreGroup.scale.set(pulse, pulse, pulse);
 
-      // 軍規環差速陀螺旋轉
       ring1.rotation.z = t * 0.35;
       ring2.rotation.z = -t * 0.25;
       ring3.rotation.z = t * 0.15;
-
       ring2.rotation.x = Math.sin(t * 0.5) * 0.3 + (Math.PI / 3);
 
-      // 雷達旋轉
       radarSweep.rotation.z = -t * 1.2;
 
-      // 超頻脈衝自然回斂
       if (overcharge > 0) {
         overcharge *= 0.94;
         if (overcharge < 0.005) overcharge = 0;
@@ -376,7 +363,6 @@
     }
     renderLoop();
 
-    // 7. 超頻能量釋放機制 (點擊回饋)
     window.overchargeCore = function() {
       overcharge = 0.4;
       wireMat.color.setHex(0xffffff);
