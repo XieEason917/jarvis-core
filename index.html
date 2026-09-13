@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>J.A.R.V.I.S. // TACTICAL SENTINEL CORE</title>
+  <title>J.A.R.V.I.S. // GLOBAL STRATEGIC COMMAND</title>
   <style>
     * {
       margin: 0;
@@ -11,14 +11,19 @@
       box-sizing: border-box;
       user-select: none;
     }
+    :root {
+      --theme-color: #ffaa00;
+      --theme-glow: rgba(255, 170, 0, 0.4);
+      --bg-card: rgba(25, 18, 5, 0.65);
+    }
     html, body {
       width: 100vw;
       height: 100vh;
-      background-color: #020612 !important;
+      background-color: #030408 !important;
       overflow: hidden;
       font-family: 'Courier New', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace;
-      color: #00f0ff;
-      transition: color 0.5s ease;
+      color: var(--theme-color);
+      transition: color 0.6s ease;
     }
     #canvas-container {
       position: absolute;
@@ -33,9 +38,9 @@
       width: 100%;
       height: 100%;
       background-image: 
-        linear-gradient(rgba(0, 240, 255, 0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 240, 255, 0.04) 1px, transparent 1px);
-      background-size: 40px 40px;
+        linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+      background-size: 45px 45px;
       z-index: 2;
       pointer-events: none;
     }
@@ -50,27 +55,27 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 24px 32px;
+      padding: 24px 30px;
     }
+    /* 頂部戰略標頭 */
     .hud-header {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      border-bottom: 1px solid rgba(0, 240, 255, 0.2);
-      padding-bottom: 14px;
-      transition: border-color 0.5s ease;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      padding-bottom: 12px;
     }
     .brand-title {
-      font-size: 22px;
-      letter-spacing: 6px;
+      font-size: 21px;
+      letter-spacing: 5px;
       font-weight: 900;
       color: #ffffff;
-      text-shadow: 0 0 16px #00f0ff;
+      text-shadow: 0 0 16px var(--theme-color);
     }
     .brand-sub {
       font-size: 10px;
-      color: rgba(0, 240, 255, 0.6);
-      letter-spacing: 3px;
+      color: rgba(255, 255, 255, 0.55);
+      letter-spacing: 2px;
       margin-top: 4px;
     }
     .sys-telemetry {
@@ -82,98 +87,128 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      color: #00ffaa;
       font-weight: bold;
-      transition: color 0.4s ease;
+      color: var(--theme-color);
     }
     .status-dot {
       width: 8px;
       height: 8px;
-      background: #00ffaa;
+      background: var(--theme-color);
       border-radius: 50%;
-      box-shadow: 0 0 10px #00ffaa;
-      animation: pulse 1.5s infinite;
+      box-shadow: 0 0 10px var(--theme-color);
+      animation: pulse 1.6s infinite;
     }
     @keyframes pulse {
       0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.3; transform: scale(0.8); }
+      50% { opacity: 0.35; transform: scale(0.85); }
+    }
+
+    /* 中段作戰佈局：左側資產卡 + 右側全球情報 */
+    .middle-deck {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-top: 14px;
+      width: 100%;
     }
     .asset-deck {
       display: flex;
-      gap: 14px;
-      margin-top: 16px;
-      flex-wrap: wrap;
+      flex-direction: column;
+      gap: 10px;
     }
     .card {
-      background: rgba(3, 18, 38, 0.75);
-      border: 1px solid rgba(0, 240, 255, 0.25);
-      border-left: 3px solid #00f0ff;
-      padding: 10px 16px;
+      background: var(--bg-card);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-left: 3px solid var(--theme-color);
+      padding: 9px 14px;
       backdrop-filter: blur(10px);
-      box-shadow: 0 0 20px rgba(0, 240, 255, 0.08);
-      min-width: 160px;
+      min-width: 175px;
       transition: all 0.4s ease;
     }
-    .card.alert-card {
-      border-color: rgba(255, 0, 68, 0.5) !important;
-      border-left: 3px solid #ff0044 !important;
-      background: rgba(38, 3, 10, 0.75) !important;
-      box-shadow: 0 0 20px rgba(255, 0, 68, 0.2) !important;
-    }
     .card-ticker {
-      font-size: 10px;
-      color: rgba(0, 240, 255, 0.6);
+      font-size: 9px;
+      color: rgba(255, 255, 255, 0.6);
       letter-spacing: 1px;
     }
     .card-val {
-      font-size: 18px;
+      font-size: 17px;
       font-weight: bold;
       color: #ffffff;
+      margin: 2px 0;
       letter-spacing: 1px;
-      margin: 4px 0;
-      text-shadow: 0 0 8px rgba(0, 240, 255, 0.6);
     }
     .card-status {
-      font-size: 10px;
-      color: #00ffaa;
+      font-size: 9px;
+      color: var(--theme-color);
     }
+
+    /* 右側全球情資面板 */
+    .intel-panel {
+      background: var(--bg-card);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-right: 3px solid var(--theme-color);
+      padding: 12px 16px;
+      backdrop-filter: blur(10px);
+      width: 320px;
+      pointer-events: auto;
+    }
+    .intel-title {
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: var(--theme-color);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 6px;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+    .intel-item {
+      font-size: 10px;
+      line-height: 1.4;
+      margin-bottom: 8px;
+      color: rgba(255, 255, 255, 0.8);
+    }
+    .intel-loc {
+      color: var(--theme-color);
+      font-weight: bold;
+      margin-right: 4px;
+    }
+
+    /* 底部作戰遙測 */
     .hud-footer {
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
-      border-top: 1px solid rgba(0, 240, 255, 0.15);
-      padding-top: 14px;
-      transition: border-color 0.5s ease;
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      padding-top: 12px;
     }
     .wave-box {
       display: flex;
       align-items: flex-end;
-      gap: 4px;
-      height: 28px;
+      gap: 3px;
+      height: 26px;
     }
     .wave-bar {
       width: 3px;
-      background: #00f0ff;
-      box-shadow: 0 0 6px #00f0ff;
+      background: var(--theme-color);
+      box-shadow: 0 0 6px var(--theme-glow);
       border-radius: 1px;
       height: 4px;
-      transition: height 0.06s ease, background 0.4s ease;
+      transition: height 0.08s ease, background 0.4s ease;
     }
     .interactive-trigger {
       pointer-events: auto;
       cursor: pointer;
       font-size: 11px;
       letter-spacing: 2px;
-      color: #00f0ff;
-      border: 1px solid rgba(0, 240, 255, 0.35);
-      padding: 8px 18px;
-      background: rgba(0, 240, 255, 0.08);
+      color: var(--theme-color);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      padding: 7px 16px;
+      background: rgba(255, 255, 255, 0.04);
       backdrop-filter: blur(6px);
       transition: all 0.25s;
     }
     .interactive-trigger:hover {
-      background: rgba(0, 240, 255, 0.25);
-      box-shadow: 0 0 20px #00f0ff;
+      background: var(--theme-glow);
       color: #fff;
     }
   </style>
@@ -186,47 +221,59 @@
 
   <div class="hud-layer">
     <div>
-      <div class="hud-header" id="hud-header">
+      <div class="hud-header">
         <div>
-          <div class="brand-title">J.A.R.V.I.S. // TACTICAL CORE</div>
-          <div class="brand-sub" id="brand-sub">QUANTUM RECONNAISSANCE SUITE // MK-VIII LIVE</div>
+          <div class="brand-title">J.A.R.V.I.S. // GLOBAL STRATEGIC SUITE</div>
+          <div class="brand-sub" id="defcon-status">DEFCON 4 // WEEKEND RECONNAISSANCE MODE</div>
         </div>
         <div class="sys-telemetry">
-          <div class="status-badge" id="sys-badge"><span class="status-dot" id="sys-dot"></span>SENTINEL ARMED</div>
-          <div id="clock-display" style="color: rgba(0,240,255,0.7); margin-top: 4px;">00:00:00 CST</div>
+          <div class="status-badge" id="sys-badge"><span class="status-dot"></span>DORMANT STANDBY</div>
+          <div id="clock-display" style="color: rgba(255,255,255,0.7); margin-top: 4px;">00:00:00 CST</div>
         </div>
       </div>
 
-      <div class="asset-deck" id="asset-deck">
-        <div class="card" id="card-00685L">
-          <div class="card-ticker">加權正2 (00685L)</div>
-          <div class="card-val" id="val-00685L">CONNECTING</div>
-          <div class="card-status" id="stat-00685L">數據同步中...</div>
+      <div class="middle-deck">
+        <!-- 左側核心持股 -->
+        <div class="asset-deck">
+          <div class="card" id="card-00685L">
+            <div class="card-ticker">加權正2 (00685L)</div>
+            <div class="card-val" id="val-00685L">--</div>
+            <div class="card-status" id="stat-00685L">同步中...</div>
+          </div>
+          <div class="card" id="card-5289">
+            <div class="card-ticker">宜鼎 (5289)</div>
+            <div class="card-val" id="val-5289">--</div>
+            <div class="card-status" id="stat-5289">同步中...</div>
+          </div>
+          <div class="card" id="card-8299">
+            <div class="card-ticker">群聯 (8299)</div>
+            <div class="card-val" id="val-8299">--</div>
+            <div class="card-status" id="stat-8299">同步中...</div>
+          </div>
         </div>
-        <div class="card" id="card-5289">
-          <div class="card-ticker">宜鼎 (5289)</div>
-          <div class="card-val" id="val-5289">CONNECTING</div>
-          <div class="card-status" id="stat-5289">數據同步中...</div>
-        </div>
-        <div class="card" id="card-8299">
-          <div class="card-ticker">群聯 (8299)</div>
-          <div class="card-val" id="val-8299">CONNECTING</div>
-          <div class="card-status" id="stat-8299">數據同步中...</div>
+
+        <!-- 右側全球半導體情資 -->
+        <div class="intel-panel">
+          <div class="intel-title">🌐 SEMICONDUCTOR GEO-INTEL</div>
+          <div id="intel-feed">
+            <div class="intel-item"><span class="intel-loc">[TW 新竹]</span> 群聯主控晶片市占持穩，待週一均線開盤確認。</div>
+            <div class="intel-item"><span class="intel-loc">[US 矽谷]</span> 美光與輝達 HBM 記憶體合約價維持強勢支撐。</div>
+            <div class="intel-item"><span class="intel-loc">[KR 首爾]</span> 三星平澤廠產能調配，NAND 減產策略未變。</div>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="hud-footer" id="hud-footer">
+    <div class="hud-footer">
       <div style="display: flex; align-items: center; gap: 14px;">
         <div class="wave-box" id="wave-container"></div>
-        <span id="comm-status" style="font-size: 10px; letter-spacing: 2px; color: rgba(0,240,255,0.5);">STATUS: SENTINEL PATROLLING</span>
+        <span id="tactical-advice" style="font-size: 10px; letter-spacing: 2px; color: rgba(255,255,255,0.6);">STRATEGY: MARKET DORMANT</span>
       </div>
-      <div class="interactive-trigger" onclick="triggerVoiceResponse()">[ 點擊發話：賈維斯回報狀態 ]</div>
+      <div class="interactive-trigger" onclick="triggerVoiceResponse()">[ 點擊發話：賈維斯回報全球節點 ]</div>
     </div>
   </div>
 
   <script>
-    // 🔗 你的 GAS 專屬數據窗口
     const GAS_ENDPOINT = "https://script.google.com/macros/s/AKfycbxWyoDCeA23D4ZIcUzhWcmm6RBpORpy3Sw7TO39ZR2WZoIA80IJzXq79cvYw0Z-EATspw/exec";
 
     // 1. 波形儀表 DOM 初始化
@@ -239,113 +286,200 @@
       waveBars.push(bar);
     }
 
-    // 2. Three.js 場景建置
+    // 2. Three.js 場景建構
     const container = document.getElementById('canvas-container');
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x020612);
+    scene.background = new THREE.Color(0x030408);
 
-    const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 2000);
-    camera.position.z = 210;
+    const camera = new THREE.PerspectiveCamera(48, window.innerWidth / window.innerHeight, 1, 2000);
+    camera.position.z = 220;
 
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     container.appendChild(renderer.domElement);
 
-    const coreGroup = new THREE.Group();
-    scene.add(coreGroup);
+    // 3. 建立 3D 向量經緯天球 (Holographic Earth Sphere)
+    const earthGroup = new THREE.Group();
+    scene.add(earthGroup);
 
-    // 二十面體線框 (162 頂點流體共振)
-    const icoGeo = new THREE.IcosahedronGeometry(28, 2);
-    const origPositions = icoGeo.attributes.position.array.slice();
+    const globeRadius = 38;
 
-    const wireMat = new THREE.MeshBasicMaterial({
-      color: 0x00f0ff,
-      wireframe: true,
-      transparent: true,
-      opacity: 0.85
-    });
-    const icoMesh = new THREE.Mesh(icoGeo, wireMat);
-    coreGroup.add(icoMesh);
-
-    // 內核微粒
-    const innerGeo = new THREE.BufferGeometry();
-    const innerCount = 1800;
-    const innerPos = new Float32Array(innerCount * 3);
-    for (let i = 0; i < innerCount; i++) {
-      const u = Math.random(), v = Math.random();
-      const theta = u * 2.0 * Math.PI, phi = Math.acos(2.0 * v - 1.0);
-      const r = Math.cbrt(Math.random()) * 13;
-      innerPos[i * 3] = r * Math.sin(phi) * Math.cos(theta);
-      innerPos[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
-      innerPos[i * 3 + 2] = r * Math.cos(phi);
-    }
-    innerGeo.setAttribute('position', new THREE.BufferAttribute(innerPos, 3));
-    const innerMat = new THREE.PointsMaterial({
-      color: 0xffffff,
-      size: 1.2,
-      transparent: true,
-      opacity: 0.9,
-      blending: THREE.AdditiveBlending
-    });
-    const innerCore = new THREE.Points(innerGeo, innerMat);
-    coreGroup.add(innerCore);
-
-    // 軍規同心刻度環
-    function createTacticalRing(radius, segments, dashCount, color, opacity) {
-      const group = new THREE.Group();
-      const angleStep = (Math.PI * 2) / segments;
+    // 緯度環 (Parallels)
+    const latGroup = new THREE.Group();
+    for (let lat = -60; lat <= 60; lat += 20) {
+      const r = globeRadius * Math.cos(lat * Math.PI / 180);
+      const y = globeRadius * Math.sin(lat * Math.PI / 180);
       const points = [];
-
-      for (let i = 0; i < segments; i++) {
-        const theta1 = i * angleStep;
-        const theta2 = (i + 0.6) * angleStep;
-        if (i % dashCount === 0) continue;
-        points.push(
-          new THREE.Vector3(radius * Math.cos(theta1), radius * Math.sin(theta1), 0),
-          new THREE.Vector3(radius * Math.cos(theta2), radius * Math.sin(theta2), 0)
-        );
+      for (let a = 0; a <= 360; a += 5) {
+        const rad = a * Math.PI / 180;
+        points.push(new THREE.Vector3(r * Math.cos(rad), y, r * Math.sin(rad)));
       }
       const geo = new THREE.BufferGeometry().setFromPoints(points);
-      const mat = new THREE.LineBasicMaterial({ color: color, transparent: true, opacity: opacity });
-      group.add(new THREE.LineSegments(geo, mat));
-      return { group, mat };
+      const mat = new THREE.LineBasicMaterial({ color: 0xffaa00, transparent: true, opacity: 0.25 });
+      latGroup.add(new THREE.Line(geo, mat));
+    }
+    earthGroup.add(latGroup);
+
+    // 經度環 (Meridians)
+    const lonGroup = new THREE.Group();
+    for (let lon = 0; lon < 180; lon += 30) {
+      const points = [];
+      for (let a = 0; a <= 360; a += 5) {
+        const rad = a * Math.PI / 180;
+        points.push(new THREE.Vector3(globeRadius * Math.sin(rad), globeRadius * Math.cos(rad), 0));
+      }
+      const geo = new THREE.BufferGeometry().setFromPoints(points);
+      const mat = new THREE.LineBasicMaterial({ color: 0xffaa00, transparent: true, opacity: 0.25 });
+      const line = new THREE.Line(geo, mat);
+      line.rotation.y = lon * Math.PI / 180;
+      lonGroup.add(line);
+    }
+    earthGroup.add(lonGroup);
+
+    // 全球半導體核心節點座標投影
+    const geoNodes = [
+      { id: "TW", name: "Hsinchu", lat: 24.8, lon: 120.97 },
+      { id: "US", name: "SiliconValley", lat: 37.33, lon: -121.89 },
+      { id: "KR", name: "Seoul", lat: 37.56, lon: 126.97 },
+      { id: "JP", name: "Tokyo", lat: 35.67, lon: 139.65 },
+      { id: "CN", name: "Wuhan", lat: 30.59, lon: 114.30 }
+    ];
+
+    function latLonToVector(lat, lon, r) {
+      const phi = (90 - lat) * (Math.PI / 180);
+      const theta = (lon + 180) * (Math.PI / 180);
+      return new THREE.Vector3(
+        -(r * Math.sin(phi) * Math.cos(theta)),
+        r * Math.cos(phi),
+        r * Math.sin(phi) * Math.sin(theta)
+      );
     }
 
-    const r1 = createTacticalRing(46, 64, 4, 0x00f0ff, 0.75);
-    const r2 = createTacticalRing(63, 80, 5, 0x00a8ff, 0.55);
-    const r3 = createTacticalRing(80, 96, 6, 0x0055ff, 0.35);
+    const nodeMeshGroup = new THREE.Group();
+    const beaconBeams = [];
 
-    r1.group.rotation.x = Math.PI / 4;
-    r2.group.rotation.y = Math.PI / 3;
-    r3.group.rotation.x = -Math.PI / 3;
+    geoNodes.forEach(node => {
+      const surfacePos = latLonToVector(node.lat, node.lon, globeRadius);
+      const outerPos = latLonToVector(node.lat, node.lon, globeRadius + 14);
 
-    scene.add(r1.group);
-    scene.add(r2.group);
-    scene.add(r3.group);
+      // 光柱 (Pillar)
+      const beamGeo = new THREE.BufferGeometry().setFromPoints([surfacePos, outerPos]);
+      const beamMat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.85 });
+      const beam = new THREE.Line(beamGeo, beamMat);
+      nodeMeshGroup.add(beam);
 
-    // 雷達掃描射束
-    const sweepGeo = new THREE.BufferGeometry();
-    const sweepPoints = [];
-    for (let a = 0; a <= 45; a += 1.5) {
-      const rad = (a * Math.PI) / 180;
-      sweepPoints.push(new THREE.Vector3(0, 0, 0), new THREE.Vector3(82 * Math.cos(rad), 82 * Math.sin(rad), 0));
+      // 地表脈衝光點
+      const ptGeo = new THREE.BufferGeometry().setFromPoints([surfacePos]);
+      const ptMat = new THREE.PointsMaterial({ color: 0xffaa00, size: 3.5, transparent: true, opacity: 0.95 });
+      const pt = new THREE.Points(ptGeo, ptMat);
+      nodeMeshGroup.add(pt);
+      beaconBeams.push({ ptMat, beamMat });
+    });
+    earthGroup.add(nodeMeshGroup);
+
+    // 軌道 HUD 刻度外環
+    function createOrbitRing(r, color) {
+      const points = [];
+      for (let a = 0; a <= 360; a += 4) {
+        if (a % 30 === 0) continue;
+        const rad = a * Math.PI / 180;
+        points.push(new THREE.Vector3(r * Math.cos(rad), r * Math.sin(rad), 0));
+      }
+      const geo = new THREE.BufferGeometry().setFromPoints(points);
+      const mat = new THREE.LineBasicMaterial({ color: color, transparent: true, opacity: 0.35 });
+      return new THREE.Line(geo, mat);
     }
-    sweepGeo.setFromPoints(sweepPoints);
-    const sweepMat = new THREE.LineBasicMaterial({ color: 0x00f0ff, transparent: true, opacity: 0.15 });
-    const radarSweep = new THREE.LineSegments(sweepGeo, sweepMat);
-    scene.add(radarSweep);
 
-    // 3. Web Audio 音訊震盪器
+    const orbit1 = createOrbitRing(58, 0xffaa00);
+    orbit1.rotation.x = Math.PI / 3;
+    scene.add(orbit1);
+
+    const orbit2 = createOrbitRing(72, 0xffaa00);
+    orbit2.rotation.y = Math.PI / 3.5;
+    scene.add(orbit2);
+
+    // 4. 色彩與主題控制器 (Amber Gold 琥珀金 vs 藍 vs 紅)
+    let currentTheme = "DORMANT";
+    let themeColorHex = 0xffaa00;
+
+    function applyTheme(status) {
+      let root = document.documentElement;
+      if (status === "DORMANT") {
+        themeColorHex = 0xffaa00; // 琥珀金
+        root.style.setProperty('--theme-color', '#ffaa00');
+        root.style.setProperty('--theme-glow', 'rgba(255, 170, 0, 0.35)');
+        root.style.setProperty('--bg-card', 'rgba(25, 18, 5, 0.65)');
+        document.getElementById('sys-badge').innerHTML = '<span class="status-dot"></span>DORMANT STANDBY';
+      } else if (status === "ALERT") {
+        themeColorHex = 0xff0044; // 警戒紅
+        root.style.setProperty('--theme-color', '#ff0044');
+        root.style.setProperty('--theme-glow', 'rgba(255, 0, 68, 0.35)');
+        root.style.setProperty('--bg-card', 'rgba(38, 5, 15, 0.65)');
+        document.getElementById('sys-badge').innerHTML = '<span class="status-dot"></span>DEFENSE BREACH // RED ALERT';
+      } else {
+        themeColorHex = 0x00f0ff; // 科技冷藍
+        root.style.setProperty('--theme-color', '#00f0ff');
+        root.style.setProperty('--theme-glow', 'rgba(0, 240, 255, 0.35)');
+        root.style.setProperty('--bg-card', 'rgba(3, 18, 38, 0.65)');
+        document.getElementById('sys-badge').innerHTML = '<span class="status-dot"></span>SENTINEL PATROLLING';
+      }
+
+      // 同步 3D 材質色彩
+      latGroup.children.forEach(l => l.material.color.setHex(themeColorHex));
+      lonGroup.children.forEach(l => l.material.color.setHex(themeColorHex));
+      orbit1.material.color.setHex(themeColorHex);
+      orbit2.material.color.setHex(themeColorHex);
+      beaconBeams.forEach(b => b.ptMat.color.setHex(themeColorHex));
+    }
+
+    // 5. 數據遠端同步
+    async function syncData() {
+      try {
+        const res = await fetch(GAS_ENDPOINT);
+        const data = await res.json();
+
+        applyTheme(data.status);
+        document.getElementById('defcon-status').innerText = data.defcon || "DEFCON 4 // STANDBY";
+        document.getElementById('tactical-advice').innerText = "STRATEGY: " + (data.advice || "DORMANT");
+
+        if (data.assets) {
+          data.assets.forEach(a => {
+            const v = document.getElementById(`val-${a.symbol}`);
+            const s = document.getElementById(`stat-${a.symbol}`);
+            if (v) v.innerText = a.price;
+            if (s) s.innerText = a.defense;
+          });
+        }
+
+        if (data.nodes) {
+          const feed = document.getElementById('intel-feed');
+          feed.innerHTML = '';
+          data.nodes.forEach(n => {
+            const div = document.createElement('div');
+            div.className = 'intel-item';
+            div.innerHTML = `<span class="intel-loc">[${n.name}]</span> ${n.intel}`;
+            feed.appendChild(div);
+          });
+        }
+      } catch (e) {
+        console.warn("Telemetry sync waiting...", e);
+      }
+    }
+
+    syncData();
+    setInterval(syncData, 30000);
+
+    // 6. 語音合成模擬音效
     let audioCtx = null;
-    function playSciFiChirp(freq, type, duration) {
+    function playChirp(freq, type, duration) {
       try {
         if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
         osc.type = type;
         osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-        gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
         osc.connect(gain);
         gain.connect(audioCtx.destination);
@@ -354,169 +488,58 @@
       } catch(e) {}
     }
 
-    // 4. 戰情遙測與告警引擎 (Sentinel Alert Controller)
-    let currentSystemStatus = "SAFE"; // SAFE | ALERT
-    let targetCoreColor = new THREE.Color(0x00f0ff);
-    let currentColor = new THREE.Color(0x00f0ff);
-
-    async function syncTacticalData() {
-      try {
-        const res = await fetch(GAS_ENDPOINT);
-        const data = await res.json();
-
-        if (data.assets && data.assets.length > 0) {
-          data.assets.forEach(asset => {
-            const valEl = document.getElementById(`val-${asset.symbol}`);
-            const statEl = document.getElementById(`stat-${asset.symbol}`);
-            const cardEl = document.getElementById(`card-${asset.symbol}`);
-
-            if (valEl) valEl.innerText = asset.price;
-            if (statEl) {
-              statEl.innerText = asset.defense;
-              statEl.style.color = asset.status === "ALERT" ? "#ff0044" : "#00ffaa";
-            }
-            if (cardEl) {
-              if (asset.status === "ALERT") {
-                cardEl.classList.add('alert-card');
-              } else {
-                cardEl.classList.remove('alert-card');
-              }
-            }
-          });
-        }
-
-        // 系統警報切換
-        if (data.status === "ALERT") {
-          currentSystemStatus = "ALERT";
-          targetCoreColor.setHex(0xff0044);
-          document.getElementById('sys-badge').innerHTML = '<span class="status-dot" style="background:#ff0044; box-shadow:0 0 10px #ff0044;"></span>DEFENSE BREACH // RED ALERT';
-          document.getElementById('sys-badge').style.color = "#ff0044";
-          document.getElementById('comm-status').innerText = "CRITICAL: ASSET VIOLATED DEFENSE LEVEL";
-          document.getElementById('comm-status').style.color = "#ff0044";
-          waveBars.forEach(b => { b.style.background = "#ff0044"; b.style.boxShadow = "0 0 6px #ff0044"; });
-        } else {
-          currentSystemStatus = "SAFE";
-          targetCoreColor.setHex(0x00f0ff);
-          document.getElementById('sys-badge').innerHTML = '<span class="status-dot"></span>SENTINEL ARMED';
-          document.getElementById('sys-badge').style.color = "#00ffaa";
-          waveBars.forEach(b => { b.style.background = "#00f0ff"; b.style.boxShadow = "0 0 6px #00f0ff"; });
-        }
-
-      } catch (err) {
-        console.warn("Sentinel sync waiting...", err);
-      }
-    }
-
-    // 啟動定時輪詢 (每 30 秒自動遙測)
-    syncTacticalData();
-    setInterval(syncTacticalData, 30000);
-
-    // 5. 語音模擬共振
-    let voiceActive = false;
-    let voiceStartTime = 0;
     let voiceEnergy = 0;
-    let gyroSpeedMultiplier = 1.0;
+    let voiceActive = false;
+    let voiceStart = 0;
 
     window.triggerVoiceResponse = function() {
       voiceActive = true;
-      voiceStartTime = performance.now() / 1000;
-      gyroSpeedMultiplier = 2.4;
-      document.getElementById('comm-status').innerText = 'STATUS: TRANSMITTING // "AT YOUR SERVICE, SIR"';
-      document.getElementById('comm-status').style.color = '#ffffff';
-
-      playSciFiChirp(880, 'sine', 0.15);
-      setTimeout(() => playSciFiChirp(1320, 'triangle', 0.25), 180);
-      setTimeout(() => playSciFiChirp(1760, 'sine', 0.35), 520);
+      voiceStart = performance.now() / 1000;
+      playChirp(740, 'sine', 0.15);
+      setTimeout(() => playChirp(1120, 'triangle', 0.25), 180);
+      setTimeout(() => playChirp(1480, 'sine', 0.35), 520);
     };
 
-    // 6. 動畫引擎 (調整基礎速度更顯沉穩)
+    // 7. 動畫渲染引擎
     let clock = new THREE.Clock();
 
     function renderLoop() {
       requestAnimationFrame(renderLoop);
       const t = clock.getElapsedTime();
 
-      // 平滑色彩漸變至目標色 (藍 <-> 紅)
-      currentColor.lerp(targetCoreColor, 0.05);
-      wireMat.color.copy(currentColor);
-      r1.mat.color.copy(currentColor);
-      sweepMat.color.copy(currentColor);
-
-      // 語音音節起伏運算
+      // 語音震波
       if (voiceActive) {
-        const elapsed = (performance.now() / 1000) - voiceStartTime;
-        if (elapsed < 2.2) {
-          const s1 = Math.exp(-Math.pow((elapsed - 0.25) / 0.15, 2)) * 1.0;
-          const s2 = Math.exp(-Math.pow((elapsed - 0.75) / 0.20, 2)) * 0.85;
-          const s3 = Math.exp(-Math.pow((elapsed - 1.40) / 0.30, 2)) * 1.15;
-          voiceEnergy = (s1 + s2 + s3) + (Math.sin(elapsed * 45) * 0.08);
-          if (voiceEnergy < 0) voiceEnergy = 0;
+        const el = (performance.now() / 1000) - voiceStart;
+        if (el < 2.0) {
+          voiceEnergy = Math.sin(el * 18) * Math.exp(-el * 1.5) * 1.2;
         } else {
           voiceActive = false;
           voiceEnergy = 0;
-          if (currentSystemStatus === "SAFE") {
-            document.getElementById('comm-status').innerText = 'STATUS: SENTINEL PATROLLING';
-            document.getElementById('comm-status').style.color = 'rgba(0,240,255,0.5)';
-          }
         }
       }
 
-      gyroSpeedMultiplier += (1.0 - gyroSpeedMultiplier) * 0.035;
+      // 地球自然自轉 (沉穩航速)
+      earthGroup.rotation.y = t * 0.12;
+      earthGroup.rotation.x = Math.sin(t * 0.08) * 0.15 + (Math.PI / 12);
 
-      // 線框頂點波形震波 (若警報中自帶高頻抖動)
-      const positions = icoGeo.attributes.position.array;
-      const alertJitter = currentSystemStatus === "ALERT" ? Math.sin(t * 30) * 0.8 : 0;
-
-      for (let i = 0; i < positions.length; i += 3) {
-        const ox = origPositions[i], oy = origPositions[i + 1], oz = origPositions[i + 2];
-        const dist = Math.sqrt(ox * ox + oy * oy + oz * oz);
-        const nx = ox / dist, ny = oy / dist, nz = oz / dist;
-
-        const wave = Math.sin(ox * 0.25 + t * 4) * Math.cos(oy * 0.25 + t * 3.5);
-        const displacement = (voiceEnergy * 4.5 * wave) + alertJitter;
-
-        positions[i] = ox + nx * displacement;
-        positions[i + 1] = oy + ny * displacement;
-        positions[i + 2] = oz + nz * displacement;
-      }
-      icoGeo.attributes.position.needsUpdate = true;
-
-      // 核心姿態旋轉 (速度微調更沉穩)
-      const pulse = 1 + Math.sin(t * 1.8) * 0.035 + (voiceEnergy * 0.15);
-      coreGroup.scale.set(pulse, pulse, pulse);
-
-      icoMesh.rotation.x = t * (0.22 * gyroSpeedMultiplier);
-      icoMesh.rotation.y = t * (0.16 * gyroSpeedMultiplier);
-      innerCore.rotation.y = -t * (0.35 * gyroSpeedMultiplier);
-
-      // 軍規環差速運轉
-      r1.group.rotation.z = t * (0.22 * gyroSpeedMultiplier);
-      r2.group.rotation.z = -t * (0.16 * gyroSpeedMultiplier);
-      r3.group.rotation.z = t * (0.10 * gyroSpeedMultiplier);
-      r2.group.rotation.x = Math.sin(t * 0.35) * 0.25 + (Math.PI / 3);
-
-      radarSweep.rotation.z = -t * (0.75 * gyroSpeedMultiplier);
+      // 外軌道差速
+      orbit1.rotation.z = -t * 0.18;
+      orbit2.rotation.z = t * 0.10;
 
       // 頻譜跳動
       for (let i = 0; i < waveBars.length; i++) {
         let h = 4;
         if (voiceEnergy > 0.01) {
-          const f = Math.sin(t * 18 + i * 0.6) * 0.5 + 0.5;
-          h = 4 + (voiceEnergy * 20 * f);
-        } else if (currentSystemStatus === "ALERT") {
-          h = 6 + Math.sin(t * 12 + i) * 6;
+          h = 4 + voiceEnergy * 18 * (Math.sin(t * 15 + i) * 0.5 + 0.5);
+        } else {
+          h = 4 + Math.sin(t * 2 + i * 0.4) * 3;
         }
-        waveBars[i].style.height = `${Math.min(h, 26)}px`;
+        waveBars[i].style.height = `${Math.min(h, 24)}px`;
       }
 
       renderer.render(scene, camera);
     }
     renderLoop();
-
-    window.addEventListener('click', (e) => {
-      if (e.target.tagName !== 'DIV') return;
-      triggerVoiceResponse();
-    });
 
     window.addEventListener('resize', () => {
       camera.aspect = window.innerWidth / window.innerHeight;
