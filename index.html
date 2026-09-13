@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>J.A.R.V.I.S. 3D 戰略全息核心</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      user-select: none;
+    }
+    body {
+      background-color: #02050d;
+      overflow: hidden;
+      font-family: 'Courier New', Courier, monospace, "Microsoft JhengHei";
+      color: #00f0ff;
+    }
+    #canvas-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 1;
+    }
+    /* 鋼鐵人戰術 HUD 介面疊加層 */
+    .hud-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 24px 32px;
+      box-shadow: inset 0 0 100px rgba(0, 240, 255, 0.08);
+    }
+    .hud-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 1px solid rgba(0, 240, 255, 0.25);
+      padding-bottom: 12px;
+    }
+    .title-box h1 {
+      font-size: 22px;
+      letter-spacing: 4px;
+      text-shadow: 0 0 12px #00f0ff;
+      font-weight: 700;
+    }
+    .title-box p {
+      font-size: 11px;
+      color: rgba(0, 240, 255, 0.65);
+      letter-spacing: 2px;
+      margin-top: 4px;
+    }
+    .system-status {
+      text-align: right;
+      font-size: 12px;
+      letter-spacing: 1px;
+    }
+    .status-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background-color: #00ff88;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #00ff88;
+      margin-right: 6px;
+      animation: blink 1.5s infinite;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+    /* 核心持股戰術監控列 */
+    .tactical-bar {
+      display: flex;
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .asset-card {
+      background: rgba(0, 20, 40, 0.6);
+      border: 1px solid rgba(0, 240, 255, 0.25);
+      border-left: 3px solid #00f0ff;
+      padding: 8px 14px;
+      backdrop-filter: blur(4px);
+      min-width: 140px;
+    }
+    .asset-name {
+      font-size: 10px;
+      color: rgba(0, 240, 255, 0.6);
+      letter-spacing: 1px;
+    }
+    .asset-val {
+      font-size: 16px;
+      font-weight: bold;
+      color: #fff;
+      text-shadow: 0 0 8px rgba(0, 240, 255, 0.5);
+      margin-top: 2px;
+    }
+    .asset-def {
+      font-size: 10px;
+      color: #00ff88;
+      margin-top: 2px;
+    }
+    /* 底部互動提示 */
+    .hud-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      border-top: 1px solid rgba(0, 240, 255, 0.2);
+      padding-top: 12px;
+      font-size: 11px;
+      color: rgba(0, 240, 255, 0.5);
+      letter-spacing: 2px;
+    }
+    .interactive-hint {
+      pointer-events: auto;
+      cursor: pointer;
+      color: #00f0ff;
+      transition: all 0.2s;
+    }
+    .interactive-hint:hover {
+      text-shadow: 0 0 8px #00f0ff;
+      color: #fff;
+    }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+
+  <div id="canvas-container"></div>
+
+  <div class="hud-overlay">
+    <div>
+      <div class="hud-header">
+        <div class="title-box">
+          <h1>J.A.R.V.I.S. // TACTICAL CORE</h1>
+          <p>QUANTITATIVE STRATEGY SENTINEL SYSTEM v2.5</p>
+        </div>
+        <div class="system-status">
+          <span class="status-dot"></span>SENTINEL ONLINE<br>
+          <span id="live-time" style="color: rgba(0,240,255,0.7);">00:00:00 CST</span>
+        </div>
+      </div>
+
+      <div class="tactical-bar">
+        <div class="asset-card">
+          <div class="asset-name">加權正2 (00685L)</div>
+          <div class="asset-val">ACTIVE</div>
+          <div class="asset-def">防守鎖定: 監控中</div>
+        </div>
+        <div class="asset-card">
+          <div class="asset-name">宜鼎 (5289)</div>
+          <div class="asset-val">MONITORING</div>
+          <div class="asset-def">巡邏週期: 5 MIN</div>
+        </div>
+        <div class="asset-card">
+          <div class="asset-name">群聯 (8299)</div>
+          <div class="asset-val">NAND 週期</div>
+          <div class="asset-def">波浪扣抵: 追蹤中</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hud-footer">
+      <div>GRID: ACTIVE // PROTOCOL: STABLE // DRIFT: 0.00%</div>
+      <div class="interactive-hint" onclick="triggerEnergyPulse()">[ 點擊釋放全息能量脈衝 ]</div>
+    </div>
+  </div>
+
+  <script>
+    // 1. 初始化 3D 場景
+    const container = document.getElementById('canvas-container');
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0x02050d, 0.002);
+
+    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.z = 180;
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    container.appendChild(renderer.domElement);
+
+    // 2. 建立賈維斯核心粒子球體 (Core Sphere)
+    const particleCount = 2800;
+    const geometry = new THREE.BufferGeometry();
+    const positions = new Float32Array(particleCount * 3);
+    const basePositions = new Float32Array(particleCount * 3);
+    const radius = 55;
+
+    for (let i = 0; i < particleCount; i++) {
+      const phi = Math.acos(-1 + (2 * i) / particleCount);
+      const theta = Math.sqrt(particleCount * Math.PI) * phi;
+
+      const x = radius * Math.cos(theta) * Math.sin(phi);
+      const y = radius * Math.sin(theta) * Math.sin(phi);
+      const z = radius * Math.cos(phi);
+
+      positions[i * 3] = x;
+      positions[i * 3 + 1] = y;
+      positions[i * 3 + 2] = z;
+
+      basePositions[i * 3] = x;
+      basePositions[i * 3 + 1] = y;
+      basePositions[i * 3 + 2] = z;
+    }
+
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+    const pMaterial = new THREE.PointsMaterial({
+      color: 0x00f0ff,
+      size: 1.8,
+      transparent: true,
+      opacity: 0.85,
+      blending: THREE.AdditiveBlending
+    });
+
+    const coreParticles = new THREE.Points(geometry, pMaterial);
+    scene.add(coreParticles);
+
+    // 3. 建立外圍軌道全息環 (Orbital Rings)
+    function createRing(r, color, count, rotX, rotY) {
+      const ringGeo = new THREE.BufferGeometry();
+      const ringPos = new Float32Array(count * 3);
+      for (let i = 0; i < count; i++) {
+        const angle = (i / count) * Math.PI * 2;
+        ringPos[i * 3] = r * Math.cos(angle);
+        ringPos[i * 3 + 1] = r * Math.sin(angle);
+        ringPos[i * 3 + 2] = (Math.random() - 0.5) * 4;
+      }
+      ringGeo.setAttribute('position', new THREE.BufferAttribute(ringPos, 3));
+      const mat = new THREE.PointsMaterial({
+        color: color,
+        size: 1.5,
+        transparent: true,
+        opacity: 0.7,
+        blending: THREE.AdditiveBlending
+      });
+      const ring = new THREE.Points(ringGeo, mat);
+      ring.rotation.x = rotX;
+      ring.rotation.y = rotY;
+      scene.add(ring);
+      return ring;
+    }
+
+    const ring1 = createRing(80, 0x00f0ff, 800, Math.PI / 3, 0);
+    const ring2 = createRing(95, 0x00a8ff, 900, -Math.PI / 4, Math.PI / 6);
+
+    // 4. 動畫與呼吸運算
+    let clock = new THREE.Clock();
+    let pulseWave = 0;
+
+    function animate() {
+      requestAnimationFrame(animate);
+      const time = clock.getElapsedTime();
+
+      // 核心與環體多維旋轉
+      coreParticles.rotation.y = time * 0.15;
+      coreParticles.rotation.x = Math.sin(time * 0.1) * 0.2;
+
+      ring1.rotation.z = time * 0.2;
+      ring2.rotation.z = -time * 0.25;
+
+      // 呼吸節奏與能量脈衝擴散
+      const pos = coreParticles.geometry.attributes.position.array;
+      const breathe = 1 + Math.sin(time * 1.8) * 0.05 + pulseWave;
+
+      if (pulseWave > 0) {
+        pulseWave *= 0.92;
+        if (pulseWave < 0.005) pulseWave = 0;
+      }
+
+      for (let i = 0; i < particleCount; i++) {
+        const i3 = i * 3;
+        pos[i3] = basePositions[i3] * breathe;
+        pos[i3 + 1] = basePositions[i3 + 1] * breathe;
+        pos[i3 + 2] = basePositions[i3 + 2] * breathe;
+      }
+      coreParticles.geometry.attributes.position.needsUpdate = true;
+
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    // 5. 互動能量脈衝
+    window.triggerEnergyPulse = function() {
+      pulseWave = 0.35;
+      pMaterial.color.setHex(0xffffff);
+      setTimeout(() => { pMaterial.color.setHex(0x00f0ff); }, 250);
+    };
+
+    window.addEventListener('click', (e) => {
+      if (e.target.tagName !== 'DIV') return;
+      triggerEnergyPulse();
+    });
+
+    // 視窗自適應
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    // 時鐘更新
+    setInterval(() => {
+      const now = new Date();
+      document.getElementById('live-time').innerText = now.toTimeString().split(' ')[0] + ' CST';
+    }, 1000);
+  </script>
+</body>
+</html>
