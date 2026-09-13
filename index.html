@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>J.A.R.V.I.S. 3D 戰略全息核心</title>
+  <title>J.A.R.V.I.S. // TACTICAL HOLOGRAPHIC CORE</title>
   <style>
     * {
       margin: 0;
@@ -12,9 +12,9 @@
       user-select: none;
     }
     body {
-      background-color: #02050d;
+      background: radial-gradient(circle at center, #051326 0%, #01040a 85%);
       overflow: hidden;
-      font-family: 'Courier New', Courier, monospace, "Microsoft JhengHei";
+      font-family: 'Courier New', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace;
       color: #00f0ff;
     }
     #canvas-container {
@@ -25,7 +25,6 @@
       height: 100vh;
       z-index: 1;
     }
-    /* 鋼鐵人戰術 HUD 介面疊加層 */
     .hud-overlay {
       position: absolute;
       top: 0;
@@ -37,97 +36,101 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 24px 32px;
-      box-shadow: inset 0 0 100px rgba(0, 240, 255, 0.08);
+      padding: 28px 36px;
+      box-shadow: inset 0 0 120px rgba(0, 180, 255, 0.05);
     }
     .hud-header {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      border-bottom: 1px solid rgba(0, 240, 255, 0.25);
-      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(0, 240, 255, 0.15);
+      padding-bottom: 14px;
     }
     .title-box h1 {
-      font-size: 22px;
-      letter-spacing: 4px;
-      text-shadow: 0 0 12px #00f0ff;
-      font-weight: 700;
+      font-size: 20px;
+      letter-spacing: 5px;
+      font-weight: 800;
+      background: linear-gradient(90deg, #ffffff, #00f0ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
     }
     .title-box p {
-      font-size: 11px;
-      color: rgba(0, 240, 255, 0.65);
-      letter-spacing: 2px;
-      margin-top: 4px;
+      font-size: 10px;
+      color: rgba(0, 240, 255, 0.55);
+      letter-spacing: 3px;
+      margin-top: 5px;
     }
     .system-status {
       text-align: right;
-      font-size: 12px;
-      letter-spacing: 1px;
+      font-size: 11px;
+      letter-spacing: 2px;
     }
     .status-dot {
       display: inline-block;
-      width: 8px;
-      height: 8px;
-      background-color: #00ff88;
+      width: 7px;
+      height: 7px;
+      background-color: #00ffaa;
       border-radius: 50%;
-      box-shadow: 0 0 8px #00ff88;
-      margin-right: 6px;
-      animation: blink 1.5s infinite;
+      box-shadow: 0 0 10px #00ffaa;
+      margin-right: 8px;
+      animation: pulse-dot 2s infinite ease-in-out;
     }
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
+    @keyframes pulse-dot {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.3); opacity: 0.4; }
     }
-    /* 核心持股戰術監控列 */
     .tactical-bar {
       display: flex;
-      gap: 16px;
-      margin-top: 16px;
+      gap: 18px;
+      margin-top: 18px;
     }
     .asset-card {
-      background: rgba(0, 20, 40, 0.6);
-      border: 1px solid rgba(0, 240, 255, 0.25);
-      border-left: 3px solid #00f0ff;
-      padding: 8px 14px;
-      backdrop-filter: blur(4px);
-      min-width: 140px;
+      background: rgba(4, 16, 32, 0.45);
+      border: 1px solid rgba(0, 240, 255, 0.15);
+      border-left: 2px solid #00f0ff;
+      padding: 10px 16px;
+      backdrop-filter: blur(8px);
+      min-width: 150px;
+      transition: all 0.3s ease;
     }
     .asset-name {
-      font-size: 10px;
+      font-size: 9px;
       color: rgba(0, 240, 255, 0.6);
-      letter-spacing: 1px;
+      letter-spacing: 1.5px;
     }
     .asset-val {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: bold;
       color: #fff;
-      text-shadow: 0 0 8px rgba(0, 240, 255, 0.5);
-      margin-top: 2px;
+      letter-spacing: 1px;
+      margin-top: 4px;
     }
     .asset-def {
-      font-size: 10px;
-      color: #00ff88;
-      margin-top: 2px;
+      font-size: 9px;
+      color: #00ffaa;
+      margin-top: 3px;
+      letter-spacing: 1px;
     }
-    /* 底部互動提示 */
     .hud-footer {
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
-      border-top: 1px solid rgba(0, 240, 255, 0.2);
-      padding-top: 12px;
-      font-size: 11px;
-      color: rgba(0, 240, 255, 0.5);
+      border-top: 1px solid rgba(0, 240, 255, 0.12);
+      padding-top: 14px;
+      font-size: 10px;
+      color: rgba(0, 240, 255, 0.4);
       letter-spacing: 2px;
     }
     .interactive-hint {
       pointer-events: auto;
       cursor: pointer;
       color: #00f0ff;
-      transition: all 0.2s;
+      letter-spacing: 2px;
+      transition: all 0.25s;
     }
     .interactive-hint:hover {
-      text-shadow: 0 0 8px #00f0ff;
+      text-shadow: 0 0 12px #00f0ff;
       color: #fff;
     }
   </style>
@@ -142,11 +145,11 @@
       <div class="hud-header">
         <div class="title-box">
           <h1>J.A.R.V.I.S. // TACTICAL CORE</h1>
-          <p>QUANTITATIVE STRATEGY SENTINEL SYSTEM v2.5</p>
+          <p>AUTONOMOUS ASSET SENTINEL ARCHITECTURE</p>
         </div>
         <div class="system-status">
-          <span class="status-dot"></span>SENTINEL ONLINE<br>
-          <span id="live-time" style="color: rgba(0,240,255,0.7);">00:00:00 CST</span>
+          <span class="status-dot"></span>HOLO-MATRIX ONLINE<br>
+          <span id="live-time" style="color: rgba(0,240,255,0.75);">00:00:00 CST</span>
         </div>
       </div>
 
@@ -154,147 +157,253 @@
         <div class="asset-card">
           <div class="asset-name">加權正2 (00685L)</div>
           <div class="asset-val">ACTIVE</div>
-          <div class="asset-def">防守鎖定: 監控中</div>
+          <div class="asset-def">防守位階: 鎖定</div>
         </div>
         <div class="asset-card">
           <div class="asset-name">宜鼎 (5289)</div>
           <div class="asset-val">MONITORING</div>
-          <div class="asset-def">巡邏週期: 5 MIN</div>
+          <div class="asset-def">巡邏頻率: 5 MIN</div>
         </div>
         <div class="asset-card">
           <div class="asset-name">群聯 (8299)</div>
           <div class="asset-val">NAND 週期</div>
-          <div class="asset-def">波浪扣抵: 追蹤中</div>
+          <div class="asset-def">均線扣抵: 追蹤中</div>
         </div>
       </div>
     </div>
 
     <div class="hud-footer">
-      <div>GRID: ACTIVE // PROTOCOL: STABLE // DRIFT: 0.00%</div>
-      <div class="interactive-hint" onclick="triggerEnergyPulse()">[ 點擊釋放全息能量脈衝 ]</div>
+      <div>QUANTUM CORE: HARMONIC // GYRO: ACTIVE // FLUX: NOMINAL</div>
+      <div class="interactive-hint" onclick="triggerEnergyPulse()">[ 點擊觸發全息脈衝釋放 ]</div>
     </div>
   </div>
 
   <script>
-    // 1. 初始化 3D 場景
+    // 1. 動態生成高斯光暈圓形貼圖 (消除正方形硬邊顆粒)
+    function createGlowTexture() {
+      const canvas = document.createElement('canvas');
+      canvas.width = 64;
+      canvas.height = 64;
+      const ctx = canvas.getContext('2d');
+
+      const gradient = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+      gradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
+      gradient.addColorStop(0.2, 'rgba(0, 240, 255, 0.85)');
+      gradient.addColorStop(0.5, 'rgba(0, 110, 255, 0.35)');
+      gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, 64, 64);
+
+      const texture = new THREE.CanvasTexture(canvas);
+      return texture;
+    }
+
+    const glowTexture = createGlowTexture();
+
+    // 2. 初始化 3D 空間與鏡頭
     const container = document.getElementById('canvas-container');
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x02050d, 0.002);
 
-    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.z = 180;
+    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 2000);
+    camera.position.z = 220; // 拉深鏡頭景深，徹底避免邊界截斷
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     container.appendChild(renderer.domElement);
 
-    // 2. 建立賈維斯核心粒子球體 (Core Sphere)
-    const particleCount = 2800;
-    const geometry = new THREE.BufferGeometry();
-    const positions = new Float32Array(particleCount * 3);
-    const basePositions = new Float32Array(particleCount * 3);
-    const radius = 55;
+    // 3. 核心流體球體 (Holographic Fluid Sphere - 9,000 顆微粒)
+    const sphereCount = 9000;
+    const sphereGeo = new THREE.BufferGeometry();
+    const spherePos = new Float32Array(sphereCount * 3);
+    const originalPos = new Float32Array(sphereCount * 3);
+    const radius = 38;
 
-    for (let i = 0; i < particleCount; i++) {
-      const phi = Math.acos(-1 + (2 * i) / particleCount);
-      const theta = Math.sqrt(particleCount * Math.PI) * phi;
+    for (let i = 0; i < sphereCount; i++) {
+      const phi = Math.acos(-1 + (2 * i) / sphereCount);
+      const theta = Math.sqrt(sphereCount * Math.PI) * phi;
 
       const x = radius * Math.cos(theta) * Math.sin(phi);
       const y = radius * Math.sin(theta) * Math.sin(phi);
       const z = radius * Math.cos(phi);
 
-      positions[i * 3] = x;
-      positions[i * 3 + 1] = y;
-      positions[i * 3 + 2] = z;
+      spherePos[i * 3] = x;
+      spherePos[i * 3 + 1] = y;
+      spherePos[i * 3 + 2] = z;
 
-      basePositions[i * 3] = x;
-      basePositions[i * 3 + 1] = y;
-      basePositions[i * 3 + 2] = z;
+      originalPos[i * 3] = x;
+      originalPos[i * 3 + 1] = y;
+      originalPos[i * 3 + 2] = z;
     }
 
-    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    sphereGeo.setAttribute('position', new THREE.BufferAttribute(spherePos, 3));
 
-    const pMaterial = new THREE.PointsMaterial({
-      color: 0x00f0ff,
-      size: 1.8,
+    const sphereMat = new THREE.PointsMaterial({
+      color: 0x00eaff,
+      size: 1.1,
+      map: glowTexture,
       transparent: true,
       opacity: 0.85,
-      blending: THREE.AdditiveBlending
+      blending: THREE.AdditiveBlending,
+      depthWrite: false
     });
 
-    const coreParticles = new THREE.Points(geometry, pMaterial);
-    scene.add(coreParticles);
+    const spherePoints = new THREE.Points(sphereGeo, sphereMat);
+    scene.add(spherePoints);
 
-    // 3. 建立外圍軌道全息環 (Orbital Rings)
-    function createRing(r, color, count, rotX, rotY) {
-      const ringGeo = new THREE.BufferGeometry();
-      const ringPos = new Float32Array(count * 3);
+    // 4. 超高密度超導反應核心 (Dense Inner Nucleus - 2,500 顆高亮微粒)
+    const nucleusCount = 2500;
+    const nucleusGeo = new THREE.BufferGeometry();
+    const nucleusPos = new Float32Array(nucleusCount * 3);
+    for (let i = 0; i < nucleusCount; i++) {
+      const r = Math.pow(Math.random(), 2) * 16;
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos((Math.random() * 2) - 1);
+
+      nucleusPos[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+      nucleusPos[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+      nucleusPos[i * 3 + 2] = r * Math.cos(phi);
+    }
+    nucleusGeo.setAttribute('position', new THREE.BufferAttribute(nucleusPos, 3));
+
+    const nucleusMat = new THREE.PointsMaterial({
+      color: 0xffffff,
+      size: 0.9,
+      map: glowTexture,
+      transparent: true,
+      opacity: 0.95,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false
+    });
+
+    const nucleusPoints = new THREE.Points(nucleusGeo, nucleusMat);
+    scene.add(nucleusPoints);
+
+    // 5. 陀螺儀動態光環 (Gyroscopic Orbital Rings - 3 軌差速)
+    function createGimbalRing(r, count, color, pSize) {
+      const geo = new THREE.BufferGeometry();
+      const pos = new Float32Array(count * 3);
       for (let i = 0; i < count; i++) {
         const angle = (i / count) * Math.PI * 2;
-        ringPos[i * 3] = r * Math.cos(angle);
-        ringPos[i * 3 + 1] = r * Math.sin(angle);
-        ringPos[i * 3 + 2] = (Math.random() - 0.5) * 4;
+        const drift = (Math.random() - 0.5) * 1.5;
+        pos[i * 3] = (r + drift) * Math.cos(angle);
+        pos[i * 3 + 1] = (r + drift) * Math.sin(angle);
+        pos[i * 3 + 2] = (Math.random() - 0.5) * 2;
       }
-      ringGeo.setAttribute('position', new THREE.BufferAttribute(ringPos, 3));
+      geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
       const mat = new THREE.PointsMaterial({
         color: color,
-        size: 1.5,
+        size: pSize,
+        map: glowTexture,
         transparent: true,
-        opacity: 0.7,
-        blending: THREE.AdditiveBlending
+        opacity: 0.75,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false
       });
-      const ring = new THREE.Points(ringGeo, mat);
-      ring.rotation.x = rotX;
-      ring.rotation.y = rotY;
-      scene.add(ring);
-      return ring;
+      return new THREE.Points(geo, mat);
     }
 
-    const ring1 = createRing(80, 0x00f0ff, 800, Math.PI / 3, 0);
-    const ring2 = createRing(95, 0x00a8ff, 900, -Math.PI / 4, Math.PI / 6);
+    const ringInner = createGimbalRing(52, 1400, 0x00f0ff, 0.9);
+    const ringMiddle = createGimbalRing(64, 1800, 0x00aaff, 1.0);
+    const ringOuter = createGimbalRing(76, 2200, 0x0066ff, 1.1); // 外徑受控在 76，徹底告別螢幕截斷
 
-    // 4. 動畫與呼吸運算
+    scene.add(ringInner);
+    scene.add(ringMiddle);
+    scene.add(ringOuter);
+
+    // 6. 滑鼠平滑視差阻尼 (Mouse Parallax)
+    let mouseX = 0;
+    let mouseY = 0;
+    let targetCameraX = 0;
+    let targetCameraY = 0;
+
+    window.addEventListener('mousemove', (e) => {
+      mouseX = (e.clientX - window.innerWidth / 2) * 0.04;
+      mouseY = (e.clientY - window.innerHeight / 2) * 0.04;
+    });
+
+    // 7. 動畫引擎與多軸流體計算
     let clock = new THREE.Clock();
-    let pulseWave = 0;
+    let pulseProgress = 0;
 
     function animate() {
       requestAnimationFrame(animate);
       const time = clock.getElapsedTime();
 
-      // 核心與環體多維旋轉
-      coreParticles.rotation.y = time * 0.15;
-      coreParticles.rotation.x = Math.sin(time * 0.1) * 0.2;
+      // 鏡頭滑順跟隨滑鼠
+      targetCameraX += (mouseX - targetCameraX) * 0.05;
+      targetCameraY += (-mouseY - targetCameraY) * 0.05;
+      camera.position.x = targetCameraX;
+      camera.position.y = targetCameraY;
+      camera.lookAt(0, 0, 0);
 
-      ring1.rotation.z = time * 0.2;
-      ring2.rotation.z = -time * 0.25;
+      // 反應核心自轉與高頻呼吸
+      nucleusPoints.rotation.y = time * 0.4;
+      nucleusPoints.rotation.x = time * 0.2;
+      const nScale = 1 + Math.sin(time * 3.5) * 0.08;
+      nucleusPoints.scale.set(nScale, nScale, nScale);
 
-      // 呼吸節奏與能量脈衝擴散
-      const pos = coreParticles.geometry.attributes.position.array;
-      const breathe = 1 + Math.sin(time * 1.8) * 0.05 + pulseWave;
+      // 陀螺儀環多軸差速翻轉 (告別單向呆板旋轉)
+      ringInner.rotation.x = Math.sin(time * 0.3) * 0.8;
+      ringInner.rotation.y = time * 0.5;
+      ringInner.rotation.z = time * 0.15;
 
-      if (pulseWave > 0) {
-        pulseWave *= 0.92;
-        if (pulseWave < 0.005) pulseWave = 0;
-      }
+      ringMiddle.rotation.x = time * 0.35;
+      ringMiddle.rotation.y = Math.cos(time * 0.25) * 0.9;
+      ringMiddle.rotation.z = -time * 0.2;
 
-      for (let i = 0; i < particleCount; i++) {
+      ringOuter.rotation.x = -time * 0.25;
+      ringOuter.rotation.y = time * 0.2;
+      ringOuter.rotation.z = Math.sin(time * 0.4) * 0.7;
+
+      // 表面磁場波動計算 (Wave Surface Perturbation)
+      const positions = spherePoints.geometry.attributes.position.array;
+      const waveAmp = 1.8 + pulseProgress * 8.0;
+      const breathe = 1 + Math.sin(time * 1.5) * 0.04;
+
+      for (let i = 0; i < sphereCount; i++) {
         const i3 = i * 3;
-        pos[i3] = basePositions[i3] * breathe;
-        pos[i3 + 1] = basePositions[i3 + 1] * breathe;
-        pos[i3 + 2] = basePositions[i3 + 2] * breathe;
+        const ox = originalPos[i3];
+        const oy = originalPos[i3 + 1];
+        const oz = originalPos[i3 + 2];
+
+        // 空間正弦駐波
+        const wave = Math.sin(ox * 0.12 + time * 2.5) *
+                     Math.cos(oy * 0.12 + time * 2.2) *
+                     Math.sin(oz * 0.12 + time * 2.0);
+
+        const displacement = breathe + (wave * waveAmp) / radius;
+
+        positions[i3] = ox * displacement;
+        positions[i3 + 1] = oy * displacement;
+        positions[i3 + 2] = oz * displacement;
       }
-      coreParticles.geometry.attributes.position.needsUpdate = true;
+      spherePoints.geometry.attributes.position.needsUpdate = true;
+
+      // 核心姿態緩慢偏航
+      spherePoints.rotation.y = time * 0.08;
+      spherePoints.rotation.z = time * 0.05;
+
+      // 能量脈衝衰減
+      if (pulseProgress > 0) {
+        pulseProgress *= 0.94;
+        if (pulseProgress < 0.005) pulseProgress = 0;
+      }
 
       renderer.render(scene, camera);
     }
     animate();
 
-    // 5. 互動能量脈衝
+    // 8. 能量脈衝震波
     window.triggerEnergyPulse = function() {
-      pulseWave = 0.35;
-      pMaterial.color.setHex(0xffffff);
-      setTimeout(() => { pMaterial.color.setHex(0x00f0ff); }, 250);
+      pulseProgress = 1.0;
+      sphereMat.color.setHex(0xffffff);
+      ringOuter.material.color.setHex(0xffffff);
+      setTimeout(() => {
+        sphereMat.color.setHex(0x00eaff);
+        ringOuter.material.color.setHex(0x0066ff);
+      }, 300);
     };
 
     window.addEventListener('click', (e) => {
@@ -302,14 +411,12 @@
       triggerEnergyPulse();
     });
 
-    // 視窗自適應
     window.addEventListener('resize', () => {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
     });
 
-    // 時鐘更新
     setInterval(() => {
       const now = new Date();
       document.getElementById('live-time').innerText = now.toTimeString().split(' ')[0] + ' CST';
