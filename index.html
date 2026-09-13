@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>J.A.R.V.I.S. // ACOUSTIC RESONANCE CORE</title>
+  <title>J.A.R.V.I.S. // TACTICAL SENTINEL CORE</title>
   <style>
     * {
       margin: 0;
@@ -18,6 +18,7 @@
       overflow: hidden;
       font-family: 'Courier New', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace;
       color: #00f0ff;
+      transition: color 0.5s ease;
     }
     #canvas-container {
       position: absolute;
@@ -57,6 +58,7 @@
       align-items: flex-start;
       border-bottom: 1px solid rgba(0, 240, 255, 0.2);
       padding-bottom: 14px;
+      transition: border-color 0.5s ease;
     }
     .brand-title {
       font-size: 22px;
@@ -82,6 +84,7 @@
       gap: 6px;
       color: #00ffaa;
       font-weight: bold;
+      transition: color 0.4s ease;
     }
     .status-dot {
       width: 8px;
@@ -99,6 +102,7 @@
       display: flex;
       gap: 14px;
       margin-top: 16px;
+      flex-wrap: wrap;
     }
     .card {
       background: rgba(3, 18, 38, 0.75);
@@ -107,7 +111,14 @@
       padding: 10px 16px;
       backdrop-filter: blur(10px);
       box-shadow: 0 0 20px rgba(0, 240, 255, 0.08);
-      min-width: 155px;
+      min-width: 160px;
+      transition: all 0.4s ease;
+    }
+    .card.alert-card {
+      border-color: rgba(255, 0, 68, 0.5) !important;
+      border-left: 3px solid #ff0044 !important;
+      background: rgba(38, 3, 10, 0.75) !important;
+      box-shadow: 0 0 20px rgba(255, 0, 68, 0.2) !important;
     }
     .card-ticker {
       font-size: 10px;
@@ -115,11 +126,11 @@
       letter-spacing: 1px;
     }
     .card-val {
-      font-size: 16px;
+      font-size: 18px;
       font-weight: bold;
       color: #ffffff;
       letter-spacing: 1px;
-      margin: 3px 0;
+      margin: 4px 0;
       text-shadow: 0 0 8px rgba(0, 240, 255, 0.6);
     }
     .card-status {
@@ -132,6 +143,7 @@
       align-items: flex-end;
       border-top: 1px solid rgba(0, 240, 255, 0.15);
       padding-top: 14px;
+      transition: border-color 0.5s ease;
     }
     .wave-box {
       display: flex;
@@ -145,7 +157,7 @@
       box-shadow: 0 0 6px #00f0ff;
       border-radius: 1px;
       height: 4px;
-      transition: height 0.06s ease;
+      transition: height 0.06s ease, background 0.4s ease;
     }
     .interactive-trigger {
       pointer-events: auto;
@@ -174,47 +186,50 @@
 
   <div class="hud-layer">
     <div>
-      <div class="hud-header">
+      <div class="hud-header" id="hud-header">
         <div>
           <div class="brand-title">J.A.R.V.I.S. // TACTICAL CORE</div>
-          <div class="brand-sub">ACOUSTIC NEURAL INTERACTION ENGINE</div>
+          <div class="brand-sub" id="brand-sub">QUANTUM RECONNAISSANCE SUITE // MK-VIII LIVE</div>
         </div>
         <div class="sys-telemetry">
-          <div class="status-badge"><span class="status-dot"></span>VOICE SYNTH ARMED</div>
+          <div class="status-badge" id="sys-badge"><span class="status-dot" id="sys-dot"></span>SENTINEL ARMED</div>
           <div id="clock-display" style="color: rgba(0,240,255,0.7); margin-top: 4px;">00:00:00 CST</div>
         </div>
       </div>
 
-      <div class="asset-deck">
-        <div class="card">
+      <div class="asset-deck" id="asset-deck">
+        <div class="card" id="card-00685L">
           <div class="card-ticker">加權正2 (00685L)</div>
-          <div class="card-val">BULL DEFENSE</div>
-          <div class="card-status">20MA / 60MA 鎖定</div>
+          <div class="card-val" id="val-00685L">CONNECTING</div>
+          <div class="card-status" id="stat-00685L">數據同步中...</div>
         </div>
-        <div class="card">
+        <div class="card" id="card-5289">
           <div class="card-ticker">宜鼎 (5289)</div>
-          <div class="card-val">ACTIVE PATROL</div>
-          <div class="card-status">週期: 5-MIN 哨兵</div>
+          <div class="card-val" id="val-5289">CONNECTING</div>
+          <div class="card-status" id="stat-5289">數據同步中...</div>
         </div>
-        <div class="card">
+        <div class="card" id="card-8299">
           <div class="card-ticker">群聯 (8299)</div>
-          <div class="card-val">NAND CYCLE</div>
-          <div class="card-status">波浪扣抵 追蹤中</div>
+          <div class="card-val" id="val-8299">CONNECTING</div>
+          <div class="card-status" id="stat-8299">數據同步中...</div>
         </div>
       </div>
     </div>
 
-    <div class="hud-footer">
+    <div class="hud-footer" id="hud-footer">
       <div style="display: flex; align-items: center; gap: 14px;">
         <div class="wave-box" id="wave-container"></div>
-        <span id="comm-status" style="font-size: 10px; letter-spacing: 2px; color: rgba(0,240,255,0.5);">STATUS: STANDBY</span>
+        <span id="comm-status" style="font-size: 10px; letter-spacing: 2px; color: rgba(0,240,255,0.5);">STATUS: SENTINEL PATROLLING</span>
       </div>
       <div class="interactive-trigger" onclick="triggerVoiceResponse()">[ 點擊發話：賈維斯回報狀態 ]</div>
     </div>
   </div>
 
   <script>
-    // 1. 初始化波形 DOM 元素 (18 支頻譜柱)
+    // 🔗 你的 GAS 專屬數據窗口
+    const GAS_ENDPOINT = "https://script.google.com/macros/s/AKfycbxWyoDCeA23D4ZIcUzhWcmm6RBpORpy3Sw7TO39ZR2WZoIA80IJzXq79cvYw0Z-EATspw/exec";
+
+    // 1. 波形儀表 DOM 初始化
     const waveBox = document.getElementById('wave-container');
     const waveBars = [];
     for (let i = 0; i < 18; i++) {
@@ -224,7 +239,7 @@
       waveBars.push(bar);
     }
 
-    // 2. Three.js 場景建構
+    // 2. Three.js 場景建置
     const container = document.getElementById('canvas-container');
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x020612);
@@ -240,7 +255,7 @@
     const coreGroup = new THREE.Group();
     scene.add(coreGroup);
 
-    // 高密度二十面體線框 (Subdivision Detail = 2，產生 162 個控制頂點進行流體波形擾動)
+    // 二十面體線框 (162 頂點流體共振)
     const icoGeo = new THREE.IcosahedronGeometry(28, 2);
     const origPositions = icoGeo.attributes.position.array.slice();
 
@@ -253,7 +268,7 @@
     const icoMesh = new THREE.Mesh(icoGeo, wireMat);
     coreGroup.add(icoMesh);
 
-    // 內核超導微粒
+    // 內核微粒
     const innerGeo = new THREE.BufferGeometry();
     const innerCount = 1800;
     const innerPos = new Float32Array(innerCount * 3);
@@ -276,7 +291,7 @@
     const innerCore = new THREE.Points(innerGeo, innerMat);
     coreGroup.add(innerCore);
 
-    // 軍規向量 HUD 刻度環
+    // 軍規同心刻度環
     function createTacticalRing(radius, segments, dashCount, color, opacity) {
       const group = new THREE.Group();
       const angleStep = (Math.PI * 2) / segments;
@@ -294,20 +309,20 @@
       const geo = new THREE.BufferGeometry().setFromPoints(points);
       const mat = new THREE.LineBasicMaterial({ color: color, transparent: true, opacity: opacity });
       group.add(new THREE.LineSegments(geo, mat));
-      return group;
+      return { group, mat };
     }
 
-    const ring1 = createTacticalRing(46, 64, 4, 0x00f0ff, 0.75);
-    const ring2 = createTacticalRing(63, 80, 5, 0x00a8ff, 0.55);
-    const ring3 = createTacticalRing(80, 96, 6, 0x0055ff, 0.35);
+    const r1 = createTacticalRing(46, 64, 4, 0x00f0ff, 0.75);
+    const r2 = createTacticalRing(63, 80, 5, 0x00a8ff, 0.55);
+    const r3 = createTacticalRing(80, 96, 6, 0x0055ff, 0.35);
 
-    ring1.rotation.x = Math.PI / 4;
-    ring2.rotation.y = Math.PI / 3;
-    ring3.rotation.x = -Math.PI / 3;
+    r1.group.rotation.x = Math.PI / 4;
+    r2.group.rotation.y = Math.PI / 3;
+    r3.group.rotation.x = -Math.PI / 3;
 
-    scene.add(ring1);
-    scene.add(ring2);
-    scene.add(ring3);
+    scene.add(r1.group);
+    scene.add(r2.group);
+    scene.add(r3.group);
 
     // 雷達掃描射束
     const sweepGeo = new THREE.BufferGeometry();
@@ -321,7 +336,7 @@
     const radarSweep = new THREE.LineSegments(sweepGeo, sweepMat);
     scene.add(radarSweep);
 
-    // 3. 語音合成音效 (純 Web Audio API 振盪器，免外掛音檔)
+    // 3. Web Audio 音訊震盪器
     let audioCtx = null;
     function playSciFiChirp(freq, type, duration) {
       try {
@@ -339,7 +354,64 @@
       } catch(e) {}
     }
 
-    // 4. 語音共振模擬控制器 (Acoustic Resonance Engine)
+    // 4. 戰情遙測與告警引擎 (Sentinel Alert Controller)
+    let currentSystemStatus = "SAFE"; // SAFE | ALERT
+    let targetCoreColor = new THREE.Color(0x00f0ff);
+    let currentColor = new THREE.Color(0x00f0ff);
+
+    async function syncTacticalData() {
+      try {
+        const res = await fetch(GAS_ENDPOINT);
+        const data = await res.json();
+
+        if (data.assets && data.assets.length > 0) {
+          data.assets.forEach(asset => {
+            const valEl = document.getElementById(`val-${asset.symbol}`);
+            const statEl = document.getElementById(`stat-${asset.symbol}`);
+            const cardEl = document.getElementById(`card-${asset.symbol}`);
+
+            if (valEl) valEl.innerText = asset.price;
+            if (statEl) {
+              statEl.innerText = asset.defense;
+              statEl.style.color = asset.status === "ALERT" ? "#ff0044" : "#00ffaa";
+            }
+            if (cardEl) {
+              if (asset.status === "ALERT") {
+                cardEl.classList.add('alert-card');
+              } else {
+                cardEl.classList.remove('alert-card');
+              }
+            }
+          });
+        }
+
+        // 系統警報切換
+        if (data.status === "ALERT") {
+          currentSystemStatus = "ALERT";
+          targetCoreColor.setHex(0xff0044);
+          document.getElementById('sys-badge').innerHTML = '<span class="status-dot" style="background:#ff0044; box-shadow:0 0 10px #ff0044;"></span>DEFENSE BREACH // RED ALERT';
+          document.getElementById('sys-badge').style.color = "#ff0044";
+          document.getElementById('comm-status').innerText = "CRITICAL: ASSET VIOLATED DEFENSE LEVEL";
+          document.getElementById('comm-status').style.color = "#ff0044";
+          waveBars.forEach(b => { b.style.background = "#ff0044"; b.style.boxShadow = "0 0 6px #ff0044"; });
+        } else {
+          currentSystemStatus = "SAFE";
+          targetCoreColor.setHex(0x00f0ff);
+          document.getElementById('sys-badge').innerHTML = '<span class="status-dot"></span>SENTINEL ARMED';
+          document.getElementById('sys-badge').style.color = "#00ffaa";
+          waveBars.forEach(b => { b.style.background = "#00f0ff"; b.style.boxShadow = "0 0 6px #00f0ff"; });
+        }
+
+      } catch (err) {
+        console.warn("Sentinel sync waiting...", err);
+      }
+    }
+
+    // 啟動定時輪詢 (每 30 秒自動遙測)
+    syncTacticalData();
+    setInterval(syncTacticalData, 30000);
+
+    // 5. 語音模擬共振
     let voiceActive = false;
     let voiceStartTime = 0;
     let voiceEnergy = 0;
@@ -348,53 +420,60 @@
     window.triggerVoiceResponse = function() {
       voiceActive = true;
       voiceStartTime = performance.now() / 1000;
-      gyroSpeedMultiplier = 2.8; // 刻度環動量爆發
+      gyroSpeedMultiplier = 2.4;
       document.getElementById('comm-status').innerText = 'STATUS: TRANSMITTING // "AT YOUR SERVICE, SIR"';
       document.getElementById('comm-status').style.color = '#ffffff';
 
-      // 觸發科技語音音頻漣漪
       playSciFiChirp(880, 'sine', 0.15);
       setTimeout(() => playSciFiChirp(1320, 'triangle', 0.25), 180);
       setTimeout(() => playSciFiChirp(1760, 'sine', 0.35), 520);
     };
 
-    // 5. 動畫引擎與動態波形運算
+    // 6. 動畫引擎 (調整基礎速度更顯沉穩)
     let clock = new THREE.Clock();
 
     function renderLoop() {
       requestAnimationFrame(renderLoop);
       const t = clock.getElapsedTime();
 
-      // 計算虛擬語音振幅包絡線 (3 個音節重音起伏，持續 2.2 秒)
+      // 平滑色彩漸變至目標色 (藍 <-> 紅)
+      currentColor.lerp(targetCoreColor, 0.05);
+      wireMat.color.copy(currentColor);
+      r1.mat.color.copy(currentColor);
+      sweepMat.color.copy(currentColor);
+
+      // 語音音節起伏運算
       if (voiceActive) {
         const elapsed = (performance.now() / 1000) - voiceStartTime;
         if (elapsed < 2.2) {
-          const syllable1 = Math.exp(-Math.pow((elapsed - 0.25) / 0.15, 2)) * 1.0;
-          const syllable2 = Math.exp(-Math.pow((elapsed - 0.75) / 0.20, 2)) * 0.85;
-          const syllable3 = Math.exp(-Math.pow((elapsed - 1.40) / 0.30, 2)) * 1.15;
-          voiceEnergy = (syllable1 + syllable2 + syllable3) + (Math.sin(elapsed * 45) * 0.08);
+          const s1 = Math.exp(-Math.pow((elapsed - 0.25) / 0.15, 2)) * 1.0;
+          const s2 = Math.exp(-Math.pow((elapsed - 0.75) / 0.20, 2)) * 0.85;
+          const s3 = Math.exp(-Math.pow((elapsed - 1.40) / 0.30, 2)) * 1.15;
+          voiceEnergy = (s1 + s2 + s3) + (Math.sin(elapsed * 45) * 0.08);
           if (voiceEnergy < 0) voiceEnergy = 0;
         } else {
           voiceActive = false;
           voiceEnergy = 0;
-          document.getElementById('comm-status').innerText = 'STATUS: STANDBY';
-          document.getElementById('comm-status').style.color = 'rgba(0,240,255,0.5)';
+          if (currentSystemStatus === "SAFE") {
+            document.getElementById('comm-status').innerText = 'STATUS: SENTINEL PATROLLING';
+            document.getElementById('comm-status').style.color = 'rgba(0,240,255,0.5)';
+          }
         }
       }
 
-      // 陀螺儀速度漸進回彈 (阻尼衰減)
       gyroSpeedMultiplier += (1.0 - gyroSpeedMultiplier) * 0.035;
 
-      // 線框頂點流體波形擾動 (Fluid Vertex Perturbation)
+      // 線框頂點波形震波 (若警報中自帶高頻抖動)
       const positions = icoGeo.attributes.position.array;
+      const alertJitter = currentSystemStatus === "ALERT" ? Math.sin(t * 30) * 0.8 : 0;
+
       for (let i = 0; i < positions.length; i += 3) {
         const ox = origPositions[i], oy = origPositions[i + 1], oz = origPositions[i + 2];
         const dist = Math.sqrt(ox * ox + oy * oy + oz * oz);
         const nx = ox / dist, ny = oy / dist, nz = oz / dist;
 
-        // 沿法向量擴散的空間正弦波
-        const wave = Math.sin(ox * 0.25 + t * 6) * Math.cos(oy * 0.25 + t * 5);
-        const displacement = voiceEnergy * 4.8 * wave;
+        const wave = Math.sin(ox * 0.25 + t * 4) * Math.cos(oy * 0.25 + t * 3.5);
+        const displacement = (voiceEnergy * 4.5 * wave) + alertJitter;
 
         positions[i] = ox + nx * displacement;
         positions[i + 1] = oy + ny * displacement;
@@ -402,36 +481,30 @@
       }
       icoGeo.attributes.position.needsUpdate = true;
 
-      // 核心發光顏色隨著音能轉為純白高光
-      if (voiceEnergy > 0.05) {
-        wireMat.color.lerpColors(new THREE.Color(0x00f0ff), new THREE.Color(0xffffff), Math.min(voiceEnergy * 0.8, 1));
-        wireMat.opacity = 0.85 + voiceEnergy * 0.15;
-      } else {
-        wireMat.color.setHex(0x00f0ff);
-        wireMat.opacity = 0.85;
-      }
-
-      // 核心旋轉與呼吸
-      const pulse = 1 + Math.sin(t * 2.5) * 0.04 + (voiceEnergy * 0.15);
+      // 核心姿態旋轉 (速度微調更沉穩)
+      const pulse = 1 + Math.sin(t * 1.8) * 0.035 + (voiceEnergy * 0.15);
       coreGroup.scale.set(pulse, pulse, pulse);
-      icoMesh.rotation.x = t * (0.35 * gyroSpeedMultiplier);
-      icoMesh.rotation.y = t * (0.25 * gyroSpeedMultiplier);
-      innerCore.rotation.y = -t * (0.6 * gyroSpeedMultiplier);
 
-      // 軍規環差速旋轉
-      ring1.rotation.z = t * (0.35 * gyroSpeedMultiplier);
-      ring2.rotation.z = -t * (0.25 * gyroSpeedMultiplier);
-      ring3.rotation.z = t * (0.15 * gyroSpeedMultiplier);
-      ring2.rotation.x = Math.sin(t * 0.5) * 0.3 + (Math.PI / 3);
+      icoMesh.rotation.x = t * (0.22 * gyroSpeedMultiplier);
+      icoMesh.rotation.y = t * (0.16 * gyroSpeedMultiplier);
+      innerCore.rotation.y = -t * (0.35 * gyroSpeedMultiplier);
 
-      radarSweep.rotation.z = -t * (1.2 * gyroSpeedMultiplier);
+      // 軍規環差速運轉
+      r1.group.rotation.z = t * (0.22 * gyroSpeedMultiplier);
+      r2.group.rotation.z = -t * (0.16 * gyroSpeedMultiplier);
+      r3.group.rotation.z = t * (0.10 * gyroSpeedMultiplier);
+      r2.group.rotation.x = Math.sin(t * 0.35) * 0.25 + (Math.PI / 3);
 
-      // 頻譜柱即時跳動 (映射虛擬聲學能量)
+      radarSweep.rotation.z = -t * (0.75 * gyroSpeedMultiplier);
+
+      // 頻譜跳動
       for (let i = 0; i < waveBars.length; i++) {
         let h = 4;
         if (voiceEnergy > 0.01) {
-          const freqOffset = Math.sin(t * 18 + i * 0.6) * 0.5 + 0.5;
-          h = 4 + (voiceEnergy * 20 * freqOffset);
+          const f = Math.sin(t * 18 + i * 0.6) * 0.5 + 0.5;
+          h = 4 + (voiceEnergy * 20 * f);
+        } else if (currentSystemStatus === "ALERT") {
+          h = 6 + Math.sin(t * 12 + i) * 6;
         }
         waveBars[i].style.height = `${Math.min(h, 26)}px`;
       }
