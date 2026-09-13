@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>J.A.R.V.I.S. // PACIFIC STRATEGIC MONITOR MK-XV</title>
+  <title>J.A.R.V.I.S. // NEURAL PARTICLE BUTLER TERMINAL</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -35,7 +35,6 @@
       color: var(--cyan);
     }
 
-    /* 2.5D 微立體全息投影地圖 Canvas */
     #world-map-canvas {
       position: absolute;
       top: 0;
@@ -45,7 +44,6 @@
       z-index: 2;
     }
 
-    /* 背景戰術微光網格與地平線景深 */
     .bg-grid {
       position: absolute;
       width: 100%;
@@ -68,7 +66,7 @@
       pointer-events: none;
     }
 
-    /* 頂部戰情監控條 */
+    /* 頂部戰情橫幅 */
     .hud-top-bar {
       position: absolute;
       top: 0;
@@ -121,7 +119,7 @@
     }
     @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-    /* 左右分欄主控架構 (中央純淨地圖 100% 展現) */
+    /* 左右分欄主控 */
     .hud-flanks-container {
       position: absolute;
       top: 58px;
@@ -135,7 +133,7 @@
       pointer-events: none;
     }
 
-    /* 左側戰術翼 (275px) */
+    /* 左側戰術翼 */
     .flank-left {
       width: 275px;
       height: 100%;
@@ -168,7 +166,7 @@
     .card-val { font-size: 18px; font-weight: 900; color: #fff; margin: 2px 0; letter-spacing: 1px; text-shadow: 0 0 8px var(--cyan-glow); }
     .card-status { font-size: 10px; color: var(--cyan); font-weight: 700; }
 
-    /* 左下角 A02/01 全息 3D 視窗 (具備互動膨脹與狀態切換) */
+    /* 左下角 A02/01 神經粒子星雲視窗 */
     .core-module-frame {
       background: var(--bg-panel);
       border: 1px solid var(--border-line);
@@ -178,7 +176,7 @@
       display: flex;
       flex-direction: column;
       gap: 5px;
-      transition: border-color 0.3s;
+      transition: all 0.3s;
     }
     .core-module-frame.active-listening {
       border-color: #ff0055;
@@ -196,7 +194,7 @@
     }
     #three-viewport {
       width: 100%;
-      height: 135px;
+      height: 145px;
       position: relative;
     }
     .core-telemetry-text {
@@ -208,7 +206,7 @@
       font-weight: 700;
     }
 
-    /* 右側情報翼 (340px) */
+    /* 右側情報翼 */
     .flank-right {
       width: 340px;
       height: 100%;
@@ -240,7 +238,7 @@
       display: flex;
       flex-direction: column;
       gap: 5px;
-      max-height: 145px;
+      max-height: 140px;
       overflow-y: auto;
     }
     .intel-item {
@@ -260,7 +258,7 @@
     }
     .intel-loc { color: var(--cyan); font-weight: 900; margin-right: 4px; }
 
-    /* 右側常駐戰術機密檔案 (Dossier) */
+    /* 常駐戰術機密檔案 (Dossier) */
     .dossier-box {
       flex: 1;
       display: flex;
@@ -289,7 +287,6 @@
       margin-bottom: 6px;
     }
 
-    /* 內嵌 HUD 霓虹折線走勢圖 Canvas */
     #intraday-chart-canvas {
       width: 100%;
       height: 85px;
@@ -321,7 +318,7 @@
       box-shadow: 0 0 15px var(--cyan);
     }
 
-    /* 底部終端輸入條 */
+    /* 底部指令列 */
     .hud-bottom-bar {
       position: absolute;
       bottom: 0;
@@ -386,8 +383,8 @@
 
   <div class="hud-top-bar">
     <div>
-      <div class="brand-title">J.A.R.V.I.S. // PACIFIC CYBER MATRIX</div>
-      <div class="brand-sub" id="defcon-status">MK-XV // 2.5D HOLOGRAPHIC STRATEGIC SANDTABLE</div>
+      <div class="brand-title">J.A.R.V.I.S. // NEURAL BUTLER PROTOCOL</div>
+      <div class="brand-sub" id="defcon-status">MK-XVI // CINEMATIC AUDIO-REACTIVE ORB</div>
     </div>
     <div class="us-market-bar">
       <div class="us-item"><span class="us-symbol">SOX 費半:</span><span id="us-sox">--</span></div>
@@ -395,13 +392,12 @@
       <div class="us-item"><span class="us-symbol">MU 美光:</span><span id="us-mu">--</span></div>
     </div>
     <div class="sys-telemetry">
-      <div class="status-badge"><span class="status-dot"></span>PACIFIC GRID ONLINE</div>
+      <div class="status-badge"><span class="status-dot"></span>NEURAL VOICE ACTIVE</div>
       <div id="clock-display" style="color: rgba(255,255,255,0.75); margin-top: 2px;">00:00:00 CST</div>
     </div>
   </div>
 
   <div class="hud-flanks-container">
-    <!-- 左側戰術翼 -->
     <div class="flank-left">
       <div class="asset-deck">
         <div style="font-size: 9px; letter-spacing: 2px; color: rgba(255,255,255,0.5); margin-bottom: 1px;">CORE ASSETS (3)</div>
@@ -422,23 +418,23 @@
         </div>
       </div>
 
-      <!-- 左下角 A02/01 全息視窗 -->
+      <!-- 左下角 A02/01 神經粒子星雲 -->
       <div class="core-module-frame" id="core-frame-box">
         <div class="core-title-bar">
-          <span>CORE // A02-01</span>
+          <span>JARVIS // NEURAL CORE</span>
           <span id="core-status-badge" style="color:#00ffaa;">STANDBY</span>
         </div>
         <div id="three-viewport"></div>
         <div class="core-telemetry-text">
-          <span id="core-mode-label">PATROL ORBIT</span>
-          <span id="core-freq-label" style="color:rgba(0,245,212,0.8);">14.2 GHz</span>
+          <span id="core-mode-label">VOICE: BUTLER DANIEL</span>
+          <span id="core-freq-label" style="color:#00ffaa;">ELEVENLABS ONLINE</span>
         </div>
       </div>
     </div>
 
     <!-- 右側情報翼 (5大記憶體戰略節點) -->
     <div class="flank-right">
-      <div class="panel-box" style="height: 185px; display: flex; flex-direction: column;">
+      <div class="panel-box" style="height: 180px; display: flex; flex-direction: column;">
         <div class="panel-title">
           <span>🌐 PACIFIC INTEL NODES</span>
           <span style="font-size: 8px; color: rgba(255,255,255,0.4);">[點擊選取]</span>
@@ -463,11 +459,10 @@
           <div class="dossier-meta-line" id="dossier-meta1">即時報價: 1990.00 | 早盤防守線: 1950.00</div>
           <div class="dossier-meta-line" id="dossier-meta2">持股: 1.1 張 (庫存 100 股 + 出借 1 張) | 日利息約 82 元</div>
           
-          <!-- 內嵌 HUD 霓虹折線走勢圖 -->
           <canvas id="intraday-chart-canvas"></canvas>
           
           <div class="dossier-body-text" id="dossier-body">
-            群聯在 PCIe Gen5 主控市場具備高技術門檻。美光高容量企業級 SSD 走揚帶動多頭動能。守穩 1950 防守線之上，維持主力續抱劇本。
+            長官，群聯在 PCIe Gen5 主控市場技術護城河穩固。美光高容量企業級 SSD 報價走揚帶動多頭動能。只要守穩 1950 防守線之上，維持主力續抱劇本，Sir。
           </div>
         </div>
         <div>
@@ -493,14 +488,36 @@
   <script>
     const GAS_ENDPOINT = "https://script.google.com/macros/s/AKfycbxWyoDCeA23D4ZIcUzhWcmm6RBpORpy3Sw7TO39ZR2WZoIA80IJzXq79cvYw0Z-EATspw/exec";
 
-    // 1. 五大戰略情報資料庫
+    // 1. 已直接內嵌你的專屬 ElevenLabs API Key
+    const ELEVEN_KEY = "sk_c4161239af7806e2a70e6ba9b7e1ad76555adba9891d143f";
+    const BUTLER_VOICE_ID = "onwK4e9ZLuTAKqWW03F9"; // Daniel - British, Deep, Authoritative
+
+    // 2. Web Audio API 頻譜監聽器 (驅動粒子星雲「忽大忽小」)
+    let audioCtx = null;
+    let analyser = null;
+    let dataArray = null;
+    let audioEnergy = 0;
+
+    function initAudioContext() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        analyser = audioCtx.createAnalyser();
+        analyser.fftSize = 128;
+        dataArray = new Uint8Array(analyser.frequencyBinCount);
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    // 3. 情報資料庫
     const TARGET_DB = {
       '8299': {
         tag: 'ASSET // 8299',
         title: '群聯 (8299) // NAND 控制晶片戰略檔案',
         meta1: '即時報價: 1990.00 | 早盤防守線: 1950.00',
         meta2: '實質持股: 1.1 張 (在庫 100 股 + 出借 1 張) | 日利息約 82 元',
-        body: '群聯在企業級 SSD 控制晶片具備技術護城河。美光與威騰減產效應推升合約價，現價守穩 20MA 扣抵支撐位，維持紀律防守續抱。',
+        body: '長官，群聯在企業級 SSD 控制晶片具備技術護城河。美光與威騰減產效應推升合約價，現價守穩 20MA 扣抵支撐位，維持紀律防守續抱，Sir。',
         url: 'https://tw.stock.yahoo.com/quote/8299.TWO',
         chartTrend: [1960, 1970, 1965, 1980, 1975, 1990, 1985, 1990],
         defVal: 1950
@@ -510,7 +527,7 @@
         title: '宜鼎 (5289) // 工控 AI 儲存戰略檔案',
         meta1: '即時報價: 1295.00 | 早盤防守線: 1250.00',
         meta2: '實質持股: 1.5 張 (在庫 500 股 + 出借 1 張) | 日利息約 43 元',
-        body: '宜鼎深耕工業邊緣 AI 伺服器模組，出借 1 張每日產生穩定被動現金流。回測 1250 扣抵區不破，中線多方架構安全。',
+        body: '長官，宜鼎深耕工業邊緣 AI 伺服器模組，出借 1 張每日產生穩定被動現金流。回測 1250 扣抵區不破，中線多方架構安全，Sir。',
         url: 'https://tw.stock.yahoo.com/quote/5289.TWO',
         chartTrend: [1260, 1270, 1265, 1280, 1290, 1285, 1295],
         defVal: 1250
@@ -520,7 +537,7 @@
         title: '加權正2 (00685L) // 槓桿作戰部位檔案',
         meta1: '即時報價: 11.84 | 早盤防守線: 11.04',
         meta2: '庫存部位: 15,000 股 (15 張) | 浮盈保護中',
-        body: '大盤維持多頭格局，20MA 扣抵位置助漲力道未歇。槓桿多單嚴格以 11.04 作為停利防守線，破線則執行減碼降槓桿。',
+        body: '大盤維持多頭格局，20MA 扣抵助漲力道未歇。槓桿多單嚴格以 11.04 作為停利防守線，破線則無條件執行減碼，Sir。',
         url: 'https://tw.stock.yahoo.com/quote/00685L.TW',
         chartTrend: [11.2, 11.35, 11.3, 11.5, 11.65, 11.6, 11.84],
         defVal: 11.04
@@ -577,7 +594,7 @@
       }
     };
 
-    // 2. 繪製 HUD 內嵌霓虹折線走勢圖 (Neon Intraday Chart)
+    // 4. 繪製 HUD 霓虹走勢圖
     const chartCanvas = document.getElementById('intraday-chart-canvas');
     const chartCtx = chartCanvas.getContext('2d');
 
@@ -589,7 +606,6 @@
 
       chartCtx.clearRect(0, 0, w, h);
 
-      // 背景微光格線
       chartCtx.strokeStyle = "rgba(0, 245, 212, 0.08)";
       chartCtx.lineWidth = 1;
       for (let x = 0; x < w; x += w / 6) {
@@ -605,14 +621,9 @@
       const maxVal = Math.max(...points, defVal) * 1.015;
       const range = maxVal - minVal;
 
-      function getY(val) {
-        return h - ((val - minVal) / range) * (h - 20) - 10;
-      }
-      function getX(idx) {
-        return 20 + (idx / (points.length - 1)) * (w - 40);
-      }
+      function getY(val) { return h - ((val - minVal) / range) * (h - 20) - 10; }
+      function getX(idx) { return 20 + (idx / (points.length - 1)) * (w - 40); }
 
-      // 繪製防守線 (橫向虛線)
       const defY = getY(defVal);
       chartCtx.strokeStyle = "rgba(255, 0, 85, 0.65)";
       chartCtx.setLineDash([4, 4]);
@@ -624,7 +635,6 @@
       chartCtx.font = `${8 * window.devicePixelRatio}px Orbitron`;
       chartCtx.fillText(`DEF: ${defVal}`, 12, defY - 4);
 
-      // 繪製走勢霓虹折線
       chartCtx.strokeStyle = "#00f5d4";
       chartCtx.lineWidth = 2 * window.devicePixelRatio;
       chartCtx.shadowColor = "rgba(0, 245, 212, 0.6)";
@@ -640,7 +650,6 @@
       chartCtx.stroke();
       chartCtx.shadowBlur = 0;
 
-      // 漸層下半部填充
       const grad = chartCtx.createLinearGradient(0, 0, 0, h);
       grad.addColorStop(0, "rgba(0, 245, 212, 0.25)");
       grad.addColorStop(1, "rgba(0, 245, 212, 0.0)");
@@ -650,7 +659,6 @@
       chartCtx.closePath();
       chartCtx.fill();
 
-      // 最新價位光點
       const lastX = getX(points.length - 1);
       const lastY = getY(points[points.length - 1]);
       chartCtx.fillStyle = "#ffffff";
@@ -680,7 +688,7 @@
       drawHUDNeonChart(data.chartTrend, data.defVal);
     };
 
-    // 3. 2.5D 微立體世界地圖 (含武漢長存與全球首都星網)
+    // 5. 2.5D 微立體世界地圖 (D3-Geo)
     const mapCanvas = document.getElementById('world-map-canvas');
     const ctx = mapCanvas.getContext('2d');
 
@@ -708,7 +716,6 @@
     const path = d3.geoPath(projection, ctx);
     const graticule = d3.geoGraticule10();
 
-    // 第一戰線：5 大記憶體戰略節點
     const geoNodes = [
       { id: "TW", name: "HSINCHU // 8299·5289", lon: 120.97, lat: 24.80 },
       { id: "US", name: "SANTA CLARA // NVDA·MU", lon: -121.95, lat: 37.35 },
@@ -717,7 +724,6 @@
       { id: "CN", name: "WUHAN // YMTC", lon: 114.30, lat: 30.59 }
     ];
 
-    // 第二戰線：全球主要金融與政治首都星芒網
     const capitalNodes = [
       { name: "WASHINGTON", lon: -77.03, lat: 38.90 },
       { name: "NEW YORK", lon: -74.00, lat: 40.71 },
@@ -747,14 +753,12 @@
       ctx.clearRect(0, 0, mapCanvas.width, mapCanvas.height);
       mapTick += 0.025;
 
-      // 經緯微光格線
       ctx.beginPath();
       path(graticule);
       ctx.strokeStyle = "rgba(0, 245, 212, 0.035)";
       ctx.lineWidth = 1;
       ctx.stroke();
 
-      // 大陸真實幾何輪廓
       if (landData) {
         ctx.beginPath();
         path(landData);
@@ -765,7 +769,6 @@
         ctx.stroke();
       }
 
-      // 國家疆界網格
       if (bordersData) {
         ctx.beginPath();
         path(bordersData);
@@ -774,28 +777,22 @@
         ctx.stroke();
       }
 
-      // 繪製全球首都星網 (微弱呼吸星點與神經連線)
       capitalNodes.forEach((cap, i) => {
         const pt = projection([cap.lon, cap.lat]);
         if (!pt) return;
         ctx.fillStyle = "rgba(255, 255, 255, 0.4)";
-        ctx.beginPath();
-        ctx.arc(pt[0], pt[1], 1.6, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.beginPath(); ctx.arc(pt[0], pt[1], 1.6, 0, Math.PI * 2); ctx.fill();
 
-        // 鄰近首都連線
         if (i < capitalNodes.length - 1) {
           const nextPt = projection([capitalNodes[i+1].lon, capitalNodes[i+1].lat]);
           if (nextPt) {
             ctx.strokeStyle = "rgba(0, 245, 212, 0.06)";
-            ctx.beginPath();
-            ctx.moveTo(pt[0], pt[1]); ctx.lineTo(nextPt[0], nextPt[1]);
+            ctx.beginPath(); ctx.moveTo(pt[0], pt[1]); ctx.lineTo(nextPt[0], nextPt[1]);
             ctx.stroke();
           }
         }
       });
 
-      // 雙向跨洋供應鏈大圓弧航線
       const twPt = projection([120.97, 24.8]);
       const usPt = projection([-121.95, 37.35]);
       const krPt = projection([126.97, 37.56]);
@@ -815,7 +812,6 @@
         ctx.stroke();
         ctx.setLineDash([]);
 
-        // 東向出貨流 (青藍光子: 亞洲 -> 美國)
         const tEast = (mapTick * speed + seed) % 1;
         const ex = (1 - tEast) * (1 - tEast) * p1[0] + 2 * (1 - tEast) * tEast * midX + tEast * tEast * p2[0];
         const ey = (1 - tEast) * (1 - tEast) * p1[1] + 2 * (1 - tEast) * tEast * midY + tEast * tEast * p2[1];
@@ -824,7 +820,6 @@
         ctx.strokeStyle = "rgba(0, 245, 212, 0.8)";
         ctx.beginPath(); ctx.arc(ex, ey, 5, 0, Math.PI * 2); ctx.stroke();
 
-        // 西向訂單流 (白金光子: 美國 -> 亞洲)
         const tWest = 1 - ((mapTick * speed * 0.8 + seed) % 1);
         const wx = (1 - tWest) * (1 - tWest) * p1[0] + 2 * (1 - tWest) * tWest * midX + tWest * tWest * p2[0];
         const wy = (1 - tWest) * (1 - tWest) * p1[1] + 2 * (1 - tWest) * tWest * midY + tWest * tWest * p2[1];
@@ -837,7 +832,6 @@
       drawTwoWayArc(twPt, jpPt, 25, 0.38, 0.7);
       drawTwoWayArc(twPt, cnPt, 16, 0.42, 0.2);
 
-      // 第一戰線 5 大記憶體節點
       geoNodes.forEach(node => {
         const pt = projection([node.lon, node.lat]);
         if (!pt) return;
@@ -847,16 +841,12 @@
         const isSelected = (node.id === selectedNodeId);
 
         ctx.fillStyle = isSelected ? "#ff0055" : "#ffffff";
-        ctx.beginPath();
-        ctx.arc(pt[0], pt[1], isSelected ? 4.5 : 3, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.beginPath(); ctx.arc(pt[0], pt[1], isSelected ? 4.5 : 3, 0, Math.PI * 2); ctx.fill();
 
         ctx.strokeStyle = isSelected ? "rgba(255, 0, 85, 0.85)" : "rgba(0, 245, 212, 0.7)";
         ctx.lineWidth = 1.2;
         const wave = ((Math.sin(mapTick * 2.5 + node.lat) * 0.5 + 0.5) * 14) + 4;
-        ctx.beginPath();
-        ctx.arc(pt[0], pt[1], wave, 0, Math.PI * 2);
-        ctx.stroke();
+        ctx.beginPath(); ctx.arc(pt[0], pt[1], wave, 0, Math.PI * 2); ctx.stroke();
 
         ctx.fillStyle = isSelected ? "#fff" : "#00f5d4";
         ctx.font = isSelected ? "bold 11px Orbitron" : "10px Orbitron";
@@ -873,8 +863,7 @@
       const my = e.clientY - rect.top;
 
       for (let n of geoNodes) {
-        if (!n._x) continue;
-        if (Math.hypot(n._x - mx, n._y - my) <= 18) {
+        if (n._x && Math.hypot(n._x - mx, n._y - my) <= 18) {
           selectTarget(n.id);
           break;
         }
@@ -895,133 +884,159 @@
       mapCanvas.style.cursor = found ? 'pointer' : 'default';
     });
 
-    // 4. 左下角 A02/01 3D 全息視窗 (支援語音膨脹與震波)
+    // 6. 左下角「神經粒子星雲」Three.js 核心
     const threeBox = document.getElementById('three-viewport');
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(45, threeBox.clientWidth / threeBox.clientHeight, 1, 1000);
-    camera.position.z = 90;
+    camera.position.z = 100;
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(threeBox.clientWidth, threeBox.clientHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     threeBox.appendChild(renderer.domElement);
 
-    const miniCore = new THREE.Group();
-    scene.add(miniCore);
+    const particleGroup = new THREE.Group();
+    scene.add(particleGroup);
 
-    const icoGeo = new THREE.IcosahedronGeometry(13, 2);
-    const origPositions = icoGeo.attributes.position.array.slice();
-    const wireMat = new THREE.MeshBasicMaterial({ color: 0x00f5d4, wireframe: true, transparent: true, opacity: 0.85 });
-    const icoMesh = new THREE.Mesh(icoGeo, wireMat);
-    miniCore.add(icoMesh);
+    const PARTICLE_COUNT = 900;
+    const particleGeo = new THREE.BufferGeometry();
+    const particlePositions = new Float32Array(PARTICLE_COUNT * 3);
+    const originalVectors = [];
 
-    function createGimbalRing(r, color, opacity) {
-      const pts = [];
-      for (let i = 0; i < 64; i++) {
-        const a = (i / 64) * Math.PI * 2;
-        pts.push(new THREE.Vector3(r * Math.cos(a), r * Math.sin(a), 0));
-      }
-      const geo = new THREE.BufferGeometry().setFromPoints(pts);
-      const mat = new THREE.LineBasicMaterial({ color: color, transparent: true, opacity: opacity });
-      return new THREE.LineLoop(geo, mat);
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      const u = Math.random();
+      const v = Math.random();
+      const theta = u * 2.0 * Math.PI;
+      const phi = Math.acos(2.0 * v - 1.0);
+      const r = 22 * Math.cbrt(Math.random());
+
+      const x = r * Math.sin(phi) * Math.cos(theta);
+      const y = r * Math.sin(phi) * Math.sin(theta);
+      const z = r * Math.cos(phi);
+
+      particlePositions[i * 3] = x;
+      particlePositions[i * 3 + 1] = y;
+      particlePositions[i * 3 + 2] = z;
+
+      originalVectors.push(new THREE.Vector3(x, y, z));
     }
-    const ring1 = createGimbalRing(20, 0x00f5d4, 0.7);
-    const ring2 = createGimbalRing(26, 0x00bbf9, 0.5);
-    ring1.rotation.x = Math.PI / 3;
-    ring2.rotation.y = Math.PI / 3.5;
-    miniCore.add(ring1);
-    miniCore.add(ring2);
 
-    // 5. 數據遠端同步
-    async function syncData() {
-      try {
-        const res = await fetch(GAS_ENDPOINT);
-        const data = await res.json();
+    particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
 
-        document.getElementById('defcon-status').innerText = data.defcon || "DEFCON 4 // PACIFIC MATRIX";
-        document.getElementById('tactical-advice').innerText = data.advice || "DORMANT MONITORING";
+    const particleMat = new THREE.PointsMaterial({
+      color: 0x00f5d4,
+      size: 2.2,
+      transparent: true,
+      opacity: 0.85,
+      blending: THREE.AdditiveBlending
+    });
 
-        if (data.assets) {
-          data.assets.forEach(a => {
-            const v = document.getElementById(`val-${a.symbol}`);
-            const s = document.getElementById(`stat-${a.symbol}`);
-            if (v) v.innerText = a.price;
-            if (s) s.innerText = a.defense;
-            if (TARGET_DB[a.symbol]) TARGET_DB[a.symbol].meta1 = `現價: ${a.price} | 防守: ${a.defense}`;
-          });
-        }
+    const particlePoints = new THREE.Points(particleGeo, particleMat);
+    particleGroup.add(particlePoints);
 
-        if (data.usMarket) {
-          data.usMarket.forEach(u => {
-            const el = document.getElementById(`us-${u.symbol.toLowerCase()}`);
-            if (el) {
-              el.innerText = `${u.price} (${u.change})`;
-              el.className = u.trend === "UP" ? "up-tag" : "down-tag";
-            }
-          });
-        }
-      } catch (e) {
-        console.warn("Telemetry waiting...", e);
-      }
-    }
-    syncData();
-    setInterval(syncData, 30000);
+    const lineGeo = new THREE.BufferGeometry();
+    const maxLines = 1200;
+    const linePositions = new Float32Array(maxLines * 6);
+    lineGeo.setAttribute('position', new THREE.BufferAttribute(linePositions, 3));
 
-    // 初始化走勢圖
-    drawHUDNeonChart(TARGET_DB['8299'].chartTrend, TARGET_DB['8299'].defVal);
+    const lineMat = new THREE.LineBasicMaterial({
+      color: 0x00f5d4,
+      transparent: true,
+      opacity: 0.35,
+      blending: THREE.AdditiveBlending
+    });
+    const plexusLines = new THREE.LineSegments(lineGeo, lineMat);
+    particleGroup.add(plexusLines);
 
-    // 6. 賈維斯三態互動控制 (STANDBY / LISTENING / DISPATCHING)
+    // 7. 賈維斯電影級語音播放與音訊頻譜掛接
     let voiceActive = false;
-    let voiceEnergy = 0;
     let isListening = false;
 
     function setCoreState(state) {
       const badge = document.getElementById('core-status-badge');
-      const label = document.getElementById('core-mode-label');
       const box = document.getElementById('core-frame-box');
 
       if (state === "LISTENING") {
         badge.innerText = "LISTENING";
         badge.style.color = "#ff0055";
-        label.innerText = "MIC INPUT ACTIVE";
+        particleMat.color.setHex(0xff0055);
+        lineMat.color.setHex(0xff0055);
         box.classList.add('active-listening');
       } else if (state === "DISPATCHING") {
-        badge.innerText = "DISPATCH";
+        badge.innerText = "DISPATCHING";
         badge.style.color = "#00ffaa";
-        label.innerText = "NEURAL RESPONDING";
+        particleMat.color.setHex(0x00ffaa);
+        lineMat.color.setHex(0x00ffaa);
         box.classList.remove('active-listening');
       } else {
         badge.innerText = "STANDBY";
         badge.style.color = "#00ffaa";
-        label.innerText = "PATROL ORBIT";
+        particleMat.color.setHex(0x00f5d4);
+        lineMat.color.setHex(0x00f5d4);
         box.classList.remove('active-listening');
       }
     }
 
-    function triggerJarvisVoice(text) {
+    async function speakWithJarvisVoice(text) {
+      initAudioContext();
       voiceActive = true;
       setCoreState("DISPATCHING");
 
+      // 方案 B：直接調用 ElevenLabs 電影級英倫紳士語音
+      if (ELEVEN_KEY) {
+        try {
+          const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${BUTLER_VOICE_ID}`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "xi-api-key": ELEVEN_KEY
+            },
+            body: JSON.stringify({
+              text: text,
+              model_id: "eleven_multilingual_v2",
+              voice_settings: { stability: 0.55, similarity_boost: 0.85, style: 0.2 }
+            })
+          });
+
+          if (!res.ok) throw new Error("ElevenLabs API call failed");
+
+          const blob = await res.blob();
+          const audioUrl = URL.createObjectURL(blob);
+          const audio = new Audio(audioUrl);
+
+          const source = audioCtx.createMediaElementSource(audio);
+          source.connect(analyser);
+          analyser.connect(audioCtx.destination);
+
+          audio.onended = () => {
+            voiceActive = false;
+            audioEnergy = 0;
+            setCoreState("STANDBY");
+          };
+          audio.play();
+          return;
+        } catch (err) {
+          console.warn("ElevenLabs fallback to browser synthesis", err);
+        }
+      }
+
+      // 本機備用合成
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
         const utter = new SpeechSynthesisUtterance(text);
         utter.lang = 'zh-TW';
-        utter.rate = 1.05;
+        utter.rate = 1.0;
+        utter.pitch = 0.9;
         utter.onend = () => {
           voiceActive = false;
-          voiceEnergy = 0;
+          audioEnergy = 0;
           setCoreState("STANDBY");
         };
         window.speechSynthesis.speak(utter);
-      } else {
-        setTimeout(() => {
-          voiceActive = false;
-          voiceEnergy = 0;
-          setCoreState("STANDBY");
-        }, 3000);
       }
     }
 
+    // 8. 提問與賈維斯回報
     async function askJarvis(query) {
       if (!query.trim()) return;
       document.getElementById('dossier-tag').innerText = 'J.A.R.V.I.S. // DISPATCH';
@@ -1029,11 +1044,13 @@
       try {
         const res = await fetch(`${GAS_ENDPOINT}?q=${encodeURIComponent(query)}`);
         const data = await res.json();
-        const reply = data.reply || "通訊逾時。";
+        const reply = data.reply || "通訊逾時，Sir。";
         document.getElementById('dossier-title').innerText = '戰略處置方針';
         document.getElementById('dossier-body').innerText = reply;
-        triggerJarvisVoice(reply);
-      } catch (err) {}
+        speakWithJarvisVoice(reply);
+      } catch (err) {
+        speakWithJarvisVoice("鏈路通訊中斷，Sir。");
+      }
     }
 
     const termInput = document.getElementById('terminal-input');
@@ -1065,6 +1082,7 @@
     }
 
     function startVoiceRecording() {
+      initAudioContext();
       if (!recognition || isListening) return;
       isListening = true;
       setCoreState("LISTENING");
@@ -1100,7 +1118,7 @@
       }
     });
 
-    // 7. 動態渲染循環
+    // 9. 3D 動態渲染循環 (神經粒子雲忽大忽小爆發)
     const waveBox = document.getElementById('wave-container');
     const waveBars = [];
     for (let i = 0; i < 18; i++) {
@@ -1115,41 +1133,74 @@
       requestAnimationFrame(renderLoop);
       const t = clock.getElapsedTime();
 
-      // 核心狀態動態物理形變
-      let targetScale = 1.0;
-      let rotSpeed = 0.4;
+      // 計算語音音量振幅 (Audio RMS)
+      if (analyser && voiceActive) {
+        analyser.getByteFrequencyData(dataArray);
+        let sum = 0;
+        for (let i = 0; i < dataArray.length; i++) sum += dataArray[i];
+        const avg = sum / dataArray.length;
+        audioEnergy = (avg / 128.0);
+      } else if (voiceActive) {
+        audioEnergy = Math.sin(t * 16) * 0.5 + 0.5;
+      } else {
+        audioEnergy = 0;
+      }
+
+      let expansion = 1.0;
+      let rotSpeed = 0.35;
 
       if (isListening) {
-        targetScale = 1.25; // 聆聽時向外膨脹 25%
-        rotSpeed = 1.2;     // 轉速加快 3 倍
+        expansion = 1.6;
+        rotSpeed = 1.2;
       } else if (voiceActive) {
-        voiceEnergy = Math.sin(t * 16) * 0.8 + 0.6;
-        targetScale = 1.15;
-      } else {
-        voiceEnergy = 0;
+        expansion = 1.0 + (audioEnergy * 2.2);
+        rotSpeed = 0.6 + (audioEnergy * 1.5);
       }
 
-      miniCore.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.1);
-      miniCore.rotation.y = t * rotSpeed;
-      miniCore.rotation.x = Math.sin(t * 0.25) * 0.2;
-      ring1.rotation.z = -t * (rotSpeed * 1.1);
-      ring2.rotation.z = t * (rotSpeed * 0.8);
+      particleGroup.rotation.y = t * rotSpeed;
+      particleGroup.rotation.x = Math.sin(t * 0.3) * 0.2;
 
-      const positions = icoGeo.attributes.position.array;
-      for (let i = 0; i < positions.length; i += 3) {
-        const ox = origPositions[i], oy = origPositions[i + 1], oz = origPositions[i + 2];
-        const wave = Math.sin(ox * 0.35 + t * 5) * Math.cos(oy * 0.35 + t * 4);
-        const disp = voiceEnergy * 2.8 * wave;
-        positions[i] = ox + (ox / 13) * disp;
-        positions[i + 1] = oy + (oy / 13) * disp;
-        positions[i + 2] = oz + (oz / 13) * disp;
+      const pos = particleGeo.attributes.position.array;
+      const linePos = lineGeo.attributes.position.array;
+      let lineIndex = 0;
+
+      for (let i = 0; i < PARTICLE_COUNT; i++) {
+        const orig = originalVectors[i];
+        const jitter = voiceActive ? Math.sin(t * 10 + i) * audioEnergy * 3.5 : 0;
+        const curR = (orig.length() + jitter) * expansion;
+
+        const dir = orig.clone().normalize();
+        const curVec = dir.multiplyScalar(curR);
+
+        pos[i * 3] = curVec.x;
+        pos[i * 3 + 1] = curVec.y;
+        pos[i * 3 + 2] = curVec.z;
+
+        if (i < 80 && lineIndex < maxLines * 6) {
+          for (let j = i + 1; j < 80; j++) {
+            const dx = pos[i * 3] - pos[j * 3];
+            const dy = pos[i * 3 + 1] - pos[j * 3 + 1];
+            const dz = pos[i * 3 + 2] - pos[j * 3 + 2];
+            const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+            if (dist < 18 * expansion) {
+              linePos[lineIndex++] = pos[i * 3];
+              linePos[lineIndex++] = pos[i * 3 + 1];
+              linePos[lineIndex++] = pos[i * 3 + 2];
+              linePos[lineIndex++] = pos[j * 3];
+              linePos[lineIndex++] = pos[j * 3 + 1];
+              linePos[lineIndex++] = pos[j * 3 + 2];
+            }
+          }
+        }
       }
-      icoGeo.attributes.position.needsUpdate = true;
 
-      // 底部波形
+      particleGeo.attributes.position.needsUpdate = true;
+      lineGeo.attributes.position.needsUpdate = true;
+
       for (let i = 0; i < waveBars.length; i++) {
         let h = 3;
-        if (voiceEnergy > 0) h = 3 + voiceEnergy * 15 * (Math.sin(t * 14 + i) * 0.5 + 0.5);
+        if (voiceActive) h = 3 + (audioEnergy * 15 * (Math.sin(t * 14 + i) * 0.5 + 0.5));
         else if (isListening) h = 3 + Math.sin(t * 10 + i * 0.6) * 5;
         else h = 3 + Math.sin(t * 2 + i * 0.4) * 2.5;
         waveBars[i].style.height = `${Math.min(h, 18)}px`;
@@ -1158,6 +1209,43 @@
       renderer.render(scene, camera);
     }
     renderLoop();
+
+    // 10. 定時遠端同步
+    async function syncData() {
+      try {
+        const res = await fetch(GAS_ENDPOINT);
+        const data = await res.json();
+
+        document.getElementById('defcon-status').innerText = data.defcon || "DEFCON 4 // PACIFIC MATRIX";
+        document.getElementById('tactical-advice').innerText = data.advice || "DORMANT MONITORING";
+
+        if (data.assets) {
+          data.assets.forEach(a => {
+            const v = document.getElementById(`val-${a.symbol}`);
+            const s = document.getElementById(`stat-${a.symbol}`);
+            if (v) v.innerText = a.price;
+            if (s) s.innerText = a.defense;
+            if (TARGET_DB[a.symbol]) TARGET_DB[a.symbol].meta1 = `現價: ${a.price} | 防守: ${a.defense}`;
+          });
+        }
+
+        if (data.usMarket) {
+          data.usMarket.forEach(u => {
+            const el = document.getElementById(`us-${u.symbol.toLowerCase()}`);
+            if (el) {
+              el.innerText = `${u.price} (${u.change})`;
+              el.className = u.trend === "UP" ? "up-tag" : "down-tag";
+            }
+          });
+        }
+      } catch (e) {
+        console.warn("Telemetry waiting...", e);
+      }
+    }
+    syncData();
+    setInterval(syncData, 30000);
+
+    drawHUDNeonChart(TARGET_DB['8299'].chartTrend, TARGET_DB['8299'].defVal);
 
     setInterval(() => {
       const now = new Date();
