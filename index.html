@@ -3,14 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>J.A.R.V.I.S. // PACIFIC STRATEGIC MONITOR MK-XIV</title>
+  <title>J.A.R.V.I.S. // PACIFIC STRATEGIC MONITOR MK-XV</title>
   
-  <!-- 軍規科幻字型 -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
   
-  <!-- 頂級地理測繪與 3D 運算庫 (極速 CDN 自動載入) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -37,20 +35,7 @@
       color: var(--cyan);
     }
 
-    /* 背景微光矩陣 */
-    .bg-grid {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      background-image: 
-        linear-gradient(rgba(0, 245, 212, 0.025) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 245, 212, 0.025) 1px, transparent 1px);
-      background-size: 40px 40px;
-      z-index: 1;
-      pointer-events: none;
-    }
-
-    /* 中央高精大地 Canvas */
+    /* 2.5D 微立體全息投影地圖 Canvas */
     #world-map-canvas {
       position: absolute;
       top: 0;
@@ -60,13 +45,36 @@
       z-index: 2;
     }
 
-    /* 頂部戰術橫幅 */
+    /* 背景戰術微光網格與地平線景深 */
+    .bg-grid {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        linear-gradient(rgba(0, 245, 212, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 245, 212, 0.02) 1px, transparent 1px);
+      background-size: 45px 45px;
+      z-index: 1;
+      pointer-events: none;
+    }
+    .vignette-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 50% 50%, transparent 40%, rgba(1, 6, 14, 0.75) 90%);
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    /* 頂部戰情監控條 */
     .hud-top-bar {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
-      height: 54px;
+      height: 52px;
       z-index: 20;
       display: flex;
       justify-content: space-between;
@@ -77,7 +85,7 @@
       backdrop-filter: blur(12px);
     }
     .brand-title {
-      font-size: 20px;
+      font-size: 19px;
       letter-spacing: 4px;
       font-weight: 900;
       color: #ffffff;
@@ -95,7 +103,7 @@
       align-items: center;
       background: rgba(2, 16, 26, 0.75);
       border: 1px solid var(--border-line);
-      padding: 5px 16px;
+      padding: 4px 14px;
       border-radius: 2px;
     }
     .us-item { font-size: 11px; letter-spacing: 1px; font-weight: 700; }
@@ -113,11 +121,11 @@
     }
     @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-    /* 左右分欄翼架構 */
+    /* 左右分欄主控架構 (中央純淨地圖 100% 展現) */
     .hud-flanks-container {
       position: absolute;
-      top: 60px;
-      bottom: 50px;
+      top: 58px;
+      bottom: 48px;
       left: 0;
       width: 100%;
       z-index: 15;
@@ -139,13 +147,13 @@
     .asset-deck {
       display: flex;
       flex-direction: column;
-      gap: 9px;
+      gap: 8px;
     }
     .card {
       background: var(--bg-panel);
       border: 1px solid var(--border-line);
       border-left: 4px solid var(--cyan);
-      padding: 9px 15px;
+      padding: 8px 14px;
       backdrop-filter: blur(12px);
       box-shadow: 0 0 16px rgba(0, 245, 212, 0.05);
       cursor: pointer;
@@ -157,33 +165,38 @@
       box-shadow: 0 0 20px var(--cyan-glow);
     }
     .card-ticker { font-size: 10px; color: rgba(255, 255, 255, 0.7); letter-spacing: 1px; font-weight: 700; }
-    .card-val { font-size: 19px; font-weight: 900; color: #fff; margin: 2px 0; letter-spacing: 1px; text-shadow: 0 0 8px var(--cyan-glow); }
+    .card-val { font-size: 18px; font-weight: 900; color: #fff; margin: 2px 0; letter-spacing: 1px; text-shadow: 0 0 8px var(--cyan-glow); }
     .card-status { font-size: 10px; color: var(--cyan); font-weight: 700; }
 
-    /* 左下角 A02/01 全息 3D 視窗 */
+    /* 左下角 A02/01 全息 3D 視窗 (具備互動膨脹與狀態切換) */
     .core-module-frame {
       background: var(--bg-panel);
       border: 1px solid var(--border-line);
       border-left: 4px solid var(--cyan);
-      padding: 10px;
+      padding: 9px;
       backdrop-filter: blur(12px);
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 5px;
+      transition: border-color 0.3s;
+    }
+    .core-module-frame.active-listening {
+      border-color: #ff0055;
+      box-shadow: 0 0 25px rgba(255, 0, 85, 0.4);
     }
     .core-title-bar {
       display: flex;
       justify-content: space-between;
       font-size: 9px;
       letter-spacing: 1.5px;
-      color: rgba(255, 255, 255, 0.7);
+      color: rgba(255, 255, 255, 0.75);
       border-bottom: 1px solid rgba(0, 245, 212, 0.15);
       padding-bottom: 4px;
       font-weight: 700;
     }
     #three-viewport {
       width: 100%;
-      height: 140px;
+      height: 135px;
       position: relative;
     }
     .core-telemetry-text {
@@ -195,20 +208,20 @@
       font-weight: 700;
     }
 
-    /* 右側情報翼 (330px) */
+    /* 右側情報翼 (340px) */
     .flank-right {
-      width: 330px;
+      width: 340px;
       height: 100%;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
       pointer-events: auto;
     }
     .panel-box {
       background: var(--bg-panel);
       border: 1px solid var(--border-line);
       border-right: 4px solid var(--cyan);
-      padding: 12px 16px;
+      padding: 10px 14px;
       backdrop-filter: blur(12px);
       box-shadow: 0 0 16px rgba(0, 245, 212, 0.05);
     }
@@ -217,8 +230,8 @@
       letter-spacing: 2px;
       color: var(--cyan);
       border-bottom: 1px solid rgba(0, 245, 212, 0.2);
-      padding-bottom: 6px;
-      margin-bottom: 8px;
+      padding-bottom: 5px;
+      margin-bottom: 7px;
       font-weight: 900;
       display: flex;
       justify-content: space-between;
@@ -226,18 +239,18 @@
     .intel-scroll {
       display: flex;
       flex-direction: column;
-      gap: 6px;
-      max-height: 160px;
+      gap: 5px;
+      max-height: 145px;
       overflow-y: auto;
     }
     .intel-item {
       font-size: 11px;
-      line-height: 1.45;
+      line-height: 1.4;
       color: rgba(255, 255, 255, 0.85);
       font-family: 'Rajdhani', sans-serif;
       font-weight: 600;
       cursor: pointer;
-      padding: 5px 8px;
+      padding: 4px 6px;
       border-radius: 2px;
       transition: background 0.2s;
     }
@@ -247,7 +260,7 @@
     }
     .intel-loc { color: var(--cyan); font-weight: 900; margin-right: 4px; }
 
-    /* 常駐戰術機密檔案 */
+    /* 右側常駐戰術機密檔案 (Dossier) */
     .dossier-box {
       flex: 1;
       display: flex;
@@ -255,42 +268,52 @@
       justify-content: space-between;
     }
     .dossier-header-title {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 900;
       color: #fff;
-      margin-bottom: 4px;
+      margin-bottom: 3px;
       letter-spacing: 1px;
-    }
-    .dossier-body-text {
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 13px;
-      line-height: 1.5;
-      color: rgba(255, 255, 255, 0.88);
-      font-weight: 600;
-      margin-bottom: 8px;
     }
     .dossier-meta-line {
       font-size: 11px;
       font-family: 'Rajdhani', sans-serif;
       color: rgba(0, 245, 212, 0.85);
-      margin-bottom: 4px;
+      margin-bottom: 3px;
     }
+    .dossier-body-text {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 12px;
+      line-height: 1.45;
+      color: rgba(255, 255, 255, 0.88);
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    /* 內嵌 HUD 霓虹折線走勢圖 Canvas */
+    #intraday-chart-canvas {
+      width: 100%;
+      height: 85px;
+      background: rgba(1, 8, 16, 0.7);
+      border: 1px solid rgba(0, 245, 212, 0.2);
+      border-radius: 2px;
+      margin-bottom: 6px;
+    }
+
     .source-action-btn {
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
-      background: rgba(0, 245, 212, 0.15);
+      background: rgba(0, 245, 212, 0.12);
       border: 1px solid var(--cyan);
       color: #fff;
-      padding: 8px 12px;
+      padding: 7px 10px;
       font-size: 11px;
       font-weight: 700;
       letter-spacing: 1px;
       text-decoration: none;
       border-radius: 2px;
       transition: all 0.2s;
-      margin-top: 6px;
     }
     .source-action-btn:hover {
       background: var(--cyan);
@@ -304,7 +327,7 @@
       bottom: 0;
       left: 0;
       width: 100%;
-      height: 48px;
+      height: 46px;
       z-index: 20;
       display: flex;
       justify-content: space-between;
@@ -326,7 +349,7 @@
       background: rgba(2, 14, 22, 0.7);
       border: 1px solid var(--border-line);
       border-left: 3px solid var(--cyan);
-      padding: 7px 14px;
+      padding: 6px 12px;
       color: #fff;
       font-family: 'Rajdhani', sans-serif;
       font-size: 13px;
@@ -339,7 +362,7 @@
       background: rgba(0, 245, 212, 0.1);
       border: 1px solid var(--cyan);
       color: var(--cyan);
-      padding: 6px 14px;
+      padding: 5px 12px;
       font-size: 10px;
       font-weight: 700;
       letter-spacing: 1px;
@@ -358,12 +381,13 @@
 <body>
 
   <div class="bg-grid"></div>
+  <div class="vignette-overlay"></div>
   <canvas id="world-map-canvas"></canvas>
 
   <div class="hud-top-bar">
     <div>
       <div class="brand-title">J.A.R.V.I.S. // PACIFIC CYBER MATRIX</div>
-      <div class="brand-sub" id="defcon-status">MK-XIV // HIGH-PRECISION GEO-INTEL ARMED</div>
+      <div class="brand-sub" id="defcon-status">MK-XV // 2.5D HOLOGRAPHIC STRATEGIC SANDTABLE</div>
     </div>
     <div class="us-market-bar">
       <div class="us-item"><span class="us-symbol">SOX 費半:</span><span id="us-sox">--</span></div>
@@ -380,7 +404,7 @@
     <!-- 左側戰術翼 -->
     <div class="flank-left">
       <div class="asset-deck">
-        <div style="font-size: 10px; letter-spacing: 2px; color: rgba(255,255,255,0.5); margin-bottom: 2px;">CORE ASSETS (3)</div>
+        <div style="font-size: 9px; letter-spacing: 2px; color: rgba(255,255,255,0.5); margin-bottom: 1px;">CORE ASSETS (3)</div>
         <div class="card" id="card-00685L" onclick="selectTarget('00685L')">
           <div class="card-ticker">加權正2 (00685L)</div>
           <div class="card-val" id="val-00685L">--</div>
@@ -399,22 +423,22 @@
       </div>
 
       <!-- 左下角 A02/01 全息視窗 -->
-      <div class="core-module-frame">
+      <div class="core-module-frame" id="core-frame-box">
         <div class="core-title-bar">
           <span>CORE // A02-01</span>
-          <span id="core-rot-stat">AZIMUTH: 0.0°</span>
+          <span id="core-status-badge" style="color:#00ffaa;">STANDBY</span>
         </div>
         <div id="three-viewport"></div>
         <div class="core-telemetry-text">
-          <span>QUANTUM CORE</span>
-          <span style="color:#00ffaa;">STABLE</span>
+          <span id="core-mode-label">PATROL ORBIT</span>
+          <span id="core-freq-label" style="color:rgba(0,245,212,0.8);">14.2 GHz</span>
         </div>
       </div>
     </div>
 
-    <!-- 右側情報翼 (精簡四大核心節點) -->
+    <!-- 右側情報翼 (5大記憶體戰略節點) -->
     <div class="flank-right">
-      <div class="panel-box" style="height: 200px; display: flex; flex-direction: column;">
+      <div class="panel-box" style="height: 185px; display: flex; flex-direction: column;">
         <div class="panel-title">
           <span>🌐 PACIFIC INTEL NODES</span>
           <span style="font-size: 8px; color: rgba(255,255,255,0.4);">[點擊選取]</span>
@@ -424,10 +448,11 @@
           <div class="intel-item" onclick="selectTarget('US')"><span class="intel-loc">[US 矽谷]</span> 輝達/美光 AI 儲存合約走揚，費半支撐強 ↗</div>
           <div class="intel-item" onclick="selectTarget('KR')"><span class="intel-loc">[KR 首爾]</span> 三星/海力士產能調控，NAND 跌勢收斂 ↗</div>
           <div class="intel-item" onclick="selectTarget('JP')"><span class="intel-loc">[JP 四日市]</span> 鎧俠四日市快閃基地，模組回補在庫 ↗</div>
+          <div class="intel-item" onclick="selectTarget('CN')"><span class="intel-loc">[CN 武漢]</span> 長江存儲 Xtacking 產能穩定，通路去化平穩 ↗</div>
         </div>
       </div>
 
-      <!-- 常駐戰術檔案 -->
+      <!-- 常駐戰術機密檔案 (含 HUD 內嵌折線走勢圖) -->
       <div class="panel-box dossier-box">
         <div>
           <div class="panel-title">
@@ -437,14 +462,17 @@
           <div class="dossier-header-title" id="dossier-title">群聯 (8299) NAND 控制晶片戰略檔案</div>
           <div class="dossier-meta-line" id="dossier-meta1">即時報價: 1990.00 | 早盤防守線: 1950.00</div>
           <div class="dossier-meta-line" id="dossier-meta2">持股: 1.1 張 (庫存 100 股 + 出借 1 張) | 日利息約 82 元</div>
+          
+          <!-- 內嵌 HUD 霓虹折線走勢圖 -->
+          <canvas id="intraday-chart-canvas"></canvas>
+          
           <div class="dossier-body-text" id="dossier-body">
-            群聯在 PCIe Gen5 主控市場取得關鍵市占。美光高容量企業級 SSD 報價走揚帶動多頭動能。守穩 1950 防守線之上，維持主力續抱劇本。
+            群聯在 PCIe Gen5 主控市場具備高技術門檻。美光高容量企業級 SSD 走揚帶動多頭動能。守穩 1950 防守線之上，維持主力續抱劇本。
           </div>
         </div>
         <div>
-          <div style="font-size: 10px; color: rgba(255,255,255,0.5); margin-bottom: 2px;">情資來源：鉅亨網 / Yahoo股市即時行情</div>
           <a href="https://tw.stock.yahoo.com/quote/8299.TWO" target="_blank" id="dossier-link-btn" class="source-action-btn">
-            🌐 開啟情報原文與即時走勢圖 ↗
+            🔗 閱讀該標的真實產業報告與新聞原文 ↗
           </a>
         </div>
       </div>
@@ -465,7 +493,7 @@
   <script>
     const GAS_ENDPOINT = "https://script.google.com/macros/s/AKfycbxWyoDCeA23D4ZIcUzhWcmm6RBpORpy3Sw7TO39ZR2WZoIA80IJzXq79cvYw0Z-EATspw/exec";
 
-    // 1. 純淨四大戰略資料庫
+    // 1. 五大戰略情報資料庫
     const TARGET_DB = {
       '8299': {
         tag: 'ASSET // 8299',
@@ -473,7 +501,9 @@
         meta1: '即時報價: 1990.00 | 早盤防守線: 1950.00',
         meta2: '實質持股: 1.1 張 (在庫 100 股 + 出借 1 張) | 日利息約 82 元',
         body: '群聯在企業級 SSD 控制晶片具備技術護城河。美光與威騰減產效應推升合約價，現價守穩 20MA 扣抵支撐位，維持紀律防守續抱。',
-        url: 'https://tw.stock.yahoo.com/quote/8299.TWO'
+        url: 'https://tw.stock.yahoo.com/quote/8299.TWO',
+        chartTrend: [1960, 1970, 1965, 1980, 1975, 1990, 1985, 1990],
+        defVal: 1950
       },
       '5289': {
         tag: 'ASSET // 5289',
@@ -481,7 +511,9 @@
         meta1: '即時報價: 1295.00 | 早盤防守線: 1250.00',
         meta2: '實質持股: 1.5 張 (在庫 500 股 + 出借 1 張) | 日利息約 43 元',
         body: '宜鼎深耕工業邊緣 AI 伺服器模組，出借 1 張每日產生穩定被動現金流。回測 1250 扣抵區不破，中線多方架構安全。',
-        url: 'https://tw.stock.yahoo.com/quote/5289.TWO'
+        url: 'https://tw.stock.yahoo.com/quote/5289.TWO',
+        chartTrend: [1260, 1270, 1265, 1280, 1290, 1285, 1295],
+        defVal: 1250
       },
       '00685L': {
         tag: 'ASSET // 00685L',
@@ -489,7 +521,9 @@
         meta1: '即時報價: 11.84 | 早盤防守線: 11.04',
         meta2: '庫存部位: 15,000 股 (15 張) | 浮盈保護中',
         body: '大盤維持多頭格局，20MA 扣抵位置助漲力道未歇。槓桿多單嚴格以 11.04 作為停利防守線，破線則執行減碼降槓桿。',
-        url: 'https://tw.stock.yahoo.com/quote/00685L.TW'
+        url: 'https://tw.stock.yahoo.com/quote/00685L.TW',
+        chartTrend: [11.2, 11.35, 11.3, 11.5, 11.65, 11.6, 11.84],
+        defVal: 11.04
       },
       'TW': {
         tag: 'GEO-NODE // TW',
@@ -497,7 +531,9 @@
         meta1: 'LAT 24.80°N / LON 120.97°E | 節點狀態: ONLINE',
         meta2: '產業核心: NAND 控制 IC、先進封裝供應鏈',
         body: '新竹科學園區主控全球 70% 高階儲存控制 IC 產能。隨 AI 伺服器導入高速 PCIe 5.0，現貨合約價格具備高韌性支撐。',
-        url: 'https://technews.tw/'
+        url: 'https://technews.tw/',
+        chartTrend: [1950, 1960, 1975, 1980, 1990],
+        defVal: 1950
       },
       'US': {
         tag: 'GEO-NODE // US',
@@ -505,7 +541,9 @@
         meta1: 'LAT 37.35°N / LON -121.95°W | 節點狀態: ACTIVE',
         meta2: '指標連動: 費城半導體 (SOX)、AI 伺服器企業儲存',
         body: '聖塔克拉拉為全球 AI 算力中心，輝達與各大雲端巨頭大幅包下 HBM 與企業級 PCIe 5.0 SSD 產能，美股費半走勢提供強勁外圍防護。',
-        url: 'https://finance.yahoo.com/quote/MU'
+        url: 'https://finance.yahoo.com/quote/MU',
+        chartTrend: [115, 118, 116, 122, 125, 128],
+        defVal: 110
       },
       'KR': {
         tag: 'GEO-NODE // KR',
@@ -513,7 +551,9 @@
         meta1: 'LAT 37.56°N / LON 126.97°E | 節點狀態: ONLINE',
         meta2: '原廠策略: 成熟製程減產、HBM3e/4 研發',
         body: '南韓兩大原廠維持產能調節，通路模組廠庫存維持健康水位，有效排除現貨市場突發拋售風險。',
-        url: 'https://www.reuters.com/technology/'
+        url: 'https://www.reuters.com/technology/',
+        chartTrend: [78000, 79200, 78800, 80500, 81200],
+        defVal: 77000
       },
       'JP': {
         tag: 'GEO-NODE // JP',
@@ -521,9 +561,103 @@
         meta1: 'LAT 34.96°N / LON 136.62°E | 節點狀態: ONLINE',
         meta2: '合作基地: 威騰電子 (WD) 聯合快閃晶圓廠',
         body: '鎧俠四日市工廠主導全球 BiCS NAND 產能。減產協議支撐下，下半年汽車電子與工控儲存市場回補週期明朗。',
-        url: 'https://zh.cn.nikkei.com/'
+        url: 'https://zh.cn.nikkei.com/',
+        chartTrend: [2400, 2450, 2430, 2480, 2520],
+        defVal: 2380
+      },
+      'CN': {
+        tag: 'GEO-NODE // CN',
+        title: '中國武漢 // 長江存儲 (YMTC) 基地',
+        meta1: 'LAT 30.59°N / LON 114.30°E | 節點狀態: WATCH',
+        meta2: '核心架構: Xtacking 3D NAND 製程',
+        body: '長江存儲在境內消費級與工控通路出貨維持平穩節奏，供需結構健康，未現低價拋售干擾國際行情。',
+        url: 'https://www.eet-china.com/',
+        chartTrend: [100, 102, 101, 103, 104],
+        defVal: 98
       }
     };
+
+    // 2. 繪製 HUD 內嵌霓虹折線走勢圖 (Neon Intraday Chart)
+    const chartCanvas = document.getElementById('intraday-chart-canvas');
+    const chartCtx = chartCanvas.getContext('2d');
+
+    function drawHUDNeonChart(points, defVal) {
+      chartCanvas.width = chartCanvas.clientWidth * window.devicePixelRatio;
+      chartCanvas.height = chartCanvas.clientHeight * window.devicePixelRatio;
+      const w = chartCanvas.width;
+      const h = chartCanvas.height;
+
+      chartCtx.clearRect(0, 0, w, h);
+
+      // 背景微光格線
+      chartCtx.strokeStyle = "rgba(0, 245, 212, 0.08)";
+      chartCtx.lineWidth = 1;
+      for (let x = 0; x < w; x += w / 6) {
+        chartCtx.beginPath(); chartCtx.moveTo(x, 0); chartCtx.lineTo(x, h); chartCtx.stroke();
+      }
+      for (let y = 0; y < h; y += h / 4) {
+        chartCtx.beginPath(); chartCtx.moveTo(0, y); chartCtx.lineTo(w, y); chartCtx.stroke();
+      }
+
+      if (!points || points.length === 0) return;
+
+      const minVal = Math.min(...points, defVal) * 0.985;
+      const maxVal = Math.max(...points, defVal) * 1.015;
+      const range = maxVal - minVal;
+
+      function getY(val) {
+        return h - ((val - minVal) / range) * (h - 20) - 10;
+      }
+      function getX(idx) {
+        return 20 + (idx / (points.length - 1)) * (w - 40);
+      }
+
+      // 繪製防守線 (橫向虛線)
+      const defY = getY(defVal);
+      chartCtx.strokeStyle = "rgba(255, 0, 85, 0.65)";
+      chartCtx.setLineDash([4, 4]);
+      chartCtx.beginPath();
+      chartCtx.moveTo(10, defY); chartCtx.lineTo(w - 10, defY);
+      chartCtx.stroke();
+      chartCtx.setLineDash([]);
+      chartCtx.fillStyle = "#ff0055";
+      chartCtx.font = `${8 * window.devicePixelRatio}px Orbitron`;
+      chartCtx.fillText(`DEF: ${defVal}`, 12, defY - 4);
+
+      // 繪製走勢霓虹折線
+      chartCtx.strokeStyle = "#00f5d4";
+      chartCtx.lineWidth = 2 * window.devicePixelRatio;
+      chartCtx.shadowColor = "rgba(0, 245, 212, 0.6)";
+      chartCtx.shadowBlur = 8;
+      chartCtx.beginPath();
+
+      points.forEach((val, idx) => {
+        const x = getX(idx);
+        const y = getY(val);
+        if (idx === 0) chartCtx.moveTo(x, y);
+        else chartCtx.lineTo(x, y);
+      });
+      chartCtx.stroke();
+      chartCtx.shadowBlur = 0;
+
+      // 漸層下半部填充
+      const grad = chartCtx.createLinearGradient(0, 0, 0, h);
+      grad.addColorStop(0, "rgba(0, 245, 212, 0.25)");
+      grad.addColorStop(1, "rgba(0, 245, 212, 0.0)");
+      chartCtx.fillStyle = grad;
+      chartCtx.lineTo(getX(points.length - 1), h);
+      chartCtx.lineTo(getX(0), h);
+      chartCtx.closePath();
+      chartCtx.fill();
+
+      // 最新價位光點
+      const lastX = getX(points.length - 1);
+      const lastY = getY(points[points.length - 1]);
+      chartCtx.fillStyle = "#ffffff";
+      chartCtx.beginPath();
+      chartCtx.arc(lastX, lastY, 3 * window.devicePixelRatio, 0, Math.PI * 2);
+      chartCtx.fill();
+    }
 
     window.selectTarget = function(id) {
       const data = TARGET_DB[id];
@@ -542,9 +676,11 @@
 
       document.querySelectorAll('.intel-item').forEach(i => i.classList.remove('active-node'));
       selectedNodeId = id;
+
+      drawHUDNeonChart(data.chartTrend, data.defVal);
     };
 
-    // 2. D3-Geo 高精測繪大地與環太平洋大圓弧
+    // 3. 2.5D 微立體世界地圖 (含武漢長存與全球首都星網)
     const mapCanvas = document.getElementById('world-map-canvas');
     const ctx = mapCanvas.getContext('2d');
 
@@ -558,7 +694,7 @@
     const projection = d3.geoEquirectangular();
     function updateProjection() {
       const leftPad = 275;
-      const rightPad = 330;
+      const rightPad = 340;
       const topPad = 60;
       const btmPad = 50;
       projection.fitExtent(
@@ -572,12 +708,26 @@
     const path = d3.geoPath(projection, ctx);
     const graticule = d3.geoGraticule10();
 
-    // 環太平洋 4 大黃金節點
+    // 第一戰線：5 大記憶體戰略節點
     const geoNodes = [
-      { id: "TW", name: "HSINCHU // 8299", lon: 120.97, lat: 24.8 },
+      { id: "TW", name: "HSINCHU // 8299·5289", lon: 120.97, lat: 24.80 },
       { id: "US", name: "SANTA CLARA // NVDA·MU", lon: -121.95, lat: 37.35 },
       { id: "KR", name: "SEOUL // SEC·HYNIX", lon: 126.97, lat: 37.56 },
-      { id: "JP", name: "YOKKAICHI // KIOXIA", lon: 136.62, lat: 34.96 }
+      { id: "JP", name: "YOKKAICHI // KIOXIA", lon: 136.62, lat: 34.96 },
+      { id: "CN", name: "WUHAN // YMTC", lon: 114.30, lat: 30.59 }
+    ];
+
+    // 第二戰線：全球主要金融與政治首都星芒網
+    const capitalNodes = [
+      { name: "WASHINGTON", lon: -77.03, lat: 38.90 },
+      { name: "NEW YORK", lon: -74.00, lat: 40.71 },
+      { name: "LONDON", lon: -0.12, lat: 51.50 },
+      { name: "FRANKFURT", lon: 8.68, lat: 50.11 },
+      { name: "SINGAPORE", lon: 103.81, lat: 1.35 },
+      { name: "BEIJING", lon: 116.40, lat: 39.90 },
+      { name: "TOKYO", lon: 139.69, lat: 35.68 },
+      { name: "ZURICH", lon: 8.54, lat: 47.37 },
+      { name: "SYDNEY", lon: 151.20, lat: -33.86 }
     ];
 
     let landData = null;
@@ -585,7 +735,6 @@
     let mapTick = 0;
     let selectedNodeId = 'TW';
 
-    // 載入高精真實地理數據
     fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')
       .then(res => res.json())
       .then(topo => {
@@ -598,76 +747,97 @@
       ctx.clearRect(0, 0, mapCanvas.width, mapCanvas.height);
       mapTick += 0.025;
 
-      // 經緯網格
+      // 經緯微光格線
       ctx.beginPath();
       path(graticule);
-      ctx.strokeStyle = "rgba(0, 245, 212, 0.04)";
+      ctx.strokeStyle = "rgba(0, 245, 212, 0.035)";
       ctx.lineWidth = 1;
       ctx.stroke();
 
-      // 渲染真實大地輪廓
+      // 大陸真實幾何輪廓
       if (landData) {
         ctx.beginPath();
         path(landData);
-        ctx.fillStyle = "rgba(0, 245, 212, 0.04)";
+        ctx.fillStyle = "rgba(0, 245, 212, 0.035)";
         ctx.fill();
-        ctx.strokeStyle = "rgba(0, 245, 212, 0.55)";
+        ctx.strokeStyle = "rgba(0, 245, 212, 0.5)";
         ctx.lineWidth = 1.1;
         ctx.stroke();
       }
 
-      // 渲染國家微光疆界線
+      // 國家疆界網格
       if (bordersData) {
         ctx.beginPath();
         path(bordersData);
-        ctx.strokeStyle = "rgba(0, 245, 212, 0.12)";
+        ctx.strokeStyle = "rgba(0, 245, 212, 0.1)";
         ctx.lineWidth = 0.8;
         ctx.stroke();
       }
 
-      // 環太平洋大圓弧航線繪製 (新竹連接至美、韓、日)
+      // 繪製全球首都星網 (微弱呼吸星點與神經連線)
+      capitalNodes.forEach((cap, i) => {
+        const pt = projection([cap.lon, cap.lat]);
+        if (!pt) return;
+        ctx.fillStyle = "rgba(255, 255, 255, 0.4)";
+        ctx.beginPath();
+        ctx.arc(pt[0], pt[1], 1.6, 0, Math.PI * 2);
+        ctx.fill();
+
+        // 鄰近首都連線
+        if (i < capitalNodes.length - 1) {
+          const nextPt = projection([capitalNodes[i+1].lon, capitalNodes[i+1].lat]);
+          if (nextPt) {
+            ctx.strokeStyle = "rgba(0, 245, 212, 0.06)";
+            ctx.beginPath();
+            ctx.moveTo(pt[0], pt[1]); ctx.lineTo(nextPt[0], nextPt[1]);
+            ctx.stroke();
+          }
+        }
+      });
+
+      // 雙向跨洋供應鏈大圓弧航線
       const twPt = projection([120.97, 24.8]);
       const usPt = projection([-121.95, 37.35]);
       const krPt = projection([126.97, 37.56]);
       const jpPt = projection([136.62, 34.96]);
+      const cnPt = projection([114.30, 30.59]);
 
-      function drawSmoothArc(p1, p2, lift, speed, seed) {
+      function drawTwoWayArc(p1, p2, lift, speed, seed) {
         if (!p1 || !p2) return;
         const midX = (p1[0] + p2[0]) / 2;
         const midY = (p1[1] + p2[1]) / 2 - lift;
 
-        // 弧線軌跡
         ctx.beginPath();
-        ctx.strokeStyle = "rgba(0, 245, 212, 0.22)";
+        ctx.strokeStyle = "rgba(0, 245, 212, 0.2)";
         ctx.setLineDash([3, 4]);
-        ctx.lineWidth = 1;
         ctx.moveTo(p1[0], p1[1]);
         ctx.quadraticCurveTo(midX, midY, p2[0], p2[1]);
         ctx.stroke();
         ctx.setLineDash([]);
 
-        // 飛馳光子
-        const progress = (mapTick * speed + seed) % 1;
-        const t = progress;
-        const qx = (1 - t) * (1 - t) * p1[0] + 2 * (1 - t) * t * midX + t * t * p2[0];
-        const qy = (1 - t) * (1 - t) * p1[1] + 2 * (1 - t) * t * midY + t * t * p2[1];
-
+        // 東向出貨流 (青藍光子: 亞洲 -> 美國)
+        const tEast = (mapTick * speed + seed) % 1;
+        const ex = (1 - tEast) * (1 - tEast) * p1[0] + 2 * (1 - tEast) * tEast * midX + tEast * tEast * p2[0];
+        const ey = (1 - tEast) * (1 - tEast) * p1[1] + 2 * (1 - tEast) * tEast * midY + tEast * tEast * p2[1];
         ctx.fillStyle = "#ffffff";
-        ctx.beginPath();
-        ctx.arc(qx, qy, 2.5, 0, Math.PI * 2);
-        ctx.fill();
-
+        ctx.beginPath(); ctx.arc(ex, ey, 2.5, 0, Math.PI * 2); ctx.fill();
         ctx.strokeStyle = "rgba(0, 245, 212, 0.8)";
-        ctx.beginPath();
-        ctx.arc(qx, qy, 6, 0, Math.PI * 2);
-        ctx.stroke();
+        ctx.beginPath(); ctx.arc(ex, ey, 5, 0, Math.PI * 2); ctx.stroke();
+
+        // 西向訂單流 (白金光子: 美國 -> 亞洲)
+        const tWest = 1 - ((mapTick * speed * 0.8 + seed) % 1);
+        const wx = (1 - tWest) * (1 - tWest) * p1[0] + 2 * (1 - tWest) * tWest * midX + tWest * tWest * p2[0];
+        const wy = (1 - tWest) * (1 - tWest) * p1[1] + 2 * (1 - tWest) * tWest * midY + tWest * tWest * p2[1];
+        ctx.fillStyle = "#ffdd88";
+        ctx.beginPath(); ctx.arc(wx, wy, 2, 0, Math.PI * 2); ctx.fill();
       }
 
-      drawSmoothArc(twPt, usPt, 65, 0.25, 0.1);
-      drawSmoothArc(twPt, krPt, 22, 0.45, 0.4);
-      drawSmoothArc(twPt, jpPt, 28, 0.40, 0.7);
+      drawTwoWayArc(twPt, usPt, 65, 0.24, 0.1);
+      drawTwoWayArc(twPt, krPt, 20, 0.40, 0.4);
+      drawTwoWayArc(twPt, jpPt, 25, 0.38, 0.7);
+      drawTwoWayArc(twPt, cnPt, 16, 0.42, 0.2);
 
-      // 四大節點雷達光環與標註
+      // 第一戰線 5 大記憶體節點
       geoNodes.forEach(node => {
         const pt = projection([node.lon, node.lat]);
         if (!pt) return;
@@ -725,7 +895,7 @@
       mapCanvas.style.cursor = found ? 'pointer' : 'default';
     });
 
-    // 3. 左下角 A02/01 全息 3D 視窗
+    // 4. 左下角 A02/01 3D 全息視窗 (支援語音膨脹與震波)
     const threeBox = document.getElementById('three-viewport');
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(45, threeBox.clientWidth / threeBox.clientHeight, 1, 1000);
@@ -762,7 +932,7 @@
     miniCore.add(ring1);
     miniCore.add(ring2);
 
-    // 4. 定時遠端遙測
+    // 5. 數據遠端同步
     async function syncData() {
       try {
         const res = await fetch(GAS_ENDPOINT);
@@ -797,21 +967,58 @@
     syncData();
     setInterval(syncData, 30000);
 
-    // 5. 語音對話與共振
+    // 初始化走勢圖
+    drawHUDNeonChart(TARGET_DB['8299'].chartTrend, TARGET_DB['8299'].defVal);
+
+    // 6. 賈維斯三態互動控制 (STANDBY / LISTENING / DISPATCHING)
     let voiceActive = false;
     let voiceEnergy = 0;
+    let isListening = false;
+
+    function setCoreState(state) {
+      const badge = document.getElementById('core-status-badge');
+      const label = document.getElementById('core-mode-label');
+      const box = document.getElementById('core-frame-box');
+
+      if (state === "LISTENING") {
+        badge.innerText = "LISTENING";
+        badge.style.color = "#ff0055";
+        label.innerText = "MIC INPUT ACTIVE";
+        box.classList.add('active-listening');
+      } else if (state === "DISPATCHING") {
+        badge.innerText = "DISPATCH";
+        badge.style.color = "#00ffaa";
+        label.innerText = "NEURAL RESPONDING";
+        box.classList.remove('active-listening');
+      } else {
+        badge.innerText = "STANDBY";
+        badge.style.color = "#00ffaa";
+        label.innerText = "PATROL ORBIT";
+        box.classList.remove('active-listening');
+      }
+    }
 
     function triggerJarvisVoice(text) {
       voiceActive = true;
+      setCoreState("DISPATCHING");
+
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
         const utter = new SpeechSynthesisUtterance(text);
         utter.lang = 'zh-TW';
         utter.rate = 1.05;
-        utter.onend = () => { voiceActive = false; voiceEnergy = 0; };
+        utter.onend = () => {
+          voiceActive = false;
+          voiceEnergy = 0;
+          setCoreState("STANDBY");
+        };
         window.speechSynthesis.speak(utter);
       } else {
-        setTimeout(() => { voiceActive = false; voiceEnergy = 0; }, 3000);
+        setTimeout(() => {
+          voiceActive = false;
+          voiceEnergy = 0;
+          setCoreState("STANDBY");
+        }, 3000);
       }
     }
 
@@ -840,7 +1047,6 @@
 
     // 語音收音
     let recognition = null;
-    let isRecording = false;
     const voiceBtn = document.getElementById('voice-status-btn');
     const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
 
@@ -859,40 +1065,42 @@
     }
 
     function startVoiceRecording() {
-      if (!recognition || isRecording) return;
-      isRecording = true;
+      if (!recognition || isListening) return;
+      isListening = true;
+      setCoreState("LISTENING");
       voiceBtn.classList.add('recording');
       voiceBtn.innerText = "🔴 聆聽中...";
       try { recognition.start(); } catch(e) {}
     }
 
     function stopVoiceRecording() {
-      if (!isRecording) return;
-      isRecording = false;
+      if (!isListening) return;
+      isListening = false;
+      if (!voiceActive) setCoreState("STANDBY");
       voiceBtn.classList.remove('recording');
       voiceBtn.innerText = "🎙️ 語音通話";
       try { recognition.stop(); } catch(e) {}
     }
 
     window.toggleVoiceRecording = function() {
-      if (isRecording) stopVoiceRecording();
+      if (isListening) stopVoiceRecording();
       else startVoiceRecording();
     };
 
     window.addEventListener('keydown', (e) => {
-      if (e.code === 'Space' && e.target !== termInput && !isRecording) {
+      if (e.code === 'Space' && e.target !== termInput && !isListening) {
         e.preventDefault();
         startVoiceRecording();
       }
     });
     window.addEventListener('keyup', (e) => {
-      if (e.code === 'Space' && isRecording) {
+      if (e.code === 'Space' && isListening) {
         e.preventDefault();
         stopVoiceRecording();
       }
     });
 
-    // 6. 動態渲染循環
+    // 7. 動態渲染循環
     const waveBox = document.getElementById('wave-container');
     const waveBars = [];
     for (let i = 0; i < 18; i++) {
@@ -907,15 +1115,25 @@
       requestAnimationFrame(renderLoop);
       const t = clock.getElapsedTime();
 
-      if (voiceActive) voiceEnergy = Math.sin(t * 16) * 0.8 + 0.6;
-      else voiceEnergy = 0;
+      // 核心狀態動態物理形變
+      let targetScale = 1.0;
+      let rotSpeed = 0.4;
 
-      miniCore.rotation.y = t * 0.4;
+      if (isListening) {
+        targetScale = 1.25; // 聆聽時向外膨脹 25%
+        rotSpeed = 1.2;     // 轉速加快 3 倍
+      } else if (voiceActive) {
+        voiceEnergy = Math.sin(t * 16) * 0.8 + 0.6;
+        targetScale = 1.15;
+      } else {
+        voiceEnergy = 0;
+      }
+
+      miniCore.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.1);
+      miniCore.rotation.y = t * rotSpeed;
       miniCore.rotation.x = Math.sin(t * 0.25) * 0.2;
-      ring1.rotation.z = -t * 0.45;
-      ring2.rotation.z = t * 0.3;
-
-      document.getElementById('core-rot-stat').innerText = `AZIMUTH: ${(t * 22 % 360).toFixed(1)}°`;
+      ring1.rotation.z = -t * (rotSpeed * 1.1);
+      ring2.rotation.z = t * (rotSpeed * 0.8);
 
       const positions = icoGeo.attributes.position.array;
       for (let i = 0; i < positions.length; i += 3) {
@@ -928,9 +1146,11 @@
       }
       icoGeo.attributes.position.needsUpdate = true;
 
+      // 底部波形
       for (let i = 0; i < waveBars.length; i++) {
         let h = 3;
         if (voiceEnergy > 0) h = 3 + voiceEnergy * 15 * (Math.sin(t * 14 + i) * 0.5 + 0.5);
+        else if (isListening) h = 3 + Math.sin(t * 10 + i * 0.6) * 5;
         else h = 3 + Math.sin(t * 2 + i * 0.4) * 2.5;
         waveBars[i].style.height = `${Math.min(h, 18)}px`;
       }
