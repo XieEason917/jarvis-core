@@ -3,7 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>J.A.R.V.I.S. // STRATEGIC COMMAND INTELLIGENCE</title>
+  <title>J.A.R.V.I.S. // TACTICAL GEO-COMMAND</title>
+  <!-- 引入科幻軍規字體 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+  
   <style>
     * {
       margin: 0;
@@ -12,18 +17,17 @@
       user-select: none;
     }
     :root {
-      --theme-color: #ffaa00;
-      --theme-glow: rgba(255, 170, 0, 0.4);
-      --bg-card: rgba(22, 16, 5, 0.7);
+      --theme-color: #00f5d4;
+      --theme-glow: rgba(0, 245, 212, 0.45);
+      --bg-card: rgba(4, 20, 28, 0.75);
     }
     html, body {
       width: 100vw;
       height: 100vh;
-      background-color: #020408 !important;
+      background-color: #02070e !important;
       overflow: hidden;
-      font-family: 'Courier New', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace;
+      font-family: 'Orbitron', 'Rajdhani', -apple-system, monospace;
       color: var(--theme-color);
-      transition: color 0.6s ease;
     }
     #canvas-container {
       position: absolute;
@@ -33,15 +37,26 @@
       height: 100vh;
       z-index: 1;
     }
+    /* 平面向量世界地圖畫布 */
+    #world-map-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 2;
+      pointer-events: none;
+      opacity: 0.85;
+    }
     .bg-grid {
       position: absolute;
       width: 100%;
       height: 100%;
       background-image: 
-        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-      background-size: 40px 40px;
-      z-index: 2;
+        linear-gradient(rgba(0, 245, 212, 0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 245, 212, 0.035) 1px, transparent 1px);
+      background-size: 50px 50px;
+      z-index: 3;
       pointer-events: none;
     }
     .hud-layer {
@@ -55,68 +70,69 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 20px 28px;
+      padding: 24px 32px;
     }
     .hud-header {
       display: flex;
       justify-content: space-between;
-      align-items: flex-start;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-      padding-bottom: 10px;
+      align-items: center;
+      border-bottom: 1.5px solid rgba(0, 245, 212, 0.25);
+      padding-bottom: 14px;
     }
     .brand-title {
-      font-size: 20px;
+      font-size: 24px;
       letter-spacing: 5px;
       font-weight: 900;
       color: #ffffff;
-      text-shadow: 0 0 16px var(--theme-color);
+      text-shadow: 0 0 18px var(--theme-color);
     }
     .brand-sub {
-      font-size: 10px;
-      color: rgba(255, 255, 255, 0.55);
-      letter-spacing: 2px;
-      margin-top: 3px;
+      font-size: 11px;
+      color: rgba(0, 245, 212, 0.75);
+      letter-spacing: 3px;
+      margin-top: 4px;
     }
 
-    /* 美股即時戰略條 */
+    /* 美股先導監控 */
     .us-market-bar {
       display: flex;
-      gap: 12px;
+      gap: 16px;
       align-items: center;
-      background: rgba(0, 0, 0, 0.4);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      padding: 5px 14px;
+      background: rgba(2, 14, 22, 0.65);
+      border: 1px solid rgba(0, 245, 212, 0.3);
+      padding: 6px 18px;
       border-radius: 2px;
     }
     .us-item {
-      font-size: 10px;
+      font-size: 12px;
       letter-spacing: 1px;
+      font-weight: 700;
     }
     .us-symbol {
-      color: rgba(255, 255, 255, 0.6);
-      margin-right: 4px;
+      color: rgba(255, 255, 255, 0.65);
+      margin-right: 5px;
     }
-    .up-tag { color: #00ffaa; }
-    .down-tag { color: #ff0055; }
+    .up-tag { color: #00ffaa; text-shadow: 0 0 8px #00ffaa; }
+    .down-tag { color: #ff0055; text-shadow: 0 0 8px #ff0055; }
 
     .sys-telemetry {
       text-align: right;
-      font-size: 11px;
+      font-size: 12px;
       letter-spacing: 2px;
     }
     .status-badge {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
       font-weight: bold;
       color: var(--theme-color);
     }
     .status-dot {
-      width: 8px;
-      height: 8px;
+      width: 9px;
+      height: 9px;
       background: var(--theme-color);
       border-radius: 50%;
-      box-shadow: 0 0 10px var(--theme-color);
+      box-shadow: 0 0 12px var(--theme-color);
       animation: pulse 1.6s infinite;
     }
     @keyframes pulse {
@@ -124,144 +140,160 @@
       50% { opacity: 0.3; transform: scale(0.8); }
     }
 
-    /* 中段戰術卡片 */
+    /* 中段作戰佈局 */
     .middle-deck {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      margin-top: 14px;
+      margin-top: 18px;
       width: 100%;
     }
     .asset-deck {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 12px;
     }
     .card {
       background: var(--bg-card);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-left: 3px solid var(--theme-color);
-      padding: 8px 14px;
-      backdrop-filter: blur(10px);
-      min-width: 165px;
-      transition: all 0.4s ease;
+      border: 1px solid rgba(0, 245, 212, 0.2);
+      border-left: 4px solid var(--theme-color);
+      padding: 10px 18px;
+      backdrop-filter: blur(12px);
+      min-width: 190px;
+      box-shadow: 0 0 20px rgba(0, 245, 212, 0.05);
+      transition: all 0.3s;
     }
     .card-ticker {
-      font-size: 9px;
-      color: rgba(255, 255, 255, 0.6);
-      letter-spacing: 1px;
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.7);
+      letter-spacing: 1.5px;
+      font-weight: 700;
     }
     .card-val {
-      font-size: 17px;
-      font-weight: bold;
+      font-size: 20px;
+      font-weight: 900;
       color: #ffffff;
-      margin: 2px 0;
-      letter-spacing: 1px;
+      margin: 4px 0;
+      letter-spacing: 1.5px;
+      text-shadow: 0 0 10px rgba(0, 245, 212, 0.5);
     }
     .card-status {
-      font-size: 9px;
+      font-size: 11px;
       color: var(--theme-color);
+      font-weight: 700;
     }
 
     .intel-panel {
       background: var(--bg-card);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-right: 3px solid var(--theme-color);
-      padding: 10px 14px;
-      backdrop-filter: blur(10px);
-      width: 300px;
+      border: 1px solid rgba(0, 245, 212, 0.2);
+      border-right: 4px solid var(--theme-color);
+      padding: 12px 18px;
+      backdrop-filter: blur(12px);
+      width: 340px;
       pointer-events: auto;
     }
     .intel-title {
-      font-size: 10px;
+      font-size: 12px;
       letter-spacing: 2px;
       color: var(--theme-color);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      padding-bottom: 5px;
-      margin-bottom: 6px;
-      font-weight: bold;
+      border-bottom: 1px solid rgba(0, 245, 212, 0.2);
+      padding-bottom: 6px;
+      margin-bottom: 8px;
+      font-weight: 900;
     }
     .intel-item {
-      font-size: 10px;
-      line-height: 1.4;
-      margin-bottom: 6px;
-      color: rgba(255, 255, 255, 0.8);
+      font-size: 12px;
+      line-height: 1.5;
+      margin-bottom: 8px;
+      color: rgba(255, 255, 255, 0.85);
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 600;
     }
     .intel-loc {
       color: var(--theme-color);
-      font-weight: bold;
+      font-weight: 900;
       margin-right: 4px;
     }
 
-    /* 賈維斯 AI 回報卡片 */
+    /* 終端回覆框 */
     .jarvis-response-box {
-      background: rgba(4, 10, 20, 0.88);
-      border: 1px solid var(--theme-color);
-      padding: 10px 16px;
-      backdrop-filter: blur(12px);
+      background: rgba(3, 15, 22, 0.92);
+      border: 1.5px solid var(--theme-color);
+      padding: 12px 20px;
+      backdrop-filter: blur(16px);
       border-radius: 2px;
-      margin-bottom: 10px;
-      max-width: 680px;
-      box-shadow: 0 0 25px var(--theme-glow);
+      margin-bottom: 12px;
+      max-width: 720px;
+      box-shadow: 0 0 30px var(--theme-glow);
       display: none;
     }
     .response-header {
-      font-size: 9px;
+      font-size: 10px;
       letter-spacing: 2px;
       color: var(--theme-color);
-      margin-bottom: 4px;
+      margin-bottom: 6px;
+      font-weight: 700;
     }
     .response-text {
-      font-size: 13px;
-      line-height: 1.5;
+      font-size: 14px;
+      line-height: 1.6;
       color: #ffffff;
       letter-spacing: 1px;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 600;
     }
 
-    /* 底部指令終端輸入欄 */
+    /* 終端輸入欄位 */
     .terminal-bar-container {
       display: flex;
       align-items: center;
       gap: 12px;
       width: 100%;
       pointer-events: auto;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
     .terminal-input {
       flex: 1;
-      background: rgba(0, 0, 0, 0.6);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-left: 3px solid var(--theme-color);
-      padding: 9px 16px;
+      background: rgba(2, 10, 16, 0.7);
+      border: 1px solid rgba(0, 245, 212, 0.3);
+      border-left: 4px solid var(--theme-color);
+      padding: 11px 18px;
       color: #ffffff;
-      font-family: inherit;
-      font-size: 12px;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
       letter-spacing: 1px;
       outline: none;
       transition: all 0.3s;
     }
     .terminal-input:focus {
       border-color: var(--theme-color);
-      box-shadow: 0 0 15px var(--theme-glow);
+      box-shadow: 0 0 20px var(--theme-glow);
     }
     .voice-hint-btn {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(0, 245, 212, 0.08);
+      border: 1px solid var(--theme-color);
       color: var(--theme-color);
-      padding: 8px 14px;
-      font-size: 10px;
-      letter-spacing: 1px;
+      padding: 10px 18px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 6px;
-      transition: all 0.2s;
+      gap: 8px;
+      transition: all 0.25s;
+    }
+    .voice-hint-btn:hover {
+      background: var(--theme-color);
+      color: #02070e;
+      box-shadow: 0 0 15px var(--theme-color);
     }
     .voice-hint-btn.recording {
-      background: #ff0055;
-      color: #fff;
-      border-color: #ff0055;
-      box-shadow: 0 0 20px #ff0055;
+      background: #ff0055 !important;
+      color: #ffffff !important;
+      border-color: #ff0055 !important;
+      box-shadow: 0 0 25px #ff0055 !important;
       animation: pulse 1s infinite;
     }
 
@@ -269,22 +301,22 @@
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
-      border-top: 1px solid rgba(255, 255, 255, 0.12);
-      padding-top: 10px;
+      border-top: 1.5px solid rgba(0, 245, 212, 0.2);
+      padding-top: 12px;
     }
     .wave-box {
       display: flex;
       align-items: flex-end;
-      gap: 3px;
-      height: 22px;
+      gap: 4px;
+      height: 24px;
     }
     .wave-bar {
       width: 3px;
       background: var(--theme-color);
-      box-shadow: 0 0 6px var(--theme-glow);
+      box-shadow: 0 0 8px var(--theme-glow);
       border-radius: 1px;
       height: 4px;
-      transition: height 0.08s ease, background 0.4s ease;
+      transition: height 0.08s ease;
     }
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -292,26 +324,26 @@
 <body>
 
   <div class="bg-grid"></div>
+  <canvas id="world-map-canvas"></canvas>
   <div id="canvas-container"></div>
 
   <div class="hud-layer">
     <div>
       <div class="hud-header">
         <div>
-          <div class="brand-title">J.A.R.V.I.S. // TACTICAL COMMAND</div>
-          <div class="brand-sub" id="defcon-status">DEFCON 4 // SMART SCHEDULE ARMED</div>
+          <div class="brand-title">J.A.R.V.I.S. // GLOBAL SENTINEL</div>
+          <div class="brand-sub" id="defcon-status">DEFCON 4 // STRATEGIC RECONNAISSANCE</div>
         </div>
 
-        <!-- 美股即時指標 -->
-        <div class="us-market-bar" id="us-market-bar">
+        <div class="us-market-bar">
           <div class="us-item"><span class="us-symbol">SOX 費半:</span><span id="us-sox">--</span></div>
           <div class="us-item"><span class="us-symbol">QQQ 納指:</span><span id="us-qqq">--</span></div>
           <div class="us-item"><span class="us-symbol">MU 美光:</span><span id="us-mu">--</span></div>
         </div>
 
         <div class="sys-telemetry">
-          <div class="status-badge" id="sys-badge"><span class="status-dot"></span>STANDBY</div>
-          <div id="clock-display" style="color: rgba(255,255,255,0.7); margin-top: 3px;">00:00:00 CST</div>
+          <div class="status-badge" id="sys-badge"><span class="status-dot"></span>TACTICAL ONLINE</div>
+          <div id="clock-display" style="color: rgba(255,255,255,0.75); margin-top: 4px; font-weight: 700;">00:00:00 CST</div>
         </div>
       </div>
 
@@ -337,15 +369,14 @@
         <div class="intel-panel">
           <div class="intel-title">🌐 SEMICONDUCTOR GEO-INTEL</div>
           <div id="intel-feed">
-            <div class="intel-item"><span class="intel-loc">[TW 新竹]</span> 群聯主控晶片市占持穩，待週一開盤均線確認。</div>
-            <div class="intel-item"><span class="intel-loc">[US 矽谷]</span> 費半維持高檔，HBM 伺服器模組需求穩定。</div>
-            <div class="intel-item"><span class="intel-loc">[KR 首爾]</span> 原廠晶圓減產政策延續，庫存去化良好。</div>
+            <div class="intel-item"><span class="intel-loc">[TW 新竹]</span> 群聯主控晶片市占穩固，均線即時追蹤。</div>
+            <div class="intel-item"><span class="intel-loc">[US 矽谷]</span> 費半走勢穩健，HBM 伺服器模組需求暢旺。</div>
+            <div class="intel-item"><span class="intel-loc">[KR 首爾]</span> 晶圓減產效應浮現，原廠報價持穩收斂。</div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- 終端交互區塊 -->
     <div>
       <div class="jarvis-response-box" id="jarvis-response-box">
         <div class="response-header">// J.A.R.V.I.S. INTELLIGENCE DISPATCH</div>
@@ -353,16 +384,16 @@
       </div>
 
       <div class="terminal-bar-container">
-        <input type="text" class="terminal-input" id="terminal-input" placeholder="> 輸入戰術指令（例如：群聯跌破550該怎麼做？）或長按 [空白鍵] 對話..." autocomplete="off">
-        <div class="voice-hint-btn" id="voice-status-btn">🎙️ 長按空白鍵通話</div>
+        <input type="text" class="terminal-input" id="terminal-input" placeholder="> 輸入戰術指令（例如：群聯跌破550該怎麼做？）或點擊右側麥克風對話..." autocomplete="off">
+        <div class="voice-hint-btn" id="voice-status-btn" onclick="toggleVoiceRecording()">🎙️ 點擊 / 空白鍵對話</div>
       </div>
 
       <div class="hud-footer">
-        <div style="display: flex; align-items: center; gap: 12px;">
+        <div style="display: flex; align-items: center; gap: 14px;">
           <div class="wave-box" id="wave-container"></div>
-          <span id="tactical-advice" style="font-size: 10px; letter-spacing: 2px; color: rgba(255,255,255,0.6);">STRATEGY: DORMANT</span>
+          <span id="tactical-advice" style="font-size: 11px; letter-spacing: 2px; color: rgba(255,255,255,0.7); font-weight: 700;">STRATEGY: DORMANT MONITORING</span>
         </div>
-        <div style="font-size: 10px; letter-spacing: 2px; color: rgba(255,255,255,0.4);">NEURAL CORE // ACTIVE</div>
+        <div style="font-size: 11px; letter-spacing: 2px; color: rgba(0,245,212,0.6); font-weight: 700;">QUANTUM GEO-MAP // MK-X</div>
       </div>
     </div>
   </div>
@@ -370,152 +401,140 @@
   <script>
     const GAS_ENDPOINT = "https://script.google.com/macros/s/AKfycbxWyoDCeA23D4ZIcUzhWcmm6RBpORpy3Sw7TO39ZR2WZoIA80IJzXq79cvYw0Z-EATspw/exec";
 
-    // 1. 初始化波形 DOM
+    // 1. 繪製高精密度「平面向量世界地圖」與半導體雷達座標
+    const mapCanvas = document.getElementById('world-map-canvas');
+    const ctx = mapCanvas.getContext('2d');
+
+    function resizeMap() {
+      mapCanvas.width = window.innerWidth;
+      mapCanvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeMap);
+    resizeMap();
+
+    // 經緯度座標投影至螢幕
+    function geoToScreen(lat, lon) {
+      const x = ((lon + 180) / 360) * mapCanvas.width;
+      const y = ((90 - lat) / 180) * mapCanvas.height;
+      return { x, y };
+    }
+
+    const geoHotspots = [
+      { id: "TW", name: "新竹 (8299)", lat: 24.8, lon: 120.97 },
+      { id: "US", name: "矽谷 (MU)", lat: 37.33, lon: -121.89 },
+      { id: "KR", name: "首爾 (SAMSUNG)", lat: 37.56, lon: 126.97 },
+      { id: "JP", name: "東京 (KIOXIA)", lat: 35.67, lon: 139.65 },
+      { id: "CN", name: "武漢 (YMTC)", lat: 30.59, lon: 114.30 }
+    ];
+
+    let radarAngle = 0;
+    function drawMapHUD() {
+      ctx.clearRect(0, 0, mapCanvas.width, mapCanvas.height);
+
+      // 經緯網線
+      ctx.strokeStyle = "rgba(0, 245, 212, 0.06)";
+      ctx.lineWidth = 1;
+      for (let x = 0; x < mapCanvas.width; x += mapCanvas.width / 12) {
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, mapCanvas.height); ctx.stroke();
+      }
+      for (let y = 0; y < mapCanvas.height; y += mapCanvas.height / 8) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(mapCanvas.width, y); ctx.stroke();
+      }
+
+      // 繪製全球五大情資節點與同心外擴雷達波
+      radarAngle += 0.025;
+      geoHotspots.forEach(spot => {
+        const { x, y } = geoToScreen(spot.lat, spot.lon);
+
+        // 節點核心
+        ctx.fillStyle = "#ffffff";
+        ctx.beginPath();
+        ctx.arc(x, y, 3, 0, Math.PI * 2);
+        ctx.fill();
+
+        // 外擴雷達圈
+        ctx.strokeStyle = "rgba(0, 245, 212, 0.6)";
+        ctx.lineWidth = 1.2;
+        const waveR = (Math.sin(radarAngle * 2 + spot.lat) * 0.5 + 0.5) * 16 + 4;
+        ctx.beginPath();
+        ctx.arc(x, y, waveR, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // 座標標籤
+        ctx.fillStyle = "#00f5d4";
+        ctx.font = "bold 10px Orbitron";
+        ctx.fillText(spot.name, x + 10, y + 3);
+      });
+
+      requestAnimationFrame(drawMapHUD);
+    }
+    drawMapHUD();
+
+    // 2. 初始化音訊波形
     const waveBox = document.getElementById('wave-container');
     const waveBars = [];
-    for (let i = 0; i < 18; i++) {
+    for (let i = 0; i < 20; i++) {
       const bar = document.createElement('div');
       bar.className = 'wave-bar';
       waveBox.appendChild(bar);
       waveBars.push(bar);
     }
 
-    // 2. Three.js 全球天球
+    // 3. Three.js 微型賈維斯量子核心 (等比縮小 60%，放置在中央，不擋地圖)
     const container = document.getElementById('canvas-container');
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x020408);
+    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1500);
+    camera.position.z = 180;
 
-    const camera = new THREE.PerspectiveCamera(48, window.innerWidth / window.innerHeight, 1, 2000);
-    camera.position.z = 220;
-
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     container.appendChild(renderer.domElement);
 
-    const earthGroup = new THREE.Group();
-    scene.add(earthGroup);
-    const globeRadius = 38;
+    const miniCore = new THREE.Group();
+    // 垂直微幅下移，讓出上方的全球大陸視野
+    miniCore.position.set(0, -10, 0);
+    scene.add(miniCore);
 
-    // 緯度
-    const latGroup = new THREE.Group();
-    for (let lat = -60; lat <= 60; lat += 20) {
-      const r = globeRadius * Math.cos(lat * Math.PI / 180);
-      const y = globeRadius * Math.sin(lat * Math.PI / 180);
-      const pts = [];
-      for (let a = 0; a <= 360; a += 5) {
-        const rad = a * Math.PI / 180;
-        pts.push(new THREE.Vector3(r * Math.cos(rad), y, r * Math.sin(rad)));
-      }
-      const geo = new THREE.BufferGeometry().setFromPoints(pts);
-      const mat = new THREE.LineBasicMaterial({ color: 0xffaa00, transparent: true, opacity: 0.25 });
-      latGroup.add(new THREE.Line(geo, mat));
-    }
-    earthGroup.add(latGroup);
-
-    // 經度
-    const lonGroup = new THREE.Group();
-    for (let lon = 0; lon < 180; lon += 30) {
-      const pts = [];
-      for (let a = 0; a <= 360; a += 5) {
-        const rad = a * Math.PI / 180;
-        pts.push(new THREE.Vector3(globeRadius * Math.sin(rad), globeRadius * Math.cos(rad), 0));
-      }
-      const geo = new THREE.BufferGeometry().setFromPoints(pts);
-      const mat = new THREE.LineBasicMaterial({ color: 0xffaa00, transparent: true, opacity: 0.25 });
-      const line = new THREE.Line(geo, mat);
-      line.rotation.y = lon * Math.PI / 180;
-      lonGroup.add(line);
-    }
-    earthGroup.add(lonGroup);
-
-    // 戰略座標
-    const geoNodes = [
-      { id: "TW", lat: 24.8, lon: 120.97 },
-      { id: "US", lat: 37.33, lon: -121.89 },
-      { id: "KR", lat: 37.56, lon: 126.97 },
-      { id: "JP", lat: 35.67, lon: 139.65 },
-      { id: "CN", lat: 30.59, lon: 114.30 }
-    ];
-
-    function latLonToVector(lat, lon, r) {
-      const phi = (90 - lat) * (Math.PI / 180);
-      const theta = (lon + 180) * (Math.PI / 180);
-      return new THREE.Vector3(-(r * Math.sin(phi) * Math.cos(theta)), r * Math.cos(phi), r * Math.sin(phi) * Math.sin(theta));
-    }
-
-    const beaconMats = [];
-    geoNodes.forEach(node => {
-      const p1 = latLonToVector(node.lat, node.lon, globeRadius);
-      const p2 = latLonToVector(node.lat, node.lon, globeRadius + 14);
-      const bGeo = new THREE.BufferGeometry().setFromPoints([p1, p2]);
-      const bMat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.85 });
-      earthGroup.add(new THREE.Line(bGeo, bMat));
-
-      const ptGeo = new THREE.BufferGeometry().setFromPoints([p1]);
-      const ptMat = new THREE.PointsMaterial({ color: 0xffaa00, size: 3.5, transparent: true, opacity: 0.95 });
-      earthGroup.add(new THREE.Points(ptGeo, ptMat));
-      beaconMats.push(ptMat);
+    // 精密二十面體線框 (縮小為微型反應核)
+    const icoGeo = new THREE.IcosahedronGeometry(13, 2);
+    const origPos = icoGeo.attributes.position.array.slice();
+    const wireMat = new THREE.MeshBasicMaterial({
+      color: 0x00f5d4,
+      wireframe: true,
+      transparent: true,
+      opacity: 0.85
     });
+    const icoMesh = new THREE.Mesh(icoGeo, wireMat);
+    miniCore.add(icoMesh);
 
-    function createOrbit(r, color) {
+    // 微型同心軌道環
+    function createMiniRing(radius, seg, color, opacity) {
       const pts = [];
-      for (let a = 0; a <= 360; a += 4) {
-        if (a % 30 === 0) continue;
-        const rad = a * Math.PI / 180;
-        pts.push(new THREE.Vector3(r * Math.cos(rad), r * Math.sin(rad), 0));
+      for (let i = 0; i <= seg; i++) {
+        if (i % 6 === 0) continue;
+        const a = (i / seg) * Math.PI * 2;
+        pts.push(new THREE.Vector3(radius * Math.cos(a), radius * Math.sin(a), 0));
       }
       const geo = new THREE.BufferGeometry().setFromPoints(pts);
-      const mat = new THREE.LineBasicMaterial({ color: color, transparent: true, opacity: 0.35 });
+      const mat = new THREE.LineBasicMaterial({ color: color, transparent: true, opacity: opacity });
       return new THREE.Line(geo, mat);
     }
-    const ob1 = createOrbit(58, 0xffaa00);
-    ob1.rotation.x = Math.PI / 3;
-    scene.add(ob1);
 
-    const ob2 = createOrbit(72, 0xffaa00);
-    ob2.rotation.y = Math.PI / 3.5;
-    scene.add(ob2);
+    const r1 = createMiniRing(24, 60, 0x00f5d4, 0.7);
+    const r2 = createMiniRing(32, 72, 0x00bbf9, 0.5);
+    r1.rotation.x = Math.PI / 3.5;
+    r2.rotation.y = Math.PI / 4;
+    miniCore.add(r1);
+    miniCore.add(r2);
 
-    // 3. 色彩與待命主題
-    let themeHex = 0xffaa00;
-    function applyTheme(status) {
-      const root = document.documentElement;
-      if (status === "DORMANT") {
-        themeHex = 0xffaa00;
-        root.style.setProperty('--theme-color', '#ffaa00');
-        root.style.setProperty('--theme-glow', 'rgba(255, 170, 0, 0.35)');
-        root.style.setProperty('--bg-card', 'rgba(22, 16, 5, 0.7)');
-        document.getElementById('sys-badge').innerHTML = '<span class="status-dot"></span>STANDBY (SMART DORMANT)';
-      } else if (status === "ALERT") {
-        themeHex = 0xff0044;
-        root.style.setProperty('--theme-color', '#ff0044');
-        root.style.setProperty('--theme-glow', 'rgba(255, 0, 68, 0.35)');
-        root.style.setProperty('--bg-card', 'rgba(38, 5, 15, 0.7)');
-        document.getElementById('sys-badge').innerHTML = '<span class="status-dot"></span>DEFENSE BREACH // RED ALERT';
-      } else {
-        themeHex = 0x00f0ff;
-        root.style.setProperty('--theme-color', '#00f0ff');
-        root.style.setProperty('--theme-glow', 'rgba(0, 240, 255, 0.35)');
-        root.style.setProperty('--bg-card', 'rgba(3, 18, 38, 0.7)');
-        document.getElementById('sys-badge').innerHTML = '<span class="status-dot"></span>SENTINEL PATROLLING';
-      }
-
-      latGroup.children.forEach(l => l.material.color.setHex(themeHex));
-      lonGroup.children.forEach(l => l.material.color.setHex(themeHex));
-      ob1.material.color.setHex(themeHex);
-      ob2.material.color.setHex(themeHex);
-      beaconMats.forEach(m => m.color.setHex(themeHex));
-    }
-
-    // 4. 定時遠端數據遙測
+    // 4. 遠端數據遙測
     async function syncData() {
       try {
         const res = await fetch(GAS_ENDPOINT);
         const data = await res.json();
 
-        applyTheme(data.status);
-        document.getElementById('defcon-status').innerText = data.defcon || "DEFCON 4 // STANDBY";
+        document.getElementById('defcon-status').innerText = data.defcon || "DEFCON 4 // SMART SCHEDULE";
         document.getElementById('tactical-advice').innerText = "STRATEGY: " + (data.advice || "DORMANT");
 
         if (data.assets) {
@@ -554,13 +573,12 @@
     syncData();
     setInterval(syncData, 30000);
 
-    // 5. 賈維斯語音發聲
+    // 5. 賈維斯語音與打字機回報
     let voiceActive = false;
     let voiceEnergy = 0;
 
     function triggerJarvisVoice(text) {
       voiceActive = true;
-
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
         const utter = new SpeechSynthesisUtterance(text);
@@ -574,18 +592,17 @@
       }
     }
 
-    // 6. 提問與打字機回報
     async function askJarvis(query) {
       if (!query.trim()) return;
       const respBox = document.getElementById('jarvis-response-box');
       const respText = document.getElementById('jarvis-response-text');
       respBox.style.display = 'block';
-      respText.innerText = "J.A.R.V.I.S. 正在調閱情資庫與微結構模型...";
+      respText.innerText = "J.A.R.V.I.S. 正在調閱微結構扣抵資料庫...";
 
       try {
         const res = await fetch(`${GAS_ENDPOINT}?q=${encodeURIComponent(query)}`);
         const data = await res.json();
-        const reply = data.reply || "連線逾時，無法取得分析。";
+        const reply = data.reply || "通訊鏈路逾時。";
 
         respText.innerText = "";
         let idx = 0;
@@ -600,7 +617,7 @@
 
         triggerJarvisVoice(reply);
       } catch (err) {
-        respText.innerText = "資料通訊鏈路中斷。";
+        respText.innerText = "數據解析中斷。";
       }
     }
 
@@ -613,9 +630,9 @@
       }
     });
 
-    // 7. 空白鍵語音通話 (Web Speech API)
+    // 6. 雙模語音收音控制（點擊按鈕 OR 長按空白鍵）
     let recognition = null;
-    let isHoldingSpace = false;
+    let isRecording = false;
     const voiceBtn = document.getElementById('voice-status-btn');
 
     const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -628,40 +645,59 @@
       recognition.onresult = (e) => {
         const transcript = e.results[0][0].transcript;
         termInput.value = transcript;
+        stopVoiceRecording();
         askJarvis(transcript);
       };
 
-      recognition.onerror = () => {
-        voiceBtn.classList.remove('recording');
-        voiceBtn.innerText = "🎙️ 長按空白鍵通話";
+      recognition.onerror = (err) => {
+        console.warn("Speech error:", err);
+        stopVoiceRecording();
+      };
+      
+      recognition.onend = () => {
+        stopVoiceRecording();
       };
     }
 
+    function startVoiceRecording() {
+      if (!recognition || isRecording) return;
+      isRecording = true;
+      voiceBtn.classList.add('recording');
+      voiceBtn.innerText = "🔴 正在聆聽指令...";
+      try { recognition.start(); } catch(e) {}
+    }
+
+    function stopVoiceRecording() {
+      if (!isRecording) return;
+      isRecording = false;
+      voiceBtn.classList.remove('recording');
+      voiceBtn.innerText = "🎙️ 點擊 / 空白鍵對話";
+      try { recognition.stop(); } catch(e) {}
+    }
+
+    window.toggleVoiceRecording = function() {
+      if (isRecording) {
+        stopVoiceRecording();
+      } else {
+        startVoiceRecording();
+      }
+    };
+
     window.addEventListener('keydown', (e) => {
-      if (e.code === 'Space' && e.target !== termInput && !isHoldingSpace) {
+      if (e.code === 'Space' && e.target !== termInput && !isRecording) {
         e.preventDefault();
-        isHoldingSpace = true;
-        voiceBtn.classList.add('recording');
-        voiceBtn.innerText = "🔴 正在聆聽指令...";
-        if (recognition) {
-          try { recognition.start(); } catch(err) {}
-        }
+        startVoiceRecording();
       }
     });
 
     window.addEventListener('keyup', (e) => {
-      if (e.code === 'Space' && isHoldingSpace) {
+      if (e.code === 'Space' && isRecording) {
         e.preventDefault();
-        isHoldingSpace = false;
-        voiceBtn.classList.remove('recording');
-        voiceBtn.innerText = "🎙️ 長按空白鍵通話";
-        if (recognition) {
-          try { recognition.stop(); } catch(err) {}
-        }
+        stopVoiceRecording();
       }
     });
 
-    // 8. 3D 渲染動態循環
+    // 7. 動態渲染循環
     let clock = new THREE.Clock();
     function renderLoop() {
       requestAnimationFrame(renderLoop);
@@ -673,18 +709,29 @@
         voiceEnergy = 0;
       }
 
-      earthGroup.rotation.y = t * (voiceActive ? 0.28 : 0.11);
-      earthGroup.rotation.x = Math.sin(t * 0.08) * 0.15 + (Math.PI / 12);
+      // 微型反應爐自轉與流體擾動
+      miniCore.rotation.y = t * 0.25;
+      miniCore.rotation.x = Math.sin(t * 0.2) * 0.15;
+      r1.rotation.z = -t * 0.3;
+      r2.rotation.z = t * 0.2;
 
-      ob1.rotation.z = -t * 0.16;
-      ob2.rotation.z = t * 0.10;
+      const positions = icoGeo.attributes.position.array;
+      for (let i = 0; i < positions.length; i += 3) {
+        const ox = origPos[i], oy = origPos[i + 1], oz = origPos[i + 2];
+        const wave = Math.sin(ox * 0.4 + t * 5) * Math.cos(oy * 0.4 + t * 4);
+        const disp = voiceEnergy * 2.5 * wave;
+        positions[i] = ox + (ox / 13) * disp;
+        positions[i + 1] = oy + (oy / 13) * disp;
+        positions[i + 2] = oz + (oz / 13) * disp;
+      }
+      icoGeo.attributes.position.needsUpdate = true;
 
       for (let i = 0; i < waveBars.length; i++) {
         let h = 4;
         if (voiceEnergy > 0) {
-          h = 4 + (voiceEnergy * 18 * (Math.sin(t * 14 + i) * 0.5 + 0.5));
+          h = 4 + voiceEnergy * 18 * (Math.sin(t * 14 + i) * 0.5 + 0.5);
         } else {
-          h = 4 + Math.sin(t * 2 + i * 0.4) * 3;
+          h = 4 + Math.sin(t * 2.5 + i * 0.4) * 3;
         }
         waveBars[i].style.height = `${Math.min(h, 24)}px`;
       }
