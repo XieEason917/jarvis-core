@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>J.A.R.V.I.S. // NEURAL PARTICLE BUTLER TERMINAL</title>
+  <title>J.A.R.V.I.S. // NEURAL NEBULA BUTLER MK-XVII</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -66,7 +66,6 @@
       pointer-events: none;
     }
 
-    /* 頂部戰情橫幅 */
     .hud-top-bar {
       position: absolute;
       top: 0;
@@ -119,7 +118,6 @@
     }
     @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-    /* 左右分欄主控 */
     .hud-flanks-container {
       position: absolute;
       top: 58px;
@@ -133,7 +131,6 @@
       pointer-events: none;
     }
 
-    /* 左側戰術翼 */
     .flank-left {
       width: 275px;
       height: 100%;
@@ -166,7 +163,7 @@
     .card-val { font-size: 18px; font-weight: 900; color: #fff; margin: 2px 0; letter-spacing: 1px; text-shadow: 0 0 8px var(--cyan-glow); }
     .card-status { font-size: 10px; color: var(--cyan); font-weight: 700; }
 
-    /* 左下角 A02/01 神經粒子星雲視窗 */
+    /* 左下角神經星雲視窗（點擊可安全設定新金鑰） */
     .core-module-frame {
       background: var(--bg-panel);
       border: 1px solid var(--border-line);
@@ -177,6 +174,7 @@
       flex-direction: column;
       gap: 5px;
       transition: all 0.3s;
+      cursor: pointer;
     }
     .core-module-frame.active-listening {
       border-color: #ff0055;
@@ -206,7 +204,6 @@
       font-weight: 700;
     }
 
-    /* 右側情報翼 */
     .flank-right {
       width: 340px;
       height: 100%;
@@ -258,7 +255,6 @@
     }
     .intel-loc { color: var(--cyan); font-weight: 900; margin-right: 4px; }
 
-    /* 常駐戰術機密檔案 (Dossier) */
     .dossier-box {
       flex: 1;
       display: flex;
@@ -318,7 +314,6 @@
       box-shadow: 0 0 15px var(--cyan);
     }
 
-    /* 底部指令列 */
     .hud-bottom-bar {
       position: absolute;
       bottom: 0;
@@ -383,8 +378,8 @@
 
   <div class="hud-top-bar">
     <div>
-      <div class="brand-title">J.A.R.V.I.S. // NEURAL BUTLER PROTOCOL</div>
-      <div class="brand-sub" id="defcon-status">MK-XVI // CINEMATIC AUDIO-REACTIVE ORB</div>
+      <div class="brand-title">J.A.R.V.I.S. // NEURAL NEBULA PROTOCOL</div>
+      <div class="brand-sub" id="defcon-status">MK-XVII // SECURE AUDIO-REACTIVE NEBULA</div>
     </div>
     <div class="us-market-bar">
       <div class="us-item"><span class="us-symbol">SOX 費半:</span><span id="us-sox">--</span></div>
@@ -392,7 +387,7 @@
       <div class="us-item"><span class="us-symbol">MU 美光:</span><span id="us-mu">--</span></div>
     </div>
     <div class="sys-telemetry">
-      <div class="status-badge"><span class="status-dot"></span>NEURAL VOICE ACTIVE</div>
+      <div class="status-badge"><span class="status-dot"></span>SYSTEM OPERATIONAL</div>
       <div id="clock-display" style="color: rgba(255,255,255,0.75); margin-top: 2px;">00:00:00 CST</div>
     </div>
   </div>
@@ -418,21 +413,21 @@
         </div>
       </div>
 
-      <!-- 左下角 A02/01 神經粒子星雲 -->
-      <div class="core-module-frame" id="core-frame-box">
+      <!-- 左下角柔性量子神經星雲視窗 (點擊可安全設定新金鑰) -->
+      <div class="core-module-frame" id="core-frame-box" onclick="promptElevenKey()">
         <div class="core-title-bar">
-          <span>JARVIS // NEURAL CORE</span>
+          <span>JARVIS // NEURAL NEBULA</span>
           <span id="core-status-badge" style="color:#00ffaa;">STANDBY</span>
         </div>
         <div id="three-viewport"></div>
         <div class="core-telemetry-text">
-          <span id="core-mode-label">VOICE: BUTLER DANIEL</span>
-          <span id="core-freq-label" style="color:#00ffaa;">ELEVENLABS ONLINE</span>
+          <span id="core-mode-label">BUTLER DANIEL</span>
+          <span id="core-freq-label" style="color:rgba(0,245,212,0.8);">[點擊設定金鑰]</span>
         </div>
       </div>
     </div>
 
-    <!-- 右側情報翼 (5大記憶體戰略節點) -->
+    <!-- 右側情報翼 -->
     <div class="flank-right">
       <div class="panel-box" style="height: 180px; display: flex; flex-direction: column;">
         <div class="panel-title">
@@ -448,7 +443,6 @@
         </div>
       </div>
 
-      <!-- 常駐戰術機密檔案 (含 HUD 內嵌折線走勢圖) -->
       <div class="panel-box dossier-box">
         <div>
           <div class="panel-title">
@@ -457,7 +451,7 @@
           </div>
           <div class="dossier-header-title" id="dossier-title">群聯 (8299) NAND 控制晶片戰略檔案</div>
           <div class="dossier-meta-line" id="dossier-meta1">即時報價: 1990.00 | 早盤防守線: 1950.00</div>
-          <div class="dossier-meta-line" id="dossier-meta2">持股: 1.1 張 (庫存 100 股 + 出借 1 張) | 日利息約 82 元</div>
+          <div class="dossier-meta-line" id="dossier-meta2">持股: 1.1 張 (在庫 100 股 + 出借 1 張) | 日利息約 82 元</div>
           
           <canvas id="intraday-chart-canvas"></canvas>
           
@@ -488,11 +482,25 @@
   <script>
     const GAS_ENDPOINT = "https://script.google.com/macros/s/AKfycbxWyoDCeA23D4ZIcUzhWcmm6RBpORpy3Sw7TO39ZR2WZoIA80IJzXq79cvYw0Z-EATspw/exec";
 
-    // 1. 已直接內嵌你的專屬 ElevenLabs API Key
-    const ELEVEN_KEY = "sk_c4161239af7806e2a70e6ba9b7e1ad76555adba9891d143f";
-    const BUTLER_VOICE_ID = "onwK4e9ZLuTAKqWW03F9"; // Daniel - British, Deep, Authoritative
+    // 安全載入你的 ElevenLabs API Key (保存在瀏覽器私密空間，絕不上傳 GitHub)
+    let ELEVEN_KEY = localStorage.getItem("JARVIS_ELEVEN_KEY") || "";
+    const BUTLER_VOICE_ID = "onwK4e9ZLuTAKqWW03F9"; // Daniel - British Butler
 
-    // 2. Web Audio API 頻譜監聽器 (驅動粒子星雲「忽大忽小」)
+    window.promptElevenKey = function() {
+      const input = prompt("【安全配置：請輸入你的 ElevenLabs API Key】", ELEVEN_KEY);
+      if (input !== null) {
+        ELEVEN_KEY = input.trim();
+        localStorage.setItem("JARVIS_ELEVEN_KEY", ELEVEN_KEY);
+        alert(ELEVEN_KEY ? "✅ 金鑰已安全加密存入瀏覽器！" : "已清除金鑰。");
+        updateVoiceLabel();
+      }
+    };
+
+    function updateVoiceLabel() {
+      const lbl = document.getElementById('core-freq-label');
+      if (lbl) lbl.innerText = ELEVEN_KEY ? "ELEVENLABS SECURE" : "[點擊設定金鑰]";
+    }
+
     let audioCtx = null;
     let analyser = null;
     let dataArray = null;
@@ -510,7 +518,6 @@
       }
     }
 
-    // 3. 情報資料庫
     const TARGET_DB = {
       '8299': {
         tag: 'ASSET // 8299',
@@ -594,7 +601,6 @@
       }
     };
 
-    // 4. 繪製 HUD 霓虹走勢圖
     const chartCanvas = document.getElementById('intraday-chart-canvas');
     const chartCtx = chartCanvas.getContext('2d');
 
@@ -688,7 +694,6 @@
       drawHUDNeonChart(data.chartTrend, data.defVal);
     };
 
-    // 5. 2.5D 微立體世界地圖 (D3-Geo)
     const mapCanvas = document.getElementById('world-map-canvas');
     const ctx = mapCanvas.getContext('2d');
 
@@ -753,28 +758,18 @@
       ctx.clearRect(0, 0, mapCanvas.width, mapCanvas.height);
       mapTick += 0.025;
 
-      ctx.beginPath();
-      path(graticule);
-      ctx.strokeStyle = "rgba(0, 245, 212, 0.035)";
-      ctx.lineWidth = 1;
-      ctx.stroke();
+      ctx.beginPath(); path(graticule);
+      ctx.strokeStyle = "rgba(0, 245, 212, 0.035)"; ctx.lineWidth = 1; ctx.stroke();
 
       if (landData) {
-        ctx.beginPath();
-        path(landData);
-        ctx.fillStyle = "rgba(0, 245, 212, 0.035)";
-        ctx.fill();
-        ctx.strokeStyle = "rgba(0, 245, 212, 0.5)";
-        ctx.lineWidth = 1.1;
-        ctx.stroke();
+        ctx.beginPath(); path(landData);
+        ctx.fillStyle = "rgba(0, 245, 212, 0.035)"; ctx.fill();
+        ctx.strokeStyle = "rgba(0, 245, 212, 0.5)"; ctx.lineWidth = 1.1; ctx.stroke();
       }
 
       if (bordersData) {
-        ctx.beginPath();
-        path(bordersData);
-        ctx.strokeStyle = "rgba(0, 245, 212, 0.1)";
-        ctx.lineWidth = 0.8;
-        ctx.stroke();
+        ctx.beginPath(); path(bordersData);
+        ctx.strokeStyle = "rgba(0, 245, 212, 0.1)"; ctx.lineWidth = 0.8; ctx.stroke();
       }
 
       capitalNodes.forEach((cap, i) => {
@@ -787,8 +782,7 @@
           const nextPt = projection([capitalNodes[i+1].lon, capitalNodes[i+1].lat]);
           if (nextPt) {
             ctx.strokeStyle = "rgba(0, 245, 212, 0.06)";
-            ctx.beginPath(); ctx.moveTo(pt[0], pt[1]); ctx.lineTo(nextPt[0], nextPt[1]);
-            ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(pt[0], pt[1]); ctx.lineTo(nextPt[0], nextPt[1]); ctx.stroke();
           }
         }
       });
@@ -807,24 +801,18 @@
         ctx.beginPath();
         ctx.strokeStyle = "rgba(0, 245, 212, 0.2)";
         ctx.setLineDash([3, 4]);
-        ctx.moveTo(p1[0], p1[1]);
-        ctx.quadraticCurveTo(midX, midY, p2[0], p2[1]);
-        ctx.stroke();
-        ctx.setLineDash([]);
+        ctx.moveTo(p1[0], p1[1]); ctx.quadraticCurveTo(midX, midY, p2[0], p2[1]);
+        ctx.stroke(); ctx.setLineDash([]);
 
         const tEast = (mapTick * speed + seed) % 1;
         const ex = (1 - tEast) * (1 - tEast) * p1[0] + 2 * (1 - tEast) * tEast * midX + tEast * tEast * p2[0];
         const ey = (1 - tEast) * (1 - tEast) * p1[1] + 2 * (1 - tEast) * tEast * midY + tEast * tEast * p2[1];
-        ctx.fillStyle = "#ffffff";
-        ctx.beginPath(); ctx.arc(ex, ey, 2.5, 0, Math.PI * 2); ctx.fill();
-        ctx.strokeStyle = "rgba(0, 245, 212, 0.8)";
-        ctx.beginPath(); ctx.arc(ex, ey, 5, 0, Math.PI * 2); ctx.stroke();
+        ctx.fillStyle = "#ffffff"; ctx.beginPath(); ctx.arc(ex, ey, 2.5, 0, Math.PI * 2); ctx.fill();
 
         const tWest = 1 - ((mapTick * speed * 0.8 + seed) % 1);
         const wx = (1 - tWest) * (1 - tWest) * p1[0] + 2 * (1 - tWest) * tWest * midX + tWest * tWest * p2[0];
         const wy = (1 - tWest) * (1 - tWest) * p1[1] + 2 * (1 - tWest) * tWest * midY + tWest * tWest * p2[1];
-        ctx.fillStyle = "#ffdd88";
-        ctx.beginPath(); ctx.arc(wx, wy, 2, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = "#ffdd88"; ctx.beginPath(); ctx.arc(wx, wy, 2, 0, Math.PI * 2); ctx.fill();
       }
 
       drawTwoWayArc(twPt, usPt, 65, 0.24, 0.1);
@@ -835,9 +823,7 @@
       geoNodes.forEach(node => {
         const pt = projection([node.lon, node.lat]);
         if (!pt) return;
-        node._x = pt[0];
-        node._y = pt[1];
-
+        node._x = pt[0]; node._y = pt[1];
         const isSelected = (node.id === selectedNodeId);
 
         ctx.fillStyle = isSelected ? "#ff0055" : "#ffffff";
@@ -859,32 +845,13 @@
 
     mapCanvas.addEventListener('click', (e) => {
       const rect = mapCanvas.getBoundingClientRect();
-      const mx = e.clientX - rect.left;
-      const my = e.clientY - rect.top;
-
+      const mx = e.clientX - rect.left, my = e.clientY - rect.top;
       for (let n of geoNodes) {
-        if (n._x && Math.hypot(n._x - mx, n._y - my) <= 18) {
-          selectTarget(n.id);
-          break;
-        }
+        if (n._x && Math.hypot(n._x - mx, n._y - my) <= 18) { selectTarget(n.id); break; }
       }
     });
 
-    mapCanvas.addEventListener('mousemove', (e) => {
-      const rect = mapCanvas.getBoundingClientRect();
-      const mx = e.clientX - rect.left;
-      const my = e.clientY - rect.top;
-      let found = false;
-      for (let n of geoNodes) {
-        if (n._x && Math.hypot(n._x - mx, n._y - my) <= 18) {
-          found = true;
-          break;
-        }
-      }
-      mapCanvas.style.cursor = found ? 'pointer' : 'default';
-    });
-
-    // 6. 左下角「神經粒子星雲」Three.js 核心
+    // 6. 左下角「柔性神經量子星雲」Three.js 核心 (徹底告別刺蝟貝殼)
     const threeBox = document.getElementById('three-viewport');
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(45, threeBox.clientWidth / threeBox.clientHeight, 1, 1000);
@@ -895,84 +862,72 @@
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     threeBox.appendChild(renderer.domElement);
 
-    const particleGroup = new THREE.Group();
-    scene.add(particleGroup);
+    const nebulaGroup = new THREE.Group();
+    scene.add(nebulaGroup);
 
-    const PARTICLE_COUNT = 900;
-    const particleGeo = new THREE.BufferGeometry();
-    const particlePositions = new Float32Array(PARTICLE_COUNT * 3);
-    const originalVectors = [];
+    // 建立 1,200 顆柔性量子星雲粒子
+    const NEBULA_COUNT = 1200;
+    const nebulaGeo = new THREE.BufferGeometry();
+    const nebulaPositions = new Float32Array(NEBULA_COUNT * 3);
+    const baseVectors = [];
 
-    for (let i = 0; i < PARTICLE_COUNT; i++) {
-      const u = Math.random();
-      const v = Math.random();
-      const theta = u * 2.0 * Math.PI;
-      const phi = Math.acos(2.0 * v - 1.0);
-      const r = 22 * Math.cbrt(Math.random());
+    for (let i = 0; i < NEBULA_COUNT; i++) {
+      const u = Math.random(), v = Math.random();
+      const theta = u * 2.0 * Math.PI, phi = Math.acos(2.0 * v - 1.0);
+      const r = 24 * Math.cbrt(Math.random()); // 柔和球體分佈
 
       const x = r * Math.sin(phi) * Math.cos(theta);
       const y = r * Math.sin(phi) * Math.sin(theta);
       const z = r * Math.cos(phi);
 
-      particlePositions[i * 3] = x;
-      particlePositions[i * 3 + 1] = y;
-      particlePositions[i * 3 + 2] = z;
-
-      originalVectors.push(new THREE.Vector3(x, y, z));
+      nebulaPositions[i * 3] = x;
+      nebulaPositions[i * 3 + 1] = y;
+      nebulaPositions[i * 3 + 2] = z;
+      baseVectors.push(new THREE.Vector3(x, y, z));
     }
+    nebulaGeo.setAttribute('position', new THREE.BufferAttribute(nebulaPositions, 3));
 
-    particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
-
-    const particleMat = new THREE.PointsMaterial({
+    const nebulaMat = new THREE.PointsMaterial({
       color: 0x00f5d4,
-      size: 2.2,
+      size: 2.0,
       transparent: true,
-      opacity: 0.85,
+      opacity: 0.9,
       blending: THREE.AdditiveBlending
     });
+    nebulaGroup.add(new THREE.Points(nebulaGeo, nebulaMat));
 
-    const particlePoints = new THREE.Points(particleGeo, particleMat);
-    particleGroup.add(particlePoints);
+    // 柔性有機神經絲（無尖刺、如水母般平滑流動）
+    const softLineGeo = new THREE.BufferGeometry();
+    const maxSoftLines = 800;
+    const softLinePositions = new Float32Array(maxSoftLines * 6);
+    softLineGeo.setAttribute('position', new THREE.BufferAttribute(softLinePositions, 3));
 
-    const lineGeo = new THREE.BufferGeometry();
-    const maxLines = 1200;
-    const linePositions = new Float32Array(maxLines * 6);
-    lineGeo.setAttribute('position', new THREE.BufferAttribute(linePositions, 3));
-
-    const lineMat = new THREE.LineBasicMaterial({
+    const softLineMat = new THREE.LineBasicMaterial({
       color: 0x00f5d4,
       transparent: true,
-      opacity: 0.35,
+      opacity: 0.22,
       blending: THREE.AdditiveBlending
     });
-    const plexusLines = new THREE.LineSegments(lineGeo, lineMat);
-    particleGroup.add(plexusLines);
+    nebulaGroup.add(new THREE.LineSegments(softLineGeo, softLineMat));
 
-    // 7. 賈維斯電影級語音播放與音訊頻譜掛接
+    // 7. 語音播放與金屬通訊濾波器 (Metallic Intercom DSP)
     let voiceActive = false;
     let isListening = false;
 
     function setCoreState(state) {
       const badge = document.getElementById('core-status-badge');
       const box = document.getElementById('core-frame-box');
-
       if (state === "LISTENING") {
-        badge.innerText = "LISTENING";
-        badge.style.color = "#ff0055";
-        particleMat.color.setHex(0xff0055);
-        lineMat.color.setHex(0xff0055);
+        badge.innerText = "LISTENING"; badge.style.color = "#ff0055";
+        nebulaMat.color.setHex(0xff0055); softLineMat.color.setHex(0xff0055);
         box.classList.add('active-listening');
       } else if (state === "DISPATCHING") {
-        badge.innerText = "DISPATCHING";
-        badge.style.color = "#00ffaa";
-        particleMat.color.setHex(0x00ffaa);
-        lineMat.color.setHex(0x00ffaa);
+        badge.innerText = "DISPATCHING"; badge.style.color = "#00ffaa";
+        nebulaMat.color.setHex(0x00ffaa); softLineMat.color.setHex(0x00ffaa);
         box.classList.remove('active-listening');
       } else {
-        badge.innerText = "STANDBY";
-        badge.style.color = "#00ffaa";
-        particleMat.color.setHex(0x00f5d4);
-        lineMat.color.setHex(0x00f5d4);
+        badge.innerText = "STANDBY"; badge.style.color = "#00ffaa";
+        nebulaMat.color.setHex(0x00f5d4); softLineMat.color.setHex(0x00f5d4);
         box.classList.remove('active-listening');
       }
     }
@@ -982,61 +937,55 @@
       voiceActive = true;
       setCoreState("DISPATCHING");
 
-      // 方案 B：直接調用 ElevenLabs 電影級英倫紳士語音
       if (ELEVEN_KEY) {
         try {
           const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${BUTLER_VOICE_ID}`, {
             method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "xi-api-key": ELEVEN_KEY
-            },
+            headers: { "Content-Type": "application/json", "xi-api-key": ELEVEN_KEY },
             body: JSON.stringify({
               text: text,
               model_id: "eleven_multilingual_v2",
-              voice_settings: { stability: 0.55, similarity_boost: 0.85, style: 0.2 }
+              voice_settings: { stability: 0.6, similarity_boost: 0.85, style: 0.25 }
             })
           });
 
-          if (!res.ok) throw new Error("ElevenLabs API call failed");
+          if (!res.ok) throw new Error("ElevenLabs API failed");
 
           const blob = await res.blob();
           const audioUrl = URL.createObjectURL(blob);
           const audio = new Audio(audioUrl);
 
+          // 核心升級：加上「金屬通訊共鳴濾波器 (Metallic Intercom DSP)」
           const source = audioCtx.createMediaElementSource(audio);
-          source.connect(analyser);
+          
+          // 帶通濾波器（模擬東尼史塔克面甲與戰情室對講機的金屬中頻）
+          const biquadFilter = audioCtx.createBiquadFilter();
+          biquadFilter.type = "bandpass";
+          biquadFilter.frequency.value = 1400; // 聚焦金屬磁性中頻
+          biquadFilter.Q.value = 1.2;
+
+          source.connect(biquadFilter);
+          biquadFilter.connect(analyser);
           analyser.connect(audioCtx.destination);
 
-          audio.onended = () => {
-            voiceActive = false;
-            audioEnergy = 0;
-            setCoreState("STANDBY");
-          };
+          audio.onended = () => { voiceActive = false; audioEnergy = 0; setCoreState("STANDBY"); };
           audio.play();
           return;
         } catch (err) {
-          console.warn("ElevenLabs fallback to browser synthesis", err);
+          console.warn("ElevenLabs error, using local voice", err);
         }
       }
 
-      // 本機備用合成
+      // 本機備用
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
         const utter = new SpeechSynthesisUtterance(text);
-        utter.lang = 'zh-TW';
-        utter.rate = 1.0;
-        utter.pitch = 0.9;
-        utter.onend = () => {
-          voiceActive = false;
-          audioEnergy = 0;
-          setCoreState("STANDBY");
-        };
+        utter.lang = 'zh-TW'; utter.rate = 1.0; utter.pitch = 0.85;
+        utter.onend = () => { voiceActive = false; audioEnergy = 0; setCoreState("STANDBY"); };
         window.speechSynthesis.speak(utter);
       }
     }
 
-    // 8. 提問與賈維斯回報
     async function askJarvis(query) {
       if (!query.trim()) return;
       document.getElementById('dossier-tag').innerText = 'J.A.R.V.I.S. // DISPATCH';
@@ -1056,26 +1005,20 @@
     const termInput = document.getElementById('terminal-input');
     termInput.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') {
-        const q = termInput.value;
-        termInput.value = '';
-        askJarvis(q);
+        const q = termInput.value; termInput.value = ''; askJarvis(q);
       }
     });
 
-    // 語音收音
     let recognition = null;
     const voiceBtn = document.getElementById('voice-status-btn');
     const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
 
     if (SpeechRec) {
       recognition = new SpeechRec();
-      recognition.lang = 'zh-TW';
-      recognition.continuous = false;
+      recognition.lang = 'zh-TW'; recognition.continuous = false;
       recognition.onresult = (e) => {
         const transcript = e.results[0][0].transcript;
-        termInput.value = transcript;
-        stopVoiceRecording();
-        askJarvis(transcript);
+        termInput.value = transcript; stopVoiceRecording(); askJarvis(transcript);
       };
       recognition.onerror = () => stopVoiceRecording();
       recognition.onend = () => stopVoiceRecording();
@@ -1084,48 +1027,38 @@
     function startVoiceRecording() {
       initAudioContext();
       if (!recognition || isListening) return;
-      isListening = true;
-      setCoreState("LISTENING");
-      voiceBtn.classList.add('recording');
-      voiceBtn.innerText = "🔴 聆聽中...";
+      isListening = true; setCoreState("LISTENING");
+      voiceBtn.classList.add('recording'); voiceBtn.innerText = "🔴 聆聽中...";
       try { recognition.start(); } catch(e) {}
     }
 
     function stopVoiceRecording() {
       if (!isListening) return;
-      isListening = false;
-      if (!voiceActive) setCoreState("STANDBY");
-      voiceBtn.classList.remove('recording');
-      voiceBtn.innerText = "🎙️ 語音通話";
+      isListening = false; if (!voiceActive) setCoreState("STANDBY");
+      voiceBtn.classList.remove('recording'); voiceBtn.innerText = "🎙️ 語音通話";
       try { recognition.stop(); } catch(e) {}
     }
 
     window.toggleVoiceRecording = function() {
-      if (isListening) stopVoiceRecording();
-      else startVoiceRecording();
+      if (isListening) stopVoiceRecording(); else startVoiceRecording();
     };
 
     window.addEventListener('keydown', (e) => {
       if (e.code === 'Space' && e.target !== termInput && !isListening) {
-        e.preventDefault();
-        startVoiceRecording();
+        e.preventDefault(); startVoiceRecording();
       }
     });
     window.addEventListener('keyup', (e) => {
       if (e.code === 'Space' && isListening) {
-        e.preventDefault();
-        stopVoiceRecording();
+        e.preventDefault(); stopVoiceRecording();
       }
     });
 
-    // 9. 3D 動態渲染循環 (神經粒子雲忽大忽小爆發)
     const waveBox = document.getElementById('wave-container');
     const waveBars = [];
     for (let i = 0; i < 18; i++) {
-      const bar = document.createElement('div');
-      bar.className = 'wave-bar';
-      waveBox.appendChild(bar);
-      waveBars.push(bar);
+      const bar = document.createElement('div'); bar.className = 'wave-bar';
+      waveBox.appendChild(bar); waveBars.push(bar);
     }
 
     let clock = new THREE.Clock();
@@ -1133,13 +1066,10 @@
       requestAnimationFrame(renderLoop);
       const t = clock.getElapsedTime();
 
-      // 計算語音音量振幅 (Audio RMS)
       if (analyser && voiceActive) {
         analyser.getByteFrequencyData(dataArray);
-        let sum = 0;
-        for (let i = 0; i < dataArray.length; i++) sum += dataArray[i];
-        const avg = sum / dataArray.length;
-        audioEnergy = (avg / 128.0);
+        let sum = 0; for (let i = 0; i < dataArray.length; i++) sum += dataArray[i];
+        audioEnergy = (sum / dataArray.length) / 128.0;
       } else if (voiceActive) {
         audioEnergy = Math.sin(t * 16) * 0.5 + 0.5;
       } else {
@@ -1147,56 +1077,51 @@
       }
 
       let expansion = 1.0;
-      let rotSpeed = 0.35;
+      let rotSpeed = 0.25;
 
       if (isListening) {
-        expansion = 1.6;
-        rotSpeed = 1.2;
+        expansion = 1.5; rotSpeed = 1.0;
       } else if (voiceActive) {
-        expansion = 1.0 + (audioEnergy * 2.2);
-        rotSpeed = 0.6 + (audioEnergy * 1.5);
+        expansion = 1.0 + (audioEnergy * 2.0); // 隨說話音量忽大忽小
+        rotSpeed = 0.5 + (audioEnergy * 1.2);
       }
 
-      particleGroup.rotation.y = t * rotSpeed;
-      particleGroup.rotation.x = Math.sin(t * 0.3) * 0.2;
+      nebulaGroup.rotation.y = t * rotSpeed;
+      nebulaGroup.rotation.x = Math.sin(t * 0.2) * 0.15;
 
-      const pos = particleGeo.attributes.position.array;
-      const linePos = lineGeo.attributes.position.array;
-      let lineIndex = 0;
+      const pos = nebulaGeo.attributes.position.array;
+      const softPos = softLineGeo.attributes.position.array;
+      let softIndex = 0;
 
-      for (let i = 0; i < PARTICLE_COUNT; i++) {
-        const orig = originalVectors[i];
-        const jitter = voiceActive ? Math.sin(t * 10 + i) * audioEnergy * 3.5 : 0;
-        const curR = (orig.length() + jitter) * expansion;
+      for (let i = 0; i < NEBULA_COUNT; i++) {
+        const base = baseVectors[i];
+        // 柔性有機呼吸波形（絕無尖刺）
+        const wave = Math.sin(base.x * 0.2 + t * 4) * Math.cos(base.y * 0.2 + t * 3);
+        const curR = (base.length() + (voiceActive ? audioEnergy * 3.0 * wave : 0)) * expansion;
 
-        const dir = orig.clone().normalize();
-        const curVec = dir.multiplyScalar(curR);
+        const dir = base.clone().normalize();
+        const v = dir.multiplyScalar(curR);
 
-        pos[i * 3] = curVec.x;
-        pos[i * 3 + 1] = curVec.y;
-        pos[i * 3 + 2] = curVec.z;
+        pos[i * 3] = v.x; pos[i * 3 + 1] = v.y; pos[i * 3 + 2] = v.z;
 
-        if (i < 80 && lineIndex < maxLines * 6) {
-          for (let j = i + 1; j < 80; j++) {
+        // 柔性絲線連接（僅在極近距離內產生平滑網絲）
+        if (i < 60 && softIndex < maxSoftLines * 6) {
+          for (let j = i + 1; j < 60; j++) {
             const dx = pos[i * 3] - pos[j * 3];
             const dy = pos[i * 3 + 1] - pos[j * 3 + 1];
             const dz = pos[i * 3 + 2] - pos[j * 3 + 2];
             const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
 
-            if (dist < 18 * expansion) {
-              linePos[lineIndex++] = pos[i * 3];
-              linePos[lineIndex++] = pos[i * 3 + 1];
-              linePos[lineIndex++] = pos[i * 3 + 2];
-              linePos[lineIndex++] = pos[j * 3];
-              linePos[lineIndex++] = pos[j * 3 + 1];
-              linePos[lineIndex++] = pos[j * 3 + 2];
+            if (dist < 14 * expansion) {
+              softPos[softIndex++] = pos[i * 3]; softPos[softIndex++] = pos[i * 3 + 1]; softPos[softIndex++] = pos[i * 3 + 2];
+              softPos[softIndex++] = pos[j * 3]; softPos[softIndex++] = pos[j * 3 + 1]; softPos[softIndex++] = pos[j * 3 + 2];
             }
           }
         }
       }
 
-      particleGeo.attributes.position.needsUpdate = true;
-      lineGeo.attributes.position.needsUpdate = true;
+      nebulaGeo.attributes.position.needsUpdate = true;
+      softLineGeo.attributes.position.needsUpdate = true;
 
       for (let i = 0; i < waveBars.length; i++) {
         let h = 3;
@@ -1210,42 +1135,33 @@
     }
     renderLoop();
 
-    // 10. 定時遠端同步
     async function syncData() {
       try {
         const res = await fetch(GAS_ENDPOINT);
         const data = await res.json();
-
         document.getElementById('defcon-status').innerText = data.defcon || "DEFCON 4 // PACIFIC MATRIX";
         document.getElementById('tactical-advice').innerText = data.advice || "DORMANT MONITORING";
-
         if (data.assets) {
           data.assets.forEach(a => {
             const v = document.getElementById(`val-${a.symbol}`);
             const s = document.getElementById(`stat-${a.symbol}`);
-            if (v) v.innerText = a.price;
-            if (s) s.innerText = a.defense;
+            if (v) v.innerText = a.price; if (s) s.innerText = a.defense;
             if (TARGET_DB[a.symbol]) TARGET_DB[a.symbol].meta1 = `現價: ${a.price} | 防守: ${a.defense}`;
           });
         }
-
         if (data.usMarket) {
           data.usMarket.forEach(u => {
             const el = document.getElementById(`us-${u.symbol.toLowerCase()}`);
-            if (el) {
-              el.innerText = `${u.price} (${u.change})`;
-              el.className = u.trend === "UP" ? "up-tag" : "down-tag";
-            }
+            if (el) { el.innerText = `${u.price} (${u.change})`; el.className = u.trend === "UP" ? "up-tag" : "down-tag"; }
           });
         }
-      } catch (e) {
-        console.warn("Telemetry waiting...", e);
-      }
+      } catch (e) {}
     }
     syncData();
     setInterval(syncData, 30000);
 
     drawHUDNeonChart(TARGET_DB['8299'].chartTrend, TARGET_DB['8299'].defVal);
+    updateVoiceLabel();
 
     setInterval(() => {
       const now = new Date();
