@@ -3,12 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>J.A.R.V.I.S. // NEURAL CORE TERMINAL</title>
+  <title>J.A.R.V.I.S. // NEURAL BIO-SHADER CORE</title>
+  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+  
+  <!-- 導入 Three.js 3D 渲染引擎 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      user-select: none;
+    }
     :root {
       --cyan: #00f5d4;
       --cyan-glow: rgba(0, 245, 212, 0.4);
@@ -16,102 +26,80 @@
     html, body {
       width: 100vw;
       height: 100vh;
-      background: radial-gradient(circle at 50% 50%, #051026 0%, #01060e 100%);
+      background-color: #01060e !important;
       overflow: hidden;
       font-family: 'Rajdhani', 'Orbitron', monospace;
       color: #fff;
     }
 
-    /* 背景星空粒子與經緯格線 */
+    /* 背景戰術網格 */
     .bg-grid {
       position: absolute;
       width: 100%; height: 100%;
       background-image: 
-        linear-gradient(rgba(0, 245, 212, 0.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 245, 212, 0.02) 1px, transparent 1px);
-      background-size: 50px 50px;
+        linear-gradient(rgba(0, 245, 212, 0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 245, 212, 0.025) 1px, transparent 1px);
+      background-size: 55px 55px;
       pointer-events: none;
+      z-index: 2;
+    }
+
+    /* WebGL 全螢幕畫布 */
+    #webgl-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
       z-index: 1;
     }
 
-    /* 中央核心容器：100% 呈現你上傳的宇宙大腦原圖 */
-    .core-stage {
-      position: absolute;
-      top: 45%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 380px;
-      height: 540px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 5;
-    }
-
-    .brain-visual {
-      max-width: 100%;
-      max-height: 100%;
-      object-fit: contain;
-      filter: drop-shadow(0 0 25px rgba(0, 245, 212, 0.35));
-      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      animation: gentle-breath 4s ease-in-out infinite;
-    }
-
-    /* 說話與聆聽時的通電放大特效 */
-    .speaking-pulse {
-      transform: scale(1.1);
-      filter: drop-shadow(0 0 55px rgba(0, 245, 212, 0.85)) brightness(1.25) !important;
-    }
-    .listening-pulse {
-      transform: scale(1.05);
-      filter: drop-shadow(0 0 40px rgba(255, 0, 85, 0.65)) !important;
-    }
-
-    @keyframes gentle-breath {
-      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 25px rgba(0, 245, 212, 0.3)); }
-      50% { transform: scale(1.02); filter: drop-shadow(0 0 38px rgba(0, 245, 212, 0.5)); }
-    }
-
-    /* 頂部標題列 */
+    /* 頂部戰情列 */
     .top-header {
       position: absolute;
       top: 0; left: 0; width: 100%; height: 50px;
       display: flex; justify-content: space-between; align-items: center;
-      padding: 0 30px;
+      padding: 0 28px;
       border-bottom: 1px solid rgba(0, 245, 212, 0.2);
-      background: rgba(1, 6, 14, 0.7);
-      backdrop-filter: blur(10px);
-      z-index: 20;
+      background: linear-gradient(180deg, rgba(1, 8, 16, 0.95), rgba(1, 8, 16, 0.4));
+      backdrop-filter: blur(12px);
+      z-index: 10;
     }
     .top-title {
       font-family: 'Orbitron'; font-size: 16px; letter-spacing: 3px; font-weight: 900;
-      color: var(--cyan); text-shadow: 0 0 10px var(--cyan-glow);
+      color: var(--cyan); text-shadow: 0 0 12px var(--cyan-glow);
     }
     .top-status {
-      font-size: 12px; letter-spacing: 2px; color: rgba(255, 255, 255, 0.7);
+      font-size: 11px; letter-spacing: 2px; color: rgba(255, 255, 255, 0.7);
+      display: flex; align-items: center; gap: 8px;
     }
+    .status-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--cyan); box-shadow: 0 0 10px var(--cyan);
+      animation: pulse-dot 2s infinite;
+    }
+    @keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
     /* 下方對話紀錄視窗 */
     .chat-container {
       position: absolute;
-      bottom: 60px;
+      bottom: 66px;
       left: 50%;
       transform: translateX(-50%);
       width: 90%;
       max-width: 800px;
-      max-height: 180px;
+      max-height: 160px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
       gap: 10px;
       padding: 10px;
-      z-index: 15;
-      mask-image: linear-gradient(to top, black 80%, transparent 100%);
+      z-index: 10;
+      mask-image: linear-gradient(to top, black 85%, transparent 100%);
     }
-
     .chat-msg {
-      padding: 8px 14px;
-      border-radius: 4px;
+      padding: 8px 16px;
+      border-radius: 3px;
       font-size: 14px;
       line-height: 1.5;
       letter-spacing: 1px;
@@ -125,21 +113,21 @@
     }
     .msg-jarvis {
       align-self: flex-start;
-      background: rgba(1, 15, 30, 0.85);
+      background: rgba(2, 16, 28, 0.88);
       border-left: 3px solid var(--cyan);
-      color: #e0f7fa;
-      box-shadow: 0 0 15px rgba(0, 245, 212, 0.1);
+      color: #e2f8ff;
+      box-shadow: 0 0 15px rgba(0, 245, 212, 0.08);
     }
 
-    /* 底部輸入條 */
+    /* 底部指令輸入列 */
     .bottom-bar {
       position: absolute;
       bottom: 0; left: 0; width: 100%; height: 54px;
-      background: rgba(1, 10, 20, 0.95);
+      background: rgba(1, 10, 20, 0.96);
       border-top: 1px solid rgba(0, 245, 212, 0.25);
       display: flex; justify-content: center; align-items: center;
       padding: 0 20px;
-      z-index: 20;
+      z-index: 10;
     }
     .input-box {
       width: 100%; max-width: 800px;
@@ -161,7 +149,7 @@
       background: rgba(0, 245, 212, 0.1);
       border: 1px solid var(--cyan);
       color: var(--cyan);
-      padding: 7px 16px;
+      padding: 7px 18px;
       font-size: 12px;
       font-weight: 700;
       cursor: pointer;
@@ -176,23 +164,20 @@
 <body>
 
   <div class="bg-grid"></div>
+  <canvas id="webgl-canvas"></canvas>
 
   <div class="top-header">
     <div class="top-title">J.A.R.V.I.S. // NEURAL CORE</div>
-    <div class="top-status" id="sys-status">STATUS: STANDBY</div>
+    <div class="top-status">
+      <span class="status-dot"></span>
+      <span id="sys-status">CORE STATE: STANDBY</span>
+    </div>
   </div>
 
-  <!-- 中央宇宙大腦實體（精準對接 賈維斯大腦.jpg） -->
-  <div class="core-stage">
-    <img id="brain-img" class="brain-visual" src="賈維斯大腦.jpg" alt="JARVIS Core">
-  </div>
-
-  <!-- 下方對話紀錄視窗 -->
   <div class="chat-container" id="chat-logs">
-    <div class="chat-msg msg-jarvis">長官，神經網絡核心已就緒，隨時聽候您的指示。</div>
+    <div class="chat-msg msg-jarvis">長官，神經網絡核心著色器已啟動，大腦生物脈衝同步中。</div>
   </div>
 
-  <!-- 底部指令與語音列 -->
   <div class="bottom-bar">
     <div class="input-box">
       <input type="text" id="cmd-input" class="input-field" placeholder="> 輸入戰術指令或長按 [空白鍵] 對話..." autocomplete="off">
@@ -202,11 +187,211 @@
 
   <script>
     const GAS_ENDPOINT = "https://script.google.com/macros/s/AKfycbxWyoDCeA23D4ZIcUzhWcmm6RBpORpy3Sw7TO39ZR2WZoIA80IJzXq79cvYw0Z-EATspw/exec";
-    const brainImg = document.getElementById('brain-img');
+    
+    // --- 1. Three.js 與 WebGL 著色器初始化 ---
+    const canvas = document.getElementById('webgl-canvas');
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.z = 22;
+
+    const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      if (brainMaterial) {
+        brainMaterial.uniforms.u_resolution.value.set(window.innerWidth, window.innerHeight);
+      }
+    });
+
+    // --- 2. GPU 大腦神經脈衝著色器 (Vertex & Fragment Shader) ---
+    // 專利級演算法：消除相片矩形框 + 內部腦迴波動 + 電流放電
+    const vertexShader = `
+      varying vec2 vUv;
+      varying vec3 vPosition;
+      void main() {
+        vUv = uv;
+        vPosition = position;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `;
+
+    const fragmentShader = `
+      uniform sampler2D u_texture;
+      uniform float u_time;
+      uniform float u_audio;
+      uniform vec2 u_resolution;
+      varying vec2 vUv;
+
+      void main() {
+        vec2 uv = vUv;
+        vec2 center = vec2(0.5, 0.5);
+        vec2 toCenter = uv - center;
+        float dist = length(toCenter);
+
+        // A. 腦迴內部有機波動（非圖片縮放，而是內部褶皺像肌肉般蠕動）
+        float wave1 = sin(uv.y * 22.0 + u_time * 2.5) * cos(uv.x * 22.0 + u_time * 2.0);
+        float wave2 = sin(uv.x * 40.0 - u_time * 4.0) * cos(uv.y * 40.0 + u_time * 3.0);
+        
+        // 音訊能量帶動內部位移強度
+        float warpStrength = 0.006 + (u_audio * 0.025);
+        vec2 warpedUv = uv + vec2(wave1, wave2) * warpStrength;
+
+        // 呼吸心跳膨脹（柔和的幾何收縮）
+        float heartbeat = sin(u_time * 3.0) * 0.02 * (1.0 + u_audio * 2.0);
+        warpedUv = center + (warpedUv - center) * (1.0 - heartbeat);
+
+        // B. 採樣大腦圖像像素
+        vec4 texColor = texture2D(u_texture, warpedUv);
+
+        // C. 神經電流脈衝傳導（沿著彩虹褶皺高亮爆光）
+        float lum = dot(texColor.rgb, vec3(0.299, 0.587, 0.114));
+        float electricPulse = sin(dist * 45.0 - u_time * 8.0);
+        float spark = pow(max(0.0, electricPulse), 6.0) * lum;
+        
+        // 當語音觸發時，色彩更加飽和且電流噴發
+        vec3 finalGlow = texColor.rgb + (texColor.rgb * spark * (1.5 + u_audio * 4.5));
+        finalGlow += vec3(0.0, 0.96, 0.83) * (u_audio * spark * 2.0);
+
+        // D. 徹底消除相片長方形黑框（雙重橢圓羽化消融）
+        // 將邊緣平滑過渡為透明，完美融入黑夜宇宙
+        float fadeX = smoothstep(0.02, 0.22, uv.x) * (1.0 - smoothstep(0.78, 0.98, uv.x));
+        float fadeY = smoothstep(0.04, 0.24, uv.y) * (1.0 - smoothstep(0.76, 0.96, uv.y));
+        float edgeAlpha = fadeX * fadeY;
+
+        // 徑向衰減，去除角落
+        float radialFade = 1.0 - smoothstep(0.38, 0.49, dist);
+        edgeAlpha *= radialFade;
+
+        // 暗部像素自動透空
+        float lumAlpha = smoothstep(0.04, 0.25, lum);
+
+        gl_FragColor = vec4(finalGlow, edgeAlpha * lumAlpha);
+      }
+    `;
+
+    // --- 3. 載入宇宙大腦圖像並套用著色器 ---
+    const textureLoader = new THREE.TextureLoader();
+    let brainMaterial = null;
+    let brainMesh = null;
+
+    // 優先讀取「賈維斯大腦.jpg」，若檔名不同則回退至「image.png」
+    const brainImgUrl = encodeURI('賈維斯大腦.jpg');
+
+    textureLoader.load(
+      brainImgUrl,
+      (texture) => {
+        setupBrainMesh(texture);
+      },
+      undefined,
+      () => {
+        console.warn("嘗試讀取 image.png...");
+        textureLoader.load('image.png', (fallbackTex) => {
+          setupBrainMesh(fallbackTex);
+        });
+      }
+    );
+
+    function setupBrainMesh(texture) {
+      texture.wrapS = THREE.ClampToEdgeWrapping;
+      texture.wrapT = THREE.ClampToEdgeWrapping;
+      texture.minFilter = THREE.LinearFilter;
+
+      brainMaterial = new THREE.ShaderMaterial({
+        vertexShader: vertexShader,
+        fragmentShader: fragmentShader,
+        uniforms: {
+          u_texture: { value: texture },
+          u_time: { value: 0 },
+          u_audio: { value: 0 },
+          u_resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) }
+        },
+        transparent: true,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false
+      });
+
+      // 建立對應大腦外觀的寬螢幕立體平面（微幅往上調整至視覺焦點）
+      const geometry = new THREE.PlaneGeometry(16, 11, 64, 64);
+      brainMesh = new THREE.Mesh(geometry, brainMaterial);
+      brainMesh.position.set(0, 1.2, 0);
+      scene.add(brainMesh);
+    }
+
+    // --- 4. 周圍 3D 量子浮游星芒微粒 ---
+    const PARTICLE_COUNT = 380;
+    const particleGeo = new THREE.BufferGeometry();
+    const particlePositions = new Float32Array(PARTICLE_COUNT * 3);
+    const particleSpeeds = [];
+
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      particlePositions[i * 3] = (Math.random() - 0.5) * 28;
+      particlePositions[i * 3 + 1] = (Math.random() - 0.5) * 20;
+      particlePositions[i * 3 + 2] = (Math.random() - 0.5) * 12;
+      particleSpeeds.push({
+        y: 0.005 + Math.random() * 0.015,
+        theta: Math.random() * Math.PI * 2
+      });
+    }
+    particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
+
+    const particleMat = new THREE.PointsMaterial({
+      color: 0x00f5d4,
+      size: 0.12,
+      transparent: true,
+      opacity: 0.6,
+      blending: THREE.AdditiveBlending
+    });
+    const starField = new THREE.Points(particleGeo, particleMat);
+    scene.add(starField);
+
+    // --- 5. 音訊頻譜與發話動態監聽 ---
+    let audioEnergy = 0;
+    let targetEnergy = 0;
+    let isSpeaking = false;
+    let isListening = false;
+
+    // --- 6. 主渲染動態循環 (Render Loop) ---
+    const clock = new THREE.Clock();
+
+    function animate() {
+      requestAnimationFrame(animate);
+      const elapsed = clock.getElapsedTime();
+
+      // 平滑內插聲音振幅（音量不會生硬跳躍）
+      audioEnergy += (targetEnergy - audioEnergy) * 0.12;
+
+      // 更新 GPU 著色器變數
+      if (brainMaterial) {
+        brainMaterial.uniforms.u_time.value = elapsed;
+        brainMaterial.uniforms.u_audio.value = audioEnergy;
+      }
+
+      // 星芒微粒升騰動態
+      const pos = particleGeo.attributes.position.array;
+      for (let i = 0; i < PARTICLE_COUNT; i++) {
+        pos[i * 3 + 1] += particleSpeeds[i].y * (1.0 + audioEnergy * 3.0);
+        pos[i * 3] += Math.sin(elapsed + particleSpeeds[i].theta) * 0.004;
+        if (pos[i * 3 + 1] > 10) pos[i * 3 + 1] = -10;
+      }
+      particleGeo.attributes.position.needsUpdate = true;
+
+      // 鏡頭極微幅呼吸感巡遊
+      camera.position.x = Math.sin(elapsed * 0.4) * 0.4;
+      camera.position.y = Math.cos(elapsed * 0.3) * 0.3;
+
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    // --- 7. 對話與戰略問答機制 ---
     const chatLogs = document.getElementById('chat-logs');
     const cmdInput = document.getElementById('cmd-input');
-    const voiceBtn = document.getElementById('voice-btn');
     const statusText = document.getElementById('sys-status');
+    const voiceBtn = document.getElementById('voice-btn');
 
     function appendMessage(sender, text) {
       const msg = document.createElement('div');
@@ -216,49 +401,21 @@
       chatLogs.scrollTop = chatLogs.scrollHeight;
     }
 
-    function setVisualState(state) {
-      brainImg.classList.remove('speaking-pulse', 'listening-pulse');
-      if (state === 'LISTENING') {
-        brainImg.classList.add('listening-pulse');
-        statusText.innerText = 'STATUS: LISTENING';
-      } else if (state === 'SPEAKING') {
-        brainImg.classList.add('speaking-pulse');
-        statusText.innerText = 'STATUS: DISPATCHING';
-      } else {
-        statusText.innerText = 'STATUS: STANDBY';
-      }
-    }
-
     async function askJarvis(query) {
       if (!query.trim()) return;
       appendMessage('user', query);
       cmdInput.value = '';
-      statusText.innerText = 'STATUS: PROCESSING...';
+      statusText.innerText = 'CORE STATE: PROCESSING...';
 
       try {
         const res = await fetch(`${GAS_ENDPOINT}?q=${encodeURIComponent(query)}`);
         const data = await res.json();
-        const reply = data.reply || "鏈路回傳正常，Sir。";
+        const reply = data.reply || "鏈路回應正常，Sir。";
         appendMessage('jarvis', reply);
         speakVoice(reply);
       } catch (err) {
-        appendMessage('jarvis', "回報長官，連線逾時。");
-        statusText.innerText = 'STATUS: STANDBY';
-      }
-    }
-
-    function speakVoice(text) {
-      setVisualState('SPEAKING');
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-        const utter = new SpeechSynthesisUtterance(text);
-        utter.lang = 'zh-TW';
-        utter.rate = 1.0;
-        utter.pitch = 0.85;
-        utter.onend = () => setVisualState('STANDBY');
-        window.speechSynthesis.speak(utter);
-      } else {
-        setTimeout(() => setVisualState('STANDBY'), 3000);
+        appendMessage('jarvis', "長官，鏈路中斷或逾時。");
+        statusText.innerText = 'CORE STATE: STANDBY';
       }
     }
 
@@ -266,8 +423,39 @@
       if (e.key === 'Enter') askJarvis(cmdInput.value);
     });
 
+    // 語音播放並連動大腦放電波形
+    function speakVoice(text) {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.lang = 'zh-TW';
+        utter.rate = 1.0;
+        utter.pitch = 0.85;
+
+        utter.onstart = () => {
+          isSpeaking = true;
+          statusText.innerText = 'CORE STATE: DISPATCHING';
+          // 模擬說話時的高頻神經放電波動
+          simulateSpeakingAudio();
+        };
+        utter.onend = () => {
+          isSpeaking = false;
+          targetEnergy = 0;
+          statusText.innerText = 'CORE STATE: STANDBY';
+        };
+        window.speechSynthesis.speak(utter);
+      }
+    }
+
+    function simulateSpeakingAudio() {
+      if (!isSpeaking) return;
+      // 隨機重音產生真實說話放電波
+      targetEnergy = 0.4 + Math.random() * 0.6;
+      setTimeout(simulateSpeakingAudio, 120 + Math.random() * 100);
+    }
+
+    // 語音麥克風收音
     let recognition = null;
-    let isRecording = false;
     const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
 
     if (SpeechRec) {
@@ -284,34 +472,36 @@
     }
 
     function startVoice() {
-      if (!recognition || isRecording) return;
-      isRecording = true;
-      setVisualState('LISTENING');
+      if (!recognition || isListening) return;
+      isListening = true;
+      targetEnergy = 0.5;
+      statusText.innerText = 'CORE STATE: LISTENING';
       voiceBtn.classList.add('recording');
       voiceBtn.innerText = "🔴 聆聽中...";
       try { recognition.start(); } catch(e) {}
     }
 
     function stopVoice() {
-      if (!isRecording) return;
-      isRecording = false;
-      setVisualState('STANDBY');
+      if (!isListening) return;
+      isListening = false;
+      targetEnergy = 0;
+      statusText.innerText = 'CORE STATE: STANDBY';
       voiceBtn.classList.remove('recording');
       voiceBtn.innerText = "🎙️ 語音通話";
       try { recognition.stop(); } catch(e) {}
     }
 
     function toggleVoice() {
-      if (isRecording) stopVoice(); else startVoice();
+      if (isListening) stopVoice(); else startVoice();
     }
 
     window.addEventListener('keydown', (e) => {
-      if (e.code === 'Space' && e.target !== cmdInput && !isRecording) {
+      if (e.code === 'Space' && e.target !== cmdInput && !isListening) {
         e.preventDefault(); startVoice();
       }
     });
     window.addEventListener('keyup', (e) => {
-      if (e.code === 'Space' && isRecording) {
+      if (e.code === 'Space' && isListening) {
         e.preventDefault(); stopVoice();
       }
     });
